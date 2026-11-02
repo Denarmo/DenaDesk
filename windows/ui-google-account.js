@@ -24,6 +24,6 @@ window.GoogleAccountUI = {
     api.onGoogleAccount(render);
     act('googleAccountGet');
     return UI.card('Google account and remote access', [status,
-      UI.row('Desktop sign-in configuration', 'Sign-in verifies your identity. Internet device access still needs the connection service and relay.', [imported]), error]);
+      UI.row('Desktop sign-in configuration', 'Sign-in identifies your account. Linked devices and direct remote connections are still in development.', [imported]), error]);
   },
 };

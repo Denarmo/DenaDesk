@@ -15,7 +15,7 @@ Render configuration:
 
 `POST /v1/identity` accepts a Google ID token only as `Authorization: Bearer …`. The service verifies Google signature/issuer/audience/expiry, verified email and owner subject. It returns identity to that authenticated caller. It accepts no request body, enables no CORS, sets no cookies, stores no user database, and logs no tokens or account data. Verification concurrency and request volume are bounded for this personal development milestone.
 
-The full flow still needs signed device enrollment, a persistent trusted-device registry, expiring session signaling, explicit host approval, peer-key verification and WebRTC channels. Use a managed TURN service for NAT fallback; do not turn this HTTP web service into a public TURN listener. No remote session should be enabled until those checks are implemented and tested.
+The full flow still needs signed device enrollment, a persistent trusted-device registry, expiring session signaling, explicit host approval, peer-key verification and direct WebRTC channels. Google identifies the account; this service will supply its linked-device list and connection-setup messages. Screen, audio, input, clipboard and files must travel directly between approved peers. No TURN relay or Cloudflare setup is planned. STUN can discover public addresses without relaying session traffic; connections must fail clearly if a direct path cannot be established. No remote session should be enabled until those checks are implemented and tested.
 
 ## Local checks
 

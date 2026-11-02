@@ -66,8 +66,11 @@ No cloud service is deployed and no Google account is connected by this release.
 
 The newer development source adds Google account setup under Windows General,
 using a browser, PKCE and encrypted local storage. `cloud-broker/` supplies the
-first owner-restricted identity-verification milestone. These changes are not
-included in the installed 2.7.0 packages and do not yet provide Internet sessions.
+first owner-restricted identity-verification milestone, now verified on Render.
+The planned device registry and connection setup use that service; remote-session
+traffic must travel directly between host and guest, without a TURN relay.
+These changes are not included in the installed 2.7.0 packages and do not yet
+provide linked-device lists or Internet sessions.
 
 ## License
 
