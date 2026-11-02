@@ -1,7 +1,7 @@
 {
   "name": "denadesk-windows",
   "productName": "DenaDesk",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "DenaDesk for Windows: pair with a Mac, view its screen, share mouse, keyboard and clipboard.",
   "license": "GPL-3.0",
   "author": "0xCodez (https://github.com/0xCodez)",

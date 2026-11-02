@@ -18,6 +18,20 @@ async function setup() {
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   return { server, endpoint: `ws://127.0.0.1:${server.address().port}/v1/link`, close: async () => { server.signaling.close(); server.closeAllConnections(); await new Promise((r) => server.close(r)); } };
 }
+test('linking before setup gives actionable guidance without registering or connecting', async () => {
+  const account = new EventEmitter(); let writes = 0, connections = 0;
+  const link = new RemoteLink({ account, name: 'PC', store: { read: async () => ({}), write: async () => { writes++; } } });
+  link.connect = () => { connections++; };
+  await link.load(); const initialWrites = writes;
+  assert.match((await link.enable()).error, /Import.*JSON/);
+  account.config = { clientId: 'test-client.apps.googleusercontent.com' };
+  assert.match((await link.enable()).error, /Sign in with Google/);
+  assert.equal(link.enabledFor, null); assert.equal(writes, initialWrites); assert.equal(connections, 0);
+  account.account = { sub: subject };
+  assert.equal((await link.enable()).error, '');
+  assert.equal(link.enabledFor, subject); assert.equal(connections, 1);
+  await link.disable();
+});
 async function client(endpoint, token = 'owner') {
   const identity = P.generate(), ws = new WebSocket(endpoint), events = new EventEmitter(), messages = [];
   ws.on('message', (raw) => { const m = JSON.parse(raw); messages.push(m); events.emit('message', m);

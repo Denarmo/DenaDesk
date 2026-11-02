@@ -42,7 +42,13 @@ class RemoteLink extends EventEmitter {
     this.pins[sub + ':' + peer.id] = peer.publicKey; await this.save(); this.changed(); return true;
   }
   async enable() {
-    if (!this.identity || !this.account.account) throw new Error('Sign in with Google and unlock device storage first.');
+    if (!this.identity || !this.account.account) {
+      this.error = !this.identity ? 'Secure device keys are unavailable. Restart DenaDesk and try again.'
+        : !this.account.config ? 'Import your Google Desktop app JSON, then sign in before linking this PC.'
+        : 'Sign in with Google before linking this PC.';
+      this.changed(); return this.view();
+    }
+    this.error = '';
     this.enabledFor = this.account.account.sub; await this.save(); this.connect(); return this.view();
   }
   async disable(unlink = false) {

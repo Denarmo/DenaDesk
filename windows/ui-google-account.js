@@ -12,20 +12,28 @@ window.GoogleAccountUI = {
     const status = UI.row('Google account', 'Loading account settings…', [signin, cancel, signout]);
     const deviceList = UI.el('div');
     const linkError = UI.el('p', { class: 'hint', attrs: { role: 'status' } });
-    let linked = {};
+    let linked = {}, accountState = null;
     const enable = UI.button('Link this PC', () => remoteAct('remoteLinkEnable', !linked.enabled), 'small');
     const disconnect = UI.button('Disconnect', () => remoteAct('remoteLinkDisconnect'), 'small');
     const connection = UI.row('Linked devices', 'Direct connections only. The host approves each session.', [enable, disconnect]);
     const own = UI.row('This device fingerprint', 'Loading…');
     const current = UI.row('Remote session', 'No active session');
+    function prerequisites() {
+      enable.disabled = !linked.enabled && (!accountState?.account || accountState.phase === 'signing-in' || !linked.fingerprint);
+      connection.setHint(!accountState ? 'Loading Google account settings…'
+        : !accountState.configured ? 'First import your Google Desktop app JSON, then sign in and link this PC.'
+        : !accountState.account ? 'Sign in with Google before linking this PC.'
+        : !linked.fingerprint ? 'Secure device keys are unavailable. Restart DenaDesk and try again.'
+        : 'Connection service: ' + (linked.status || 'off') + '. Session traffic goes directly between devices.');
+      linkError.textContent = accountState?.account ? linked.error || '' : '';
+    }
     function renderRemote(s) {
       linked = s;
       enable.textContent = s.enabled ? 'Unlink this PC' : 'Link this PC';
-      connection.setHint('Connection service: ' + s.status + '. Session traffic goes directly between devices.');
+      prerequisites();
       own.setHint(s.fingerprint || 'Device keys are unavailable.');
       disconnect.hidden = !s.session;
       current.setHint(s.session ? s.session.name + ' · ' + s.session.role + ' · ' + s.session.mode + ' · ' + s.session.status : 'No active session');
-      linkError.textContent = s.error || '';
       deviceList.replaceChildren(...(s.devices || []).map((d) => {
         const view = UI.button('View', () => remoteAct('remoteLinkConnect', d.id, 'view'), 'small');
         const control = UI.button('Control', () => remoteAct('remoteLinkConnect', d.id, 'control'), 'small');
@@ -38,16 +46,19 @@ window.GoogleAccountUI = {
       try { renderRemote(await api[name](...args)); } catch { linkError.textContent = 'The linked-device action could not finish.'; }
     }
     function render(s) {
+      accountState = s;
       const busy = s.phase === 'signing-in';
       status.setHint(busy ? 'Finish signing in using your browser.' : s.account ? 'Signed in as ' + s.account.email
         : s.configured ? 'Google project: ' + s.projectId : 'Import the Desktop app JSON from Google Auth Platform.');
       imported.disabled = busy; signin.disabled = busy || !s.configured;
       cancel.hidden = !busy; signout.hidden = !s.account; signout.disabled = busy;
       error.textContent = s.error || '';
+      prerequisites();
     }
     async function act(name) {
       try { render(await api[name]()); } catch { error.textContent = 'Google account setup could not finish. Try again.'; }
     }
+    signin.disabled = enable.disabled = true;
     api.onGoogleAccount(render);
     act('googleAccountGet');
     api.onRemoteLink(renderRemote);
