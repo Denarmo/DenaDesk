@@ -3,7 +3,8 @@
 // canvas, plays its sound (raw 48 kHz stereo PCM through pcm-worklet.js), and turns this PC's
 // mouse, touchpad and keyboard into the phone's touches, scrolls and keys (port of
 // mac/phoneview-renderer.js):
-//   click / drag = a finger · hover = the mouse · right click = Back · middle click = Home
+//   touch by default: click / drag = a finger · right click = Back · middle click = Home
+//   optional mouse mode: hover, clicks and wheel as an Android mouse
 //   wheel / two-finger scroll = scroll · pinch = two fingers pinching · keys = keys
 'use strict';
 
@@ -20,8 +21,6 @@
   const canvas = document.getElementById('screen');
   const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
   const status = document.getElementById('status');
-  const ACTION = { DOWN: 0, UP: 1, MOVE: 2, HOVER_MOVE: 7, HOVER_EXIT: 10 };
-  const FINGER = -2; // scrcpy's generic finger
   let size = null; // video size
   let decoder = null;
   let config = null; // SPS/PPS, sent in front of the next key frame
@@ -224,108 +223,24 @@
     return { x: Math.max(0, Math.min(w - 1, ((e.clientX - r.left) / r.width) * w)), y: Math.max(0, Math.min(h - 1, ((e.clientY - r.top) / r.height) * h)) };
   };
 
-  let down = false;
-  let rightDown = false;
-  let rightDragging = false;
-  let rightStart = null;
-
+  const pointer = new PhonePointer((m) => api.send(m));
   canvas.addEventListener('pointerdown', (e) => {
-    canvas.focus();
-    if (e.button === 1) return api.send({ t: 'nav', key: 'home' });
-    if (e.button === 2) {
-      canvas.setPointerCapture(e.pointerId);
-      rightDown = true;
-      rightDragging = false;
-      rightStart = { ...at(e), clientX: e.clientX, clientY: e.clientY };
-      return;
-    }
-    if (e.button !== 0) return;
-    canvas.setPointerCapture(e.pointerId);
-    down = true;
-    api.send({ t: 'touch', action: ACTION.DOWN, pointer: FINGER, ...at(e) });
+    e.preventDefault(); canvas.focus(); canvas.setPointerCapture(e.pointerId);
+    pointer.down(e, at(e));
   });
-
-  canvas.addEventListener('pointermove', (e) => {
-    if (rightDown && rightStart) {
-      const dist = Math.hypot(e.clientX - rightStart.clientX, e.clientY - rightStart.clientY);
-      if (!rightDragging && dist > 5) {
-        rightDragging = true;
-        api.send({ t: 'touch', action: ACTION.DOWN, pointer: FINGER, x: rightStart.x, y: rightStart.y });
-      }
-      if (rightDragging) {
-        api.send({ t: 'touch', action: ACTION.MOVE, pointer: FINGER, ...at(e) });
-      }
-      return;
-    }
-    if (down) api.send({ t: 'touch', action: ACTION.MOVE, pointer: FINGER, ...at(e) });
-    else api.send({ t: 'touch', action: ACTION.HOVER_MOVE, pointer: -1, ...at(e) });
-  });
-
-  const up = (e) => {
+  canvas.addEventListener('pointermove', (e) => pointer.move(e, at(e)));
+  const lift = (e, cancelled) => {
+    pointer.up(e, at(e), cancelled);
     try { if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); } catch {}
-    if (e.button === 2 && rightDown) {
-      if (rightDragging) {
-        api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, ...at(e) });
-      } else {
-        // Simple right-click tap without dragging: standard Back action
-        api.send({ t: 'nav', key: 'back' });
-      }
-      rightDown = false;
-      rightDragging = false;
-      rightStart = null;
-      return;
-    }
-    if (!down) return;
-    down = false;
-    api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, ...at(e) });
   };
-  canvas.addEventListener('pointerup', up);
-  canvas.addEventListener('pointercancel', (e) => {
-    try { if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); } catch {}
-    if (rightDown) {
-      if (rightDragging) api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, ...at(e) });
-      rightDown = false;
-      rightDragging = false;
-      rightStart = null;
-    }
-    if (down) {
-      down = false;
-      api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, ...at(e) });
-    }
-  });
-  // Off the picture: the mouse stops hovering there (left hovering, the phone's edges and gesture
-  // navigation stop answering touches until it restarts).
-  canvas.addEventListener('pointerleave', (e) => {
-    if (!down && !rightDown) api.send({ t: 'touch', action: ACTION.HOVER_EXIT, pointer: -1, ...at(e) });
-  });
+  canvas.addEventListener('pointerup', (e) => lift(e, false));
+  canvas.addEventListener('pointercancel', (e) => lift(e, true));
+  canvas.addEventListener('lostpointercapture', (e) => pointer.up(e, at(e), true));
+  canvas.addEventListener('pointerleave', (e) => pointer.leave(at(e)));
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
-  // Scroll, and pinch (Chromium turns a touchpad pinch into ctrl+wheel): two fingers around the
-  // pointer, moving apart or together, lifted when the pinch stops.
-  let pinch = null;
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    const p = at(e);
-    if (e.ctrlKey) {
-      const w = (size && size.width) || canvas.width;
-      if (!pinch) {
-        pinch = { cx: p.x, cy: p.y, d: w * 0.08 };
-        api.send({ t: 'touch', action: ACTION.DOWN, pointer: 0, x: pinch.cx - pinch.d, y: pinch.cy });
-        api.send({ t: 'touch', action: ACTION.DOWN, pointer: 1, x: pinch.cx + pinch.d, y: pinch.cy });
-      }
-      pinch.d = Math.max(10, Math.min(w * 0.45, pinch.d * Math.exp(-e.deltaY / 60)));
-      api.send({ t: 'touch', action: ACTION.MOVE, pointer: 0, x: pinch.cx - pinch.d, y: pinch.cy });
-      api.send({ t: 'touch', action: ACTION.MOVE, pointer: 1, x: pinch.cx + pinch.d, y: pinch.cy });
-      clearTimeout(pinch.timer);
-      pinch.timer = setTimeout(() => {
-        api.send({ t: 'touch', action: ACTION.UP, pointer: 0, x: pinch.cx - pinch.d, y: pinch.cy });
-        api.send({ t: 'touch', action: ACTION.UP, pointer: 1, x: pinch.cx + pinch.d, y: pinch.cy });
-        pinch = null;
-      }, 160);
-      return;
-    }
-    const k = e.deltaMode === 1 ? 1 : 1 / 100; // lines, or pixels (100 a wheel notch)
-    api.send({ t: 'scroll', ...p, hs: -e.deltaX * k, vs: -e.deltaY * k });
+    pointer.wheel(e, at(e), size || { width: canvas.width, height: canvas.height });
   }, { passive: false });
 
   // Keys go to the phone; Alt+F4 closes the window like any other. Enter in a chat app and the
@@ -340,16 +255,7 @@
   window.addEventListener('keydown', onKey);
   window.addEventListener('keyup', onKey);
   window.addEventListener('blur', () => {
-    if (rightDown) {
-      if (rightDragging) api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, x: 0, y: 0 });
-      rightDown = false;
-      rightDragging = false;
-      rightStart = null;
-    }
-    if (down) {
-      down = false;
-      api.send({ t: 'touch', action: ACTION.UP, pointer: FINGER, x: 0, y: 0 });
-    }
+    pointer.release();
     for (const code of ['ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight', 'AltLeft', 'AltRight', 'MetaLeft', 'MetaRight']) api.send({ t: 'key', code, down: false });
   });
 
@@ -364,11 +270,13 @@
   });
 
   // ---- controls ----
-  // In a side panel down the right (the default), the title bar, or Back/Home/Recents in a bar
-  // under the picture (Phone page › Settings › Window controls). An app window runs on a display
+  // Quick controls below the picture, with Back/Home/Recents always centered beneath them.
+  // An app window runs on a display
   // of its own, so what acts on the phone's main screen (Recents, the shade, Power) isn't there,
   // and its Rotate turns the window round. A camera window has the camera's own.
   const ICONS = {
+    full: '<path d="M4 8V4h4 M12 4h4v4 M16 12v4h-4 M8 16H4v-4"/>',
+    mouseMode: '<path d="M5 3l10 8-5 .5-2.5 5z"/>',
     back: '<path d="M12.5 4.5 7 10l5.5 5.5"/>',
     home: '<circle cx="10" cy="10" r="5.5"/>',
     recents: '<rect x="5" y="5" width="10" height="10" rx="1.5"/>',
@@ -394,6 +302,8 @@
   const PHONE = ['screen', 'app'];
   const CAMERA = ['torch', 'flip', 'zoomIn', 'zoomOut'];
   const CONTROLS = [
+    { k: 'full', title: 'Fullscreen (F11)', in: ['screen', 'app', 'camera'], toggle: true },
+    { k: 'mouseMode', title: 'Mouse mode (off: touch input)', toggle: true },
     { k: 'volumeUp', title: 'Volume up' },
     { k: 'volumeDown', title: 'Volume down' },
     { k: 'mute', title: 'Mute' },
@@ -414,18 +324,26 @@
     { k: 'home', title: 'Home (middle click)', nav: true },
     { k: 'recents', title: 'Recent apps', nav: true, in: ['screen'] },
   ].filter((c) => (c.in || PHONE).includes(kind));
-  // The title bar layouts carry what the title bar always had: Back, Home, Recents, Notifications,
-  // Rotate; the screen-off and Enter switches, and a camera's own, too.
-  const OPT = { pin: 'pinned', screenOff: 'screenOff', enterSends: 'enterSends', arrowSwipe: 'arrowSwipe', torch: 'torch' };
+  // State returned by the main process updates each toggle; mouse mode stays local to this view.
+  const OPT = { pin: 'pinned', screenOff: 'screenOff', enterSends: 'enterSends', arrowSwipe: 'arrowSwipe', torch: 'torch', full: 'full' };
   for (const c of CONTROLS) {
     c.el = document.createElement('button');
     c.el.className = 'ctl';
     c.el.title = c.title;
     c.el.setAttribute('aria-label', c.title);
+    if (c.toggle) c.el.setAttribute('aria-pressed', 'false');
     if (c.k === 'shot') { screenshotButton = c.el; c.el.disabled = !hasFrame; }
     c.el.innerHTML = `<svg viewBox="0 0 20 20">${ICONS[c.k]}</svg>`;
     c.el.onclick = () => {
       if (c.k === 'shot') return shot();
+      if (c.k === 'mouseMode') {
+        pointer.setMouseMode(!pointer.mouseMode);
+        document.body.classList.toggle('mouse-mode', pointer.mouseMode);
+        c.el.classList.toggle('on', pointer.mouseMode);
+        c.el.setAttribute('aria-pressed', String(pointer.mouseMode));
+        canvas.focus(); return;
+      }
+      if (c.k === 'full') { api.send({ t: 'full' }); canvas.focus(); return; }
       if (c.k === 'pin') return api.send({ t: 'pin' });
       if (c.k === 'enterSends' || c.k === 'arrowSwipe') api.send({ t: 'toggle', what: c.k });
       else if (c.k === 'screenOff') api.send({ t: 'nav', key: 'screenPower' });
@@ -437,9 +355,7 @@
   const els = (list) => list.map((c) => c.el);
   // The panel button: every phone window's controls on or off (phoneview.js keeps it).
   const panelBtn = document.getElementById('panelBtn');
-  const fullBtn = document.getElementById('fullBtn');
-  fullBtn.onclick = () => { api.send({ t: 'full' }); canvas.focus(); };
-  window.addEventListener('keydown', (e) => { if (e.key === 'F11') { e.preventDefault(); e.stopPropagation(); api.send({ t: 'full' }); } }, true);
+  window.addEventListener('keydown', (e) => { if (e.key === 'F11') { e.preventDefault(); e.stopPropagation(); if (!e.repeat) api.send({ t: 'full' }); } }, true);
   panelBtn.onclick = () => { api.send({ t: 'panel' }); canvas.focus(); };
   function layout(mode) {
     mode = mode === 'none' ? 'none' : 'bottom';
@@ -453,11 +369,25 @@
     fit();
   }
   layout(q.get('controls'));
+  let noticeTimer;
+  const notice = document.getElementById('notice');
   api.on('opts', (m) => {
     if (!m) return;
     if (m.controls) layout(m.controls);
-    if (typeof m.full === 'boolean') { document.body.classList.toggle('full', m.full); fit(); }
-    for (const c of CONTROLS) if (c.toggle && typeof m[OPT[c.k]] === 'boolean') c.el.classList.toggle('on', m[OPT[c.k]]);
+    if (typeof m.full === 'boolean') {
+      const entered = m.full && !document.body.classList.contains('full');
+      document.body.classList.toggle('full', m.full); fit();
+      if (entered || !m.full) {
+        clearTimeout(noticeTimer);
+        notice.hidden = !m.full;
+        notice.textContent = m.full ? 'Press F11 to exit fullscreen' : '';
+        if (m.full) noticeTimer = setTimeout(() => { notice.hidden = true; }, 3500);
+      }
+    }
+    for (const c of CONTROLS) if (c.toggle && typeof m[OPT[c.k]] === 'boolean') {
+      c.el.classList.toggle('on', m[OPT[c.k]]);
+      c.el.setAttribute('aria-pressed', String(m[OPT[c.k]]));
+    }
   });
 
   // The picture as it is now, as a PNG (phoneview.js puts it on the clipboard).

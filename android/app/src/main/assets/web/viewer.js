@@ -3,8 +3,8 @@
 // plays the picture (and its sound), and sends input back as in.* (normalized 0–1):
 //   touch   touchpad (opts.touch 'pad', the default): slide = move the pointer (never clicks) ·
 //           tap = left click ("Tap to click", on unless switched off) · hold = right click ·
-//           two fingers = scroll
-//           direct ('direct'): tap = click · hold = right click · drag = drag · two fingers = scroll
+//           two fingers = scroll · pinch = zoom
+//           direct ('direct'): tap = click · hold = right click · drag = drag · two fingers = scroll · pinch = zoom
 //           (the Mac's pointer follows the finger, so it is a touch screen for the Mac)
 //   mouse   and a hardware keyboard work as on a computer
 //   stylus  a pen on the computer: where it points, with its pressure, tilt, eraser and side button
@@ -165,6 +165,16 @@
     return { x, y };
   }
 
+  // Zoom the PC application through its normal Ctrl+wheel shortcut, releasing Ctrl immediately.
+  const hardwareKeys = new Set();
+  function zoom(steps) {
+    const ctrl = hardwareKeys.has('ControlLeft') || hardwareKeys.has('ControlRight');
+    if (!ctrl) send({ t: 'in.kd', code: 'ControlLeft' });
+    send({ t: 'in.wh', dx: 0, dy: -steps * 40 });
+    if (!ctrl) send({ t: 'in.ku', code: 'ControlLeft' });
+  }
+  const twoFingers = (a, b) => new TwoFinger(a, b, (dx, dy) => send({ t: 'in.wh', dx, dy }), zoom);
+
   // Touch: one finger is the Mac's pointer; two fingers scroll.
   const touches = new Map(); // pointerId -> {x, y}
   let one = null; // {start, at, moved, dragging, timer, right}
@@ -194,7 +204,7 @@
         one = null;
       }
       const [a, b] = [...touches.values()];
-      two = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      two = twoFingers(a, b);
     }
   }
 
@@ -203,12 +213,7 @@
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (two && touches.size >= 2) {
       const [a, b] = [...touches.values()];
-      const c = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-      const dx = (two.x - c.x) * 2, dy = (two.y - c.y) * 2;
-      if (Math.abs(dx) + Math.abs(dy) >= 1) {
-        send({ t: 'in.wh', dx, dy });
-        two = c;
-      }
+      two.update(a, b);
       return;
     }
     if (!one) return;
@@ -227,14 +232,14 @@
     if (one.moved) send({ t: 'in.mm', x: p.x, y: p.y });
   }
 
-  function fingerUp(e) {
+  function fingerUp(e, cancelled = false) {
     touches.delete(e.pointerId);
     if (touches.size === 0) two = null;
     if (!one) return;
-    if (touchMode === 'pad') return padUp(e);
+    if (touchMode === 'pad') return padUp(e, cancelled);
     clearTimeout(one.timer);
     if (one.dragging) send({ t: 'in.mu', x: one.p.x, y: one.p.y, b: B.LEFT });
-    else if (!one.right && !one.moved) {
+    else if (!cancelled && !one.right && !one.moved) {
       send({ t: 'in.md', x: one.p.x, y: one.p.y, b: B.LEFT });
       send({ t: 'in.mu', x: one.p.x, y: one.p.y, b: B.LEFT });
     }
@@ -257,7 +262,7 @@
     } else if (touches.size === 2) {
       if (one) { clearTimeout(one.timer); one = null; }
       const [a, b] = [...touches.values()];
-      two = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      two = twoFingers(a, b);
     }
   }
   function padMove(e) {
@@ -279,10 +284,10 @@
     cur.y = Math.min(1, Math.max(0, cur.y + (dy * g) / r.h));
     send({ t: 'in.mm', x: cur.x, y: cur.y });
   }
-  function padUp(e) {
+  function padUp(e, cancelled) {
     if (e.pointerId !== one.id) return;
     clearTimeout(one.timer);
-    if (tapClick && !one.moved && !one.right && performance.now() - one.t0 < 300) {
+    if (!cancelled && tapClick && !one.moved && !one.right && performance.now() - one.t0 < 300) {
       send({ t: 'in.md', x: cur.x, y: cur.y, b: B.LEFT });
       send({ t: 'in.mu', x: cur.x, y: cur.y, b: B.LEFT });
     }
@@ -393,7 +398,7 @@
   });
   window.addEventListener('pointercancel', (e) => {
     if (e.pointerType === 'pen') { if (penOn) penLeave(); }
-    else if (e.pointerType === 'touch') fingerUp(e);
+    else if (e.pointerType === 'touch') fingerUp(e, true);
   });
   window.addEventListener('contextmenu', (e) => e.preventDefault());
   window.addEventListener('wheel', (e) => {
@@ -402,17 +407,34 @@
     send({ t: 'in.wh', dx: e.deltaX * k, dy: e.deltaY * k });
   }, { passive: false });
 
+  function releaseInput() {
+    if (one) {
+      clearTimeout(one.timer);
+      if (one.dragging) send({ t: 'in.mu', ...one.p, b: B.LEFT });
+    }
+    one = two = null; touches.clear();
+    for (const b of held) send({ t: 'in.mu', ...cur, b });
+    held.clear();
+    for (const code of hardwareKeys) send({ t: 'in.ku', code });
+    hardwareKeys.clear();
+    penLeave();
+  }
+  window.addEventListener('blur', releaseInput);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) releaseInput(); });
+
   // Keys: a hardware keyboard sends codes; the soft keyboard sends characters (mapped to keys).
   // The soft keyboard's Backspace or Enter on an empty field comes as a key, with no code sometimes.
   const keyCode = (e) => e.code || ({ Backspace: 'Backspace', Enter: 'Enter' })[e.key] || '';
   window.addEventListener('keydown', (e) => {
     if (!keyCode(e) || e.keyCode === 229 || e.isComposing) return; // composing on the soft keyboard: see 'input'
     e.preventDefault();
+    hardwareKeys.add(keyCode(e));
     send({ t: 'in.kd', code: keyCode(e) });
   });
   window.addEventListener('keyup', (e) => {
     if (!keyCode(e) || e.keyCode === 229 || e.isComposing) return;
     e.preventDefault();
+    hardwareKeys.delete(keyCode(e));
     send({ t: 'in.ku', code: keyCode(e) });
   });
 

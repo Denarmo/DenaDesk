@@ -4,7 +4,7 @@
 // (relative, like the computers' own mouse and keyboard sharing); the computer answers
 // remote.state (whether it takes input from here). opts come from Remote.kt.
 //   touchpad  slide = move (never clicks) · tap = left click ("Tap to click", on unless switched off)
-//             hold = right click · two fingers = scroll · two-finger tap = right click
+//             hold = right click · two fingers = scroll · pinch = zoom · two-finger tap = right click
 //   gamepad   left stick = four keys (WASD) · right stick = the mouse · buttons = their keys; or, when
 //             the computer takes it as a real gamepad (remote.state pad: Remote › Real gamepad there),
 //             the sticks, triggers and buttons as they are (remote.pad); or, while a computer is
@@ -46,6 +46,9 @@
     for (const code of [...held.keys()]) { held.set(code, 1); press(code, false); }
     dropMods();
     padRelease();
+    if (one) clearTimeout(one.timer);
+    one = two = null; fingers.clear();
+    mx = my = wx = wy = 0;
   }
 
   // ---- what the page shows ----
@@ -152,6 +155,13 @@
     queue();
   }
 
+  // Use the normal PC application zoom shortcut; press() preserves an already-held Ctrl key.
+  function zoom(steps) {
+    press('ControlLeft', true);
+    send({ t: 'remote.wh', dx: 0, dy: -steps * 40 });
+    press('ControlLeft', false);
+  }
+
   // ---- touchpad ----
   const pad = $('pad');
   const SLOP = 8, HOLD_MS = 550, TAP_MS = 300;
@@ -177,7 +187,8 @@
     } else if (fingers.size === 2) {
       if (one) { clearTimeout(one.timer); one = null; }
       const [a, b] = [...fingers.values()];
-      two = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, t0: performance.now(), moved: false };
+      two = new TwoFinger(a, b, scroll, zoom);
+      two.t0 = performance.now();
     }
   });
 
@@ -189,14 +200,7 @@
     if (two) {
       if (fingers.size < 2) return;
       const [a, b] = [...fingers.values()];
-      const c = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-      const dx = (two.x - c.x) * 2, dy = (two.y - c.y) * 2; // the page follows the fingers
-      if (Math.abs(dx) + Math.abs(dy) >= 2) {
-        two.moved = true;
-        scroll(dx, dy);
-        two.x = c.x;
-        two.y = c.y;
-      }
+      two.update(a, b);
       return;
     }
     if (!one || e.pointerId !== one.id) return;
@@ -214,9 +218,10 @@
     move(dx * g, dy * g);
   });
 
-  function lift(e) {
+  function lift(e, cancelled = false) {
     if (!fingers.delete(e.pointerId)) return;
     if (two) {
+      if (cancelled) two.moved = true;
       if (fingers.size > 0) return;
       if (!two.moved && performance.now() - two.t0 < 300) { tapKey('Mouse1'); tick(); } // two-finger tap
       two = null;
@@ -224,11 +229,11 @@
     }
     if (!one || e.pointerId !== one.id) return;
     clearTimeout(one.timer);
-    if (opts.tap && !one.moved && !one.right && performance.now() - one.t0 < TAP_MS) { tapKey('Mouse0'); tick(); }
+    if (!cancelled && opts.tap && !one.moved && !one.right && performance.now() - one.t0 < TAP_MS) { tapKey('Mouse0'); tick(); }
     one = null;
   }
-  pad.addEventListener('pointerup', lift);
-  pad.addEventListener('pointercancel', lift);
+  pad.addEventListener('pointerup', (e) => lift(e));
+  pad.addEventListener('pointercancel', (e) => lift(e, true));
 
   // A button held down for as long as it's touched (Left click + a slide on the pad = a drag).
   function holdable(el, code) {

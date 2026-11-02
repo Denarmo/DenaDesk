@@ -291,6 +291,8 @@ class PhoneViews extends EventEmitter {
       v.ready = true;
       for (const [ch, m] of v.queue.splice(0)) win.webContents.send(ch, m);
     });
+    win.on('enter-full-screen', () => this._send(v, 'phoneview:opts', { full: true }));
+    win.on('leave-full-screen', () => this._send(v, 'phoneview:opts', { full: false }));
     win.on('focus', () => this.emit('focus'));
     win.on('blur', () => this.emit('focus'));
     // A camera's window: closed, it only hides (the camera stops with Camera's switch).
@@ -475,7 +477,7 @@ class PhoneViews extends EventEmitter {
     if (m.t === 'full') {
       const on = !v.win.isFullScreen();
       v.win.setFullScreen(on);
-      return this._send(v, 'phoneview:opts', { full: on });
+      return;
     }
     // The title bar's panel button: the controls shown or hidden in every phone window, remembered.
     if (m.t === 'panel') {

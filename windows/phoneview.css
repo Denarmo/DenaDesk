@@ -32,7 +32,7 @@ body.camera #navbar { display: none; }
 body.camera #stage { bottom: 44px; }
 body.camera[data-controls="none"] #stage { bottom: 0; }
 .ctl:focus-visible { outline: 2px solid #f1c40f; outline-offset: -2px; }
-#screen { max-width: 100%; max-height: 100%; outline: none; cursor: default; }
+#screen { max-width: 100%; max-height: 100%; outline: none; cursor: default; touch-action: none; }
 #status { position: absolute; color: var(--muted); text-align: center; padding: 0 24px; }
 body.drop #stage { outline: 3px solid #0a84ff; outline-offset: -3px; }
 body.sound #bar, body.sound #panel, body.sound #navbar, body.netsound #bar, body.netsound #panel, body.netsound #navbar { display: none !important; }
@@ -40,7 +40,9 @@ body.sound #bar, body.sound #panel, body.sound #navbar, body.netsound #bar, body
 #panelBtn { margin-right: 6px; flex: none; }
 #bar { justify-content: flex-start; }
 #bar .tools { margin-left: auto; }
-#fullBtn { flex: none; margin-left: 2px; }
 /* Fullscreen: only the picture, as large as it fits, black around it. */
 body.full #bar { display: none !important; }
 body.full #stage { top: 0; right: 0; }
+
+#notice { position: fixed; z-index: 10; top: 20px; left: 50%; transform: translateX(-50%); max-width: calc(100vw - 48px); box-sizing: border-box; padding: 10px 18px; border: 1px solid rgba(241,196,15,.4); border-radius: 10px; background: rgba(24,24,28,.95); color: var(--text); text-align: center; pointer-events: none; box-shadow: 0 4px 20px #0008; }
+#notice[hidden] { display: none; }
