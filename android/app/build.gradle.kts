@@ -68,7 +68,7 @@ dependencies {
 
 // Record the reviewed source revision inside each APK, as the Windows build does.
 val reviewAssets = layout.buildDirectory.dir("generated/denadeskAssets")
-android.sourceSets.getByName("main").assets.srcDir(reviewAssets)
+android.sourceSets.getByName("main").assets.srcDir(reviewAssets.get().asFile)
 val writeBuildInfo = tasks.register("writeBuildInfo") {
     outputs.dir(reviewAssets)
     outputs.upToDateWhen { false }
