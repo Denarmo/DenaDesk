@@ -4,7 +4,10 @@
 @font-face { font-family: Geist; font-style: normal; font-display: swap; font-weight: 100 900; src: url(fonts/geist-latin-ext-wght-normal.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 @font-face { font-family: Geist; font-style: normal; font-display: swap; font-weight: 100 900; src: url(fonts/geist-cyrillic-wght-normal.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000; touch-action: none; user-select: none; -webkit-user-select: none; }
-#video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+#video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; transform-origin: 0 0; }
+#viewControls { position: fixed; right: 12px; bottom: 12px; z-index: 2; }
+#fit { border: 1px solid #f1c40f80; border-radius: 18px; padding: 9px 14px; background: #202024e8; color: #f7dd77; font: 13px Geist, system-ui, sans-serif; min-height: 40px; }
+#fit[hidden] { display: none; }
 #overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #8c8c95; font: 17px/1.45 Geist, system-ui, sans-serif; pointer-events: none; }
 #overlay.hidden { display: none; }
 /* The soft keyboard types into this (off screen); what is typed goes to the Mac as keys. */

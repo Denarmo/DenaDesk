@@ -4,7 +4,7 @@
 // (relative, like the computers' own mouse and keyboard sharing); the computer answers
 // remote.state (whether it takes input from here). opts come from Remote.kt.
 //   touchpad  slide = move (never clicks) · tap = left click ("Tap to click", on unless switched off)
-//             hold = right click · two fingers = scroll · pinch = zoom · two-finger tap = right click
+//             hold = right click · two fingers = scroll · two-finger tap = right click
 //   gamepad   left stick = four keys (WASD) · right stick = the mouse · buttons = their keys; or, when
 //             the computer takes it as a real gamepad (remote.state pad: Remote › Real gamepad there),
 //             the sticks, triggers and buttons as they are (remote.pad); or, while a computer is
@@ -156,13 +156,6 @@
     queue();
   }
 
-  // Use the normal PC application zoom shortcut; press() preserves an already-held Ctrl key.
-  function zoom(steps) {
-    press('ControlLeft', true);
-    send({ t: 'remote.wh', dx: 0, dy: -steps * 40 });
-    press('ControlLeft', false);
-  }
-
   // ---- touchpad ----
   const pad = $('pad');
   const SLOP = 8, HOLD_MS = 550, TAP_MS = 300;
@@ -188,7 +181,8 @@
     } else if (fingers.size === 2) {
       if (one) { clearTimeout(one.timer); one = null; }
       const [a, b] = [...fingers.values()];
-      two = new TwoFinger(a, b, scroll, zoom, window);
+      // This page has no video to magnify. Pinches stay local and never alter the PC application.
+      two = new TwoFinger(a, b, scroll, () => {}, window);
       two.t0 = performance.now();
     }
   });

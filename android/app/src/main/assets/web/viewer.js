@@ -3,8 +3,8 @@
 // plays the picture (and its sound), and sends input back as in.* (normalized 0–1):
 //   touch   touchpad (opts.touch 'pad', the default): slide = move the pointer (never clicks) ·
 //           tap = left click ("Tap to click", on unless switched off) · hold = right click ·
-//           two fingers = scroll · pinch = zoom
-//           direct ('direct'): tap = click · hold = right click · drag = drag · two fingers = scroll · pinch = zoom
+//           two fingers = scroll at Fit / pan when zoomed · pinch = local video zoom
+//           direct ('direct'): tap = click · hold = right click · drag = drag · two fingers = scroll at Fit / pan when zoomed · pinch = local video zoom
 //           (the Mac's pointer follows the finger, so it is a touch screen for the Mac)
 //   mouse   and a hardware keyboard work as on a computer
 //   stylus  a pen on the computer: where it points, with its pressure, tilt, eraser and side button
@@ -18,6 +18,8 @@
   const audio = document.getElementById('audio');
   const overlay = document.getElementById('overlay');
   const kbd = document.getElementById('kbd');
+  const fitButton = document.getElementById('fit');
+  const viewport = new StreamViewport();
   const TD = window.TD;
   const send = (m) => TD.send(JSON.stringify(m));
   const B = { LEFT: 0, RIGHT: 1, MIDDLE: 2 };
@@ -52,6 +54,8 @@
     pending = null;
     video.srcObject = null;
     audio.srcObject = null;
+    releaseInput();
+    viewport.reset(); renderViewport();
   }
 
   function applyAudio() {
@@ -101,9 +105,11 @@
 
   video.addEventListener('playing', () => {
     setOverlay('');
+    syncViewport();
     TD.playing(video.videoWidth, video.videoHeight);
   });
-  video.addEventListener('resize', () => TD.playing(video.videoWidth, video.videoHeight));
+  video.addEventListener('resize', () => { syncViewport(); TD.playing(video.videoWidth, video.videoHeight); });
+  window.addEventListener('resize', syncViewport);
 
   window.tdRecv = (msg) => {
     if (msg.t !== 'rtc.ice') console.log(`viewer <- ${msg.t}${msg.session != null ? ` #${msg.session}` : ''}`);
@@ -148,34 +154,31 @@
 
   // ---- input ----
 
-  function drawn() {
-    const vw = video.videoWidth, vh = video.videoHeight;
-    if (!vw || !vh) return null;
-    const W = window.innerWidth, H = window.innerHeight;
-    const k = Math.min(W / vw, H / vh);
-    return { x: (W - vw * k) / 2, y: (H - vh * k) / 2, w: vw * k, h: vh * k };
+  function renderViewport() {
+    video.style.transform = viewport.transform();
+    fitButton.hidden = viewport.scale <= 1.001;
+    fitButton.textContent = `${Math.round(viewport.scale * 100)}% · Fit`;
   }
-  function norm(cx, cy, clamp) {
-    const r = drawn();
-    if (!r) return null;
-    let x = (cx - r.x) / r.w, y = (cy - r.y) / r.h;
-    if (!clamp && (x < 0 || x > 1 || y < 0 || y > 1)) return null;
-    x = Math.min(1, Math.max(0, x));
-    y = Math.min(1, Math.max(0, y));
-    return { x, y };
+  function syncViewport() {
+    if (viewport.resize(window.innerWidth, window.innerHeight, video.videoWidth, video.videoHeight)) renderViewport();
   }
-
-  // Zoom the PC application through its normal Ctrl+wheel shortcut, releasing Ctrl immediately.
+  function drawn() { syncViewport(); return viewport.rect(); }
+  function norm(cx, cy, clamp) { syncViewport(); return viewport.norm(cx, cy, clamp); }
+  // Continuous Android-only zoom, anchored to the content under the fingers. With a magnified
+  // view, moving both fingers pans the image too; none of these gestures send PC input.
   const hardwareKeys = new Set();
-  function zoom(steps) {
-    const ctrl = hardwareKeys.has('ControlLeft') || hardwareKeys.has('ControlRight');
-    if (!ctrl) send({ t: 'in.kd', code: 'ControlLeft' });
-    send({ t: 'in.wh', dx: 0, dy: -steps * 40 });
-    if (!ctrl) send({ t: 'in.ku', code: 'ControlLeft' });
+  const twoFingers = (a, b) => new TwoFinger(a, b,
+    (dx, dy) => send({ t: 'in.wh', dx, dy }),
+    (ratio, c, last) => { viewport.zoomAt(ratio, last.x, last.y, c.x, c.y); renderViewport(); },
+    window, viewport.scale > 1.001 ? 'zoom' : null);
+  for (const event of ['pointerdown', 'pointerup', 'pointermove', 'pointercancel', 'wheel']) {
+    fitButton.addEventListener(event, (e) => e.stopPropagation());
   }
-  const twoFingers = (a, b) => new TwoFinger(a, b, (dx, dy) => send({ t: 'in.wh', dx, dy }), zoom, window);
+  fitButton.addEventListener('click', (e) => {
+    e.preventDefault(); e.stopPropagation(); releaseInput(); viewport.reset(); renderViewport(); fitButton.blur();
+  });
 
-  // Touch: one finger is the Mac's pointer; two fingers scroll.
+  // One finger controls the PC; two fingers control the magnified view (or scroll while fitted).
   const touches = new Map(); // pointerId -> {x, y}
   let one = null; // {start, at, moved, dragging, timer, right}
   let two = null; // {x, y} average of the two fingers
@@ -183,13 +186,13 @@
 
   function fingerDown(e) {
     if (penNear || performance.now() - penAway < 500) return; // the hand holding the pen
+    if (!drawn()) return;
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (touchMode === 'pad') return padDown(e);
     if (touches.size === 1) {
       const p = norm(e.clientX, e.clientY, false);
       if (!p) return;
       one = { sx: e.clientX, sy: e.clientY, p, moved: false, dragging: false, right: false };
-      send({ t: 'in.mm', x: p.x, y: p.y });
       one.timer = setTimeout(() => { // held still: a right click
         if (!one || one.moved) return;
         one.right = true;
@@ -283,6 +286,7 @@
     const g = speed * (1 + Math.min(1, Math.hypot(dx, dy) / 30));
     cur.x = Math.min(1, Math.max(0, cur.x + (dx * g) / r.w));
     cur.y = Math.min(1, Math.max(0, cur.y + (dy * g) / r.h));
+    viewport.reveal(cur.x, cur.y); renderViewport();
     send({ t: 'in.mm', x: cur.x, y: cur.y });
   }
   function padUp(e, cancelled) {
@@ -363,9 +367,10 @@
     penSend('in.mu', e, b);
   }
   function penLeave() {
+    const wasNear = penNear || !!penLast;
     penOut();
     penNear = false;
-    penAway = performance.now();
+    if (wasNear) penAway = performance.now();
   }
   // Out of its range: the pen leaves the page (pointerleave doesn't bubble up to window).
   document.documentElement.addEventListener('pointerleave', (e) => { if (e.pointerType === 'pen') penLeave(); });
@@ -406,7 +411,9 @@
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
     const k = e.deltaMode === 1 ? 40 : 1;
-    send({ t: 'in.wh', dx: e.deltaX * k, dy: e.deltaY * k });
+    if (e.ctrlKey) {
+      syncViewport(); viewport.zoomAt(Math.exp(-e.deltaY * k / 300), e.clientX, e.clientY); renderViewport();
+    } else send({ t: 'in.wh', dx: e.deltaX * k, dy: e.deltaY * k });
   }, { passive: false });
 
   function releaseInput() {
@@ -429,12 +436,14 @@
   // The soft keyboard's Backspace or Enter on an empty field comes as a key, with no code sometimes.
   const keyCode = (e) => e.code || ({ Backspace: 'Backspace', Enter: 'Enter' })[e.key] || '';
   window.addEventListener('keydown', (e) => {
+    if (e.target?.closest?.('#viewControls')) return;
     if (!keyCode(e) || e.keyCode === 229 || e.isComposing) return; // composing on the soft keyboard: see 'input'
     e.preventDefault();
     hardwareKeys.add(keyCode(e));
     send({ t: 'in.kd', code: keyCode(e) });
   });
   window.addEventListener('keyup', (e) => {
+    if (e.target?.closest?.('#viewControls')) return;
     if (!keyCode(e) || e.keyCode === 229 || e.isComposing) return;
     e.preventDefault();
     hardwareKeys.delete(keyCode(e));
@@ -488,5 +497,6 @@
   });
 
   setOverlay('Waiting for the computer…');
+  syncViewport();
   TD.ready();
 })();

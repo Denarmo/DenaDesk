@@ -6,11 +6,11 @@
   'use strict';
   const sample = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, d: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) });
   return class TwoFinger {
-    constructor(a, b, scroll, zoom, frames = null) {
+    constructor(a, b, scroll, zoom, frames = null, initialMode = null) {
       this.start = this.last = sample(a, b);
       this.scroll = scroll; this.zoom = zoom;
       this.frames = frames; this.frame = 0; this.pending = null;
-      this.mode = null; this.moved = false; this.acc = 0;
+      this.mode = initialMode; this.moved = false;
     }
     queue(a, b) {
       if (!this.frames) return this.update(a, b);
@@ -38,10 +38,7 @@
         this.moved = true;
       }
       if (this.mode === 'zoom') {
-        // About ten percent per notch. Remainders carry between samples, so slow pinches work.
-        this.acc += Math.log(c.d / this.last.d);
-        const steps = Math.max(-8, Math.min(8, Math.trunc(this.acc / Math.log(1.1))));
-        if (steps) { this.acc -= steps * Math.log(1.1); this.zoom(steps); }
+        this.zoom(c.d / this.last.d, c, this.last);
       } else this.scroll((this.last.x - c.x) * 2, (this.last.y - c.y) * 2);
       this.last = c;
     }

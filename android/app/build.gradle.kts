@@ -10,8 +10,8 @@ android {
         applicationId = "com.denarmo.denadesk"
         minSdk = 29 // Android 10: wireless debugging needs 11, everything else works from 10
         targetSdk = 36
-        versionCode = 20803
-        versionName = "2.8.3"
+        versionCode = 20804
+        versionName = "2.8.4"
     }
     // Both variants use the same identity and release key. Standard omits the
     // notification listener, SMS and Accessibility services. Full includes them;
@@ -86,7 +86,7 @@ val writeBuildInfo = tasks.register("writeBuildInfo") {
         file.writeText(groovy.json.JsonOutput.toJson(mapOf(
             "sourceRepository" to "https://github.com/Denarmo/DuoDesk",
             "sourceCommit" to git("rev-parse", "HEAD"),
-            "version" to "2.8.3"
+            "version" to "2.8.4"
         )))
     }
 }
