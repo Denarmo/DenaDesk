@@ -62,7 +62,13 @@ jobs:
 
       - name: Install dependencies
         working-directory: windows
-        run: npm install
+        run: npm ci
+
+      - name: Check security defaults
+        working-directory: windows
+        run: |
+          node --test test/security.test.js
+          powershell -NoProfile -File test/firewall-policy.ps1
 
       # The helper builds with .NET Framework's csc.exe, which the runner has. One AnyCPU helper
       # serves both installers.

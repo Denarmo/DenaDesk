@@ -12,6 +12,7 @@ const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const builder = require('electron-builder');
+const crypto = require('crypto');
 const { fetchAdb } = require('../scripts/fetch-adb');
 
 const WIN = path.join(__dirname, '..');
@@ -48,6 +49,14 @@ function copyDeps(names, seen = new Set()) {
 }
 
 async function main() {
+  const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+  if (execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' }).trim()) {
+    throw new Error('Commit reviewed changes before packaging, so the installer has an exact source revision');
+  }
+  const scrcpy = path.join(ROOT, 'mac', 'vendor', 'scrcpy-server');
+  if (crypto.createHash('sha256').update(fs.readFileSync(scrcpy)).digest('hex') !== '764eb6f79811d5211fe9df341120882ba9994c7a61b897d7bf3fb662e53bc536') {
+    throw new Error('scrcpy-server checksum mismatch');
+  }
   // The helper needs Windows' C# compiler; elsewhere (a Mac) the installer reuses the .exe already
   // in windows-helper/bin/, e.g. one taken from the last release.
   if (process.platform === 'win32') {
@@ -60,6 +69,7 @@ async function main() {
   }
 
   console.log('Staging…');
+  if (path.resolve(STAGE) !== path.join(path.resolve(WIN), 'dist', 'stage')) throw new Error('Unexpected staging path');
   fs.rmSync(STAGE, { recursive: true, force: true });
   copy(WIN, path.join(STAGE, 'windows'), (name) => !SKIP.has(name));
   // Every shared module (a list missed new ones: the app then failed on its first require), and the
@@ -75,7 +85,7 @@ async function main() {
   if (fs.existsSync(multiHelper)) copy(multiHelper, path.join(STAGE, 'windows-helper', 'bin', 'macshare-winhelper-multi.exe'));
   else console.log('note: no windows-helper/bin/macshare-winhelper-multi.exe — Multi-device uses the one-to-one helper (one edge)');
   // The calls' sound on this PC (callaudio.js): its .exe, its signed package and that certificate.
-  for (const f of ['macshare-calls.exe', 'twindesk-calls.msix', 'twindesk-calls.cer']) {
+  for (const f of ['macshare-calls.exe', 'twindesk-calls.msix']) {
     const from = path.join(ROOT, 'windows-helper', 'bin', f);
     if (fs.existsSync(from)) copy(from, path.join(STAGE, 'windows-helper', 'bin', f));
     else console.log('note: no windows-helper/bin/' + f + ' — calls won’t play on the PC (build the helper on Windows)');
@@ -105,6 +115,11 @@ async function main() {
     if (fs.existsSync(path.join(ROOT, f))) copy(path.join(ROOT, f), path.join(STAGE, f));
   }
   copyDeps(Object.keys(pkg.dependencies || {}));
+  fs.writeFileSync(path.join(STAGE, 'build-info.json'), JSON.stringify({
+    sourceRepository: 'https://github.com/Denarmo/DuoDesk', sourceCommit,
+    version: pkg.version, electronVersion,
+    packageLockSha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(WIN, 'package-lock.json'))).digest('hex'),
+  }, null, 2));
   fs.writeFileSync(path.join(STAGE, 'package.json'), JSON.stringify({
     name: pkg.name, productName: pkg.productName, version: pkg.version, description: pkg.description,
     license: pkg.license, author: '0xCodez', homepage: 'https://github.com/0xCodez/DuoDesk', main: 'windows/main.js', dependencies: pkg.dependencies,
@@ -147,7 +162,7 @@ async function pack(arch) {
         shortcutName: 'DuoDesk',
         createDesktopShortcut: true,
         createStartMenuShortcut: true,
-        runAfterFinish: true,
+        runAfterFinish: false,
         artifactName: name,
       },
     },

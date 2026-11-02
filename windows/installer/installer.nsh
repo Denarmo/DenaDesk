@@ -1,7 +1,8 @@
 ; TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 ; NSIS hooks for electron-builder (installer/build.js). The installer runs elevated (per-machine),
-; so it adds the same firewall rules the app's Fix button would (firewall.js), for every network
-; profile so a standard account on a Public network never needs Fix; the uninstaller removes them. A helper (or our adb server) left running would lock its .exe, so it is stopped first.
+; so it adds the same Private/Domain LocalSubnet allow rules as the app's Fix button.
+; Public networks, administrator blocks and certificate stores are not changed.
+; A helper left running would lock its .exe, so it is stopped first.
 ; Stopped while it drove another computer, its pointer would stay blank (HideCursor.cs): the
 ; user's cursors are reloaded after it (SPI_SETCURSORS, SPIF_SENDCHANGE).
 
@@ -36,31 +37,9 @@
 !macroend
 
 !macro customInstall
-  ; Renamed from MacShare: its rules (and its Program Files folder's exe) go.
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="MacShare"'
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="MacShare (TCP 47800)"'
-  ; Renamed from TwinDesk (TwinDesk.exe) to DuoDesk: the TwinDesk-named rules go and DuoDesk's are
-  ; added (firewall-fix.ps1 removes both names before adding its own).
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="TwinDesk" program="$INSTDIR\TwinDesk.exe"'
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="TwinDesk" program="$INSTDIR\DuoDesk.exe"'
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="TwinDesk (TCP 47800)"'
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="TwinDesk (adb)"'
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk" program="$INSTDIR\DuoDesk.exe"'
-  nsExec::Exec 'netsh advfirewall firewall add rule name="DuoDesk" dir=in action=allow program="$INSTDIR\DuoDesk.exe" profile=any enable=yes'
-  ; This PC also listens (PC ↔ PC host), so the port gets its own rule.
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk (TCP 47800)"'
-  nsExec::Exec 'netsh advfirewall firewall add rule name="DuoDesk (TCP 47800)" dir=in action=allow protocol=TCP localport=47800 program="$INSTDIR\DuoDesk.exe" profile=any enable=yes'
-  ; A phone: adb finds its wireless debugging over mDNS (phone-bridge.js).
-  nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk (adb)"'
-  nsExec::Exec 'netsh advfirewall firewall add rule name="DuoDesk (adb)" dir=in action=allow program="$INSTDIR\resources\app\windows\vendor\adb\adb.exe" profile=any enable=yes'
-  ; The phone as a drive goes through Windows' WebDAV client (phonedrive.js), which refuses files
-  ; over 50 MB unless this says otherwise: 4 GB, its maximum (read when WebClient next starts).
-  nsExec::Exec 'reg add HKLM\SYSTEM\CurrentControlSet\Services\WebClient\Parameters /v FileSizeLimitInBytes /t REG_DWORD /d 4294967295 /f'
-  ; Calls on this PC (callaudio.js): Windows adds the calls' sparse package (an identity for
-  ; macshare-calls.exe) only when it trusts its certificate, self-signed: trusted for app packages
-  ; only (TrustedPeople, not a root). The app registers the package per user when Calls needs it.
-  IfFileExists "$INSTDIR\resources\app\windows-helper\bin\twindesk-calls.cer" 0 +2
-  nsExec::Exec 'certutil -f -addstore TrustedPeople "$INSTDIR\resources\app\windows-helper\bin\twindesk-calls.cer"'
+  ; Limit inbound app/adb access to the local subnet on Private/Domain profiles.
+  ; Preserve network classifications, block rules, WebDAV limits and certificate stores.
+  nsExec::Exec '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$INSTDIR\resources\app\windows\scripts\firewall-fix.ps1" -Exe "$INSTDIR\DuoDesk.exe"'
 !macroend
 
 !macro customUnInstall
@@ -75,7 +54,6 @@
   ${endIf}
   ; Calls on this PC: its package (this user's) and its certificate.
   nsExec::Exec 'powershell -NoProfile -NonInteractive -Command "Get-AppxPackage -Name TwinDesk.Calls | Remove-AppxPackage"'
-  nsExec::Exec 'certutil -delstore TrustedPeople TwinDesk'
   nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk" program="$INSTDIR\DuoDesk.exe"'
   nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk (TCP 47800)"'
   nsExec::Exec 'netsh advfirewall firewall delete rule name="DuoDesk (adb)"'

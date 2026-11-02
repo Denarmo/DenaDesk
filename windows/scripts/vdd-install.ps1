@@ -23,11 +23,9 @@ try {
   $pkg = Join-Path $dir 'VirtualDisplayDriver'
   $inf = Join-Path $pkg 'MttVDD.inf'
 
-  # Trust the publisher (only after Windows says the catalog signature is valid).
+  # Validate the publisher, leaving Windows' certificate trust policy unchanged.
   $sig = Get-AuthenticodeSignature (Join-Path $pkg 'mttvdd.cat')
   if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'CN=SignPath Foundation') { throw 'the driver signature is not valid' }
-  $store = New-Object Security.Cryptography.X509Certificates.X509Store('TrustedPublisher', 'LocalMachine')
-  $store.Open('ReadWrite'); $store.Add($sig.SignerCertificate); $store.Close()
 
   # The driver's settings folder: keep an existing one; this user may edit it (resolutions).
   $cfg = 'C:\VirtualDisplayDriver'

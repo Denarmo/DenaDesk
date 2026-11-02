@@ -24,7 +24,6 @@ const ROOT = path.join(__dirname, '..'); // the package's external location: its
 const BIN = path.join(ROOT, 'windows-helper', 'bin');
 const EXE = path.join(BIN, 'macshare-calls.exe');
 const MSIX = path.join(BIN, 'twindesk-calls.msix');
-const CER = path.join(BIN, 'twindesk-calls.cer');
 const PKG = 'TwinDesk.Calls';
 const PKG_VERSION = '1.0.2.0'; // as windows-helper/calls/AppxManifest.xml (1.0.2.0: shown as DuoDesk, not TwinDesk)
 const RETRY_MS = [5000, 15000, 30000, 60000, 120000];
@@ -36,7 +35,7 @@ const parse = (s) => { try { return JSON.parse(String(s).trim().split('\n').pop(
 // Why Windows wouldn't add the package, in words.
 function addError(e) {
   if (/0x800B0109|0x800B010A|trust|certificate/i.test(e)) {
-    return `Windows doesn’t trust DuoDesk’s calls package. Reinstall DuoDesk, or (a dev build) as administrator: certutil -addstore TrustedPeople "${CER}"`;
+    return 'Windows does not trust this calls package. Use a package signed by an already trusted publisher; do not import a self-signed certificate.';
   }
   if (/0x80073CFF|sideload|developer/i.test(e)) return 'Windows won’t add DuoDesk’s calls package: allow apps from any source in Settings › System › For developers';
   return `DuoDesk’s calls package: ${String(e).slice(0, 140)}`;
@@ -133,7 +132,7 @@ class CallAudio extends EventEmitter {
 
   async _launch(gen, force) {
     if (!fs.existsSync(EXE) || !fs.existsSync(MSIX)) {
-      this.error = 'macshare-calls is missing (npm run build:helper)';
+      this.error = 'Bluetooth call audio needs a trusted signed calls package, which is not included in this build. Call controls still work with sound on the phone.';
       return this._set('unavailable');
     }
     this._set('starting');

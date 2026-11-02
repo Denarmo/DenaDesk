@@ -103,10 +103,13 @@
       const errText = el('span', { class: 'sp-err-text' });
       const retry = UI.button('Try again', () => load(true), 'small');
       const err = el('div', { class: 'note warn sp-err', hidden: true }, [errText, retry]);
+      const loadService = UI.button('Load tip service', () => { consent.hidden = true; load(false); }, 'small');
+      const consent = UI.card('External tip service', [el('p', { text: 'Loading contacts beyond-media.ai and shares your IP address and normal connection metadata. Starting a tip sends the amount and any name or message you enter, then opens checkout in your browser.' }), loadService]);
       const skeleton = el('div', { class: 'card sp-skeleton keep-on', attrs: { 'aria-hidden': 'true' } }, [el('i'), el('i'), el('i')]);
 
       body.classList.add('sp-page', 'sp-tip');
-      body.append(err, skeleton, profile, formWrap, supWrap);
+      body.append(consent, err, skeleton, profile, formWrap, supWrap);
+      skeleton.hidden = true;
       profile.hidden = formWrap.hidden = supWrap.hidden = true;
 
       const min = () => (prof ? prof.min : 1);
@@ -178,7 +181,7 @@
         retry.disabled = true;
         if (!loaded) skeleton.hidden = false;
         emit('tip', { state: loaded ? 'ready' : 'loading' });
-        call('supportProfile', { force: !!force }).then((r) => {
+        call('supportProfile', { consent: true, force: !!force }).then((r) => {
           loading = false;
           retry.disabled = false;
           if (r && r.profile) fill(r);
@@ -196,7 +199,7 @@
         busy = true;
         sync();
         setStatus(status, 'Opening Stripe…', 'busy');
-        call('supportTip', { amount, monthly, name: nameIn.value, message: noteIn.value }).then((r) => {
+        call('supportTip', { consent: true, amount, monthly, name: nameIn.value, message: noteIn.value }).then((r) => {
           busy = false;
           if (r && r.ok) {
             setStatus(status, `Opened ${r.opened || 'Stripe'} in your browser. Thank you!`, 'good');
@@ -209,7 +212,7 @@
         });
       }
 
-      return () => { if (!loaded && !loading) load(false); };
+      return () => {}; // Loading requires the explicit button above.
     },
   });
 

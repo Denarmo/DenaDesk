@@ -1,8 +1,8 @@
 {
   "name": "macshare-mac",
   "productName": "DuoDesk",
-  "version": "2.5.0",
-  "description": "DuoDesk — the Mac side: pairing, secure link, screen sharing and shared mouse/keyboard with a Windows PC.",
+  "version": "2.5.1-security.1",
+  "description": "DuoDesk \u00e2\u20ac\u201d the Mac side: pairing, secure link, screen sharing and shared mouse/keyboard with a Windows PC.",
   "license": "GPL-3.0",
   "author": "0xCodez (https://github.com/0xCodez)",
   "homepage": "https://github.com/0xCodez/DuoDesk",
@@ -26,10 +26,10 @@
     "dmg:intel": "./build-app.sh x64 && ./build-dmg.sh"
   },
   "dependencies": {
-    "ws": "^8.22.0"
+    "ws": "8.22.0"
   },
   "devDependencies": {
-    "@electron/packager": "^20.3.0",
-    "electron": "^44.7.0"
+    "@electron/packager": "20.3.0",
+    "electron": "45.2.1"
   }
 }

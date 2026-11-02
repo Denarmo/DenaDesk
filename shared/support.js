@@ -147,6 +147,7 @@ function shape(j, avatar) {
 }
 
 async function profile(opts) {
+  if (!opts || opts.consent !== true) return { ok: false, error: 'Choose Load tip service to contact beyond-media.ai.' };
   const force = !!(opts && opts.force);
   if (!force && cache && Date.now() - cache.at < TTL) return Object.assign({ ok: true, cached: true }, cache.value);
   if (inflight) return inflight;
@@ -181,6 +182,7 @@ function checkTip(o) {
 
 let lastTip = 0;
 async function createTip(o) {
+  if (!o || o.consent !== true) return { ok: false, error: 'Starting a tip requires your consent to contact the tip service.' };
   const t = checkTip(o);
   if (t.error) return { ok: false, error: t.error };
   if (Date.now() - lastTip < 2500) return { ok: false, error: 'One moment…' };
@@ -298,8 +300,8 @@ function ipc(ipcMain) {
     try { return await fn(arg && typeof arg === 'object' ? arg : {}); } catch (e) { console.error('support ' + name + ':', e); return { ok: false, error: 'Something went wrong' }; }
   });
   handle('support:info', () => Object.assign({ contact: CONTACT, issues: 'github.com/0xCodez/DuoDesk/issues' }, info()));
-  handle('support:profile', (o) => profile({ force: !!o.force }));
-  handle('support:tip', (o) => startTip({ amount: o.amount, monthly: o.monthly, name: o.name, message: o.message }));
+  handle('support:profile', (o) => profile({ consent: o.consent === true, force: !!o.force }));
+  handle('support:tip', (o) => startTip({ consent: o.consent === true, amount: o.amount, monthly: o.monthly, name: o.name, message: o.message }));
   handle('support:feedback', (o) => feedback(o));
   // What Send would put in the email (the page shows it under the info box), without the checks.
   handle('support:preview', (o) => Object.assign({ ok: true, to: CONTACT }, compose({

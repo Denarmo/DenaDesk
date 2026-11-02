@@ -1,22 +1,17 @@
 # TwinDesk - Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-# firewall.js Fix, elevated: the Public networks listed made Private, our block rules removed
-# (-Blocked), DuoDesk's allow rules for Exe added again (the program, and port 47800 for PC <-> PC).
-param(
-  [Parameter(Mandatory = $true)][string]$Exe,
-  [string]$PublicIndexes = '',
-  [switch]$Blocked
-)
-$ErrorActionPreference = 'Continue'
-foreach ($i in @($PublicIndexes -split ',' | Where-Object { $_ -match '^\d+$' })) { Set-NetConnectionProfile -InterfaceIndex ([int]$i) -NetworkCategory Private }
-if ($Blocked) {
-  $b = @(Get-NetFirewallApplicationFilter | Where-Object { $_.Program -eq $Exe } | Get-NetFirewallRule | Where-Object { [string]$_.Action -eq 'Block' -and [string]$_.Direction -eq 'Inbound' })
-  if ($b.Count -gt 0) { $b | Remove-NetFirewallRule }
+# Repair only this app's allow rules. Preserve network classifications and blocks.
+param([Parameter(Mandatory = $true)][string]$Exe)
+$ErrorActionPreference = 'Stop'
+if (-not (Test-Path -LiteralPath $Exe -PathType Leaf)) { throw 'The application executable was not found' }
+$Exe = (Get-Item -LiteralPath $Exe).FullName
+$adb = Join-Path (Split-Path -Parent $Exe) 'resources\app\windows\vendor\adb\adb.exe'
+$programs = @($Exe, $Exe.Replace('\', '\\'), $adb)
+$names = @('DuoDesk', 'DuoDesk (TCP 47800)', 'DuoDesk (adb)', 'TwinDesk', 'TwinDesk (TCP 47800)', 'TwinDesk (adb)')
+Get-NetFirewallApplicationFilter | Where-Object { $programs -contains $_.Program } |
+  Get-NetFirewallRule | Where-Object { $names -contains $_.DisplayName -and [string]$_.Action -eq 'Allow' } |
+  Remove-NetFirewallRule
+New-NetFirewallRule -DisplayName 'DuoDesk' -Group 'DuoDesk' -Direction Inbound -Action Allow -Program $Exe -Profile Private,Domain -RemoteAddress LocalSubnet | Out-Null
+New-NetFirewallRule -DisplayName 'DuoDesk (TCP 47800)' -Group 'DuoDesk' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 47800 -Program $Exe -Profile Private,Domain -RemoteAddress LocalSubnet | Out-Null
+if (Test-Path -LiteralPath $adb -PathType Leaf) {
+  New-NetFirewallRule -DisplayName 'DuoDesk (adb)' -Group 'DuoDesk' -Direction Inbound -Action Allow -Program $adb -Profile Private,Domain -RemoteAddress LocalSubnet | Out-Null
 }
-netsh advfirewall firewall delete rule name="MacShare" | Out-Null
-netsh advfirewall firewall delete rule name="MacShare (TCP 47800)" | Out-Null
-# Our rules for this exe, also those an older Fix added with its path's backslashes doubled (they
-# never matched the program), and those named TwinDesk by older versions. Other installs' rules stay.
-$progs = @($Exe, $Exe.Replace('\', '\\'))
-Get-NetFirewallApplicationFilter | Where-Object { $progs -contains $_.Program } | Get-NetFirewallRule | Where-Object { $_.DisplayName -like 'DuoDesk*' -or $_.DisplayName -like 'TwinDesk*' } | Remove-NetFirewallRule
-New-NetFirewallRule -DisplayName 'DuoDesk' -Direction Inbound -Action Allow -Program $Exe -Profile Any | Out-Null
-New-NetFirewallRule -DisplayName 'DuoDesk (TCP 47800)' -Direction Inbound -Action Allow -Protocol TCP -LocalPort 47800 -Program $Exe -Profile Any | Out-Null

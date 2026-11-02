@@ -1,7 +1,7 @@
 {
   "name": "macshare-linux",
   "productName": "DuoDesk",
-  "version": "2.5.0",
+  "version": "2.5.1-security.1",
   "description": "DuoDesk for Linux: share mouse, keyboard, clipboard, files, sound and screens with a Mac, a PC or another Linux computer.",
   "license": "GPL-3.0",
   "author": "0xCodez (https://github.com/0xCodez)",
@@ -23,10 +23,10 @@
     "dist": "node installer/build.js"
   },
   "dependencies": {
-    "ws": "^8.18.0"
+    "ws": "8.22.0"
   },
   "devDependencies": {
-    "electron": "^38.0.0",
-    "electron-builder": "26.0.12"
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
   }
 }

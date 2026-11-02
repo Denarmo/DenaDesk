@@ -189,25 +189,14 @@ class Wired extends EventEmitter {
     throw new Error(`${serial}: adb reverse ${port} failed: ${(r.err || r.out).trim()}`);
   }
 
-  // TCP mode on, for a direct Wi-Fi link later (Android keeps wireless debugging off there): it
-  // stays on until the phone restarts. Switching it on restarts adbd, which ends every adb reverse,
-  // so it's done before the session comes onto the cable, not under it.
-  async _tcpip(serial) {
-    const prop = await this.adb.shell(serial, 'getprop service.adb.tcp.port', { timeout: 4000 });
-    if (prop.code || prop.out.trim() === String(TCPIP_PORT)) return;
-    console.log(`[wired] ${serial}: adb's TCP mode on (${TCPIP_PORT})`);
-    await this.adb.run(['-s', serial, 'tcpip', String(TCPIP_PORT)], { timeout: 8000 });
-    await new Promise((r) => setTimeout(r, 1500)); // adbd goes away, then comes back on the cable
-    await this.adb.run(['-s', serial, 'wait-for-device'], { timeout: 15000 });
-  }
-
+  // USB pairing does not enable a network debugging listener on the phone.
   async _invite(serial) {
     const has = await this.adb.shell(serial, `pm path ${APP_ID}`, { timeout: 5000 });
     if (!/package:/.test(has.out)) {
       console.log(`[wired] ${serial}: DuoDesk is not installed on it (pm path said: ${(has.out || has.err || 'nothing').trim().slice(0, 120)}): nothing to connect`);
       return;
     }
-    await this._tcpip(serial);
+
     const port = await this._reverse(serial, this.raw.port);
     this.phoneTurn = await this._reverse(serial, TURN_PORT);
     console.log(`[wired] ${serial}: adb reverse done (server port ${port}, relay port ${this.phoneTurn})`);

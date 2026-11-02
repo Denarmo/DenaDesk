@@ -2,8 +2,7 @@
 // Everything this computer does to the phone through wireless debugging (adb.js + scrcpy.js), while a
 // phone is the peer:
 //   setup   find the phone's adb (mDNS), pair once with the code from Developer options, connect,
-//           then grant the TwinDesk app what it can't ask for itself (switching wireless debugging
-//           on by itself next time, notification access, the pointer overlay, background running).
+//           then leave Android permissions and debugging expiry under the phone user’s control.
 //   control one control-only scrcpy session: this computer's mouse and keyboard across the screen edge
 //           (Kvm drives the phone through us: kvm.take → we answer kvm.accept, inject the input at
 //           positions we keep, and send kvm.home when the pointer comes back over the edge), and
@@ -75,7 +74,6 @@ class PhoneBridge extends EventEmitter {
     this.keys = new KeyState();
     this.views = null; // phoneview.js sets this
     this.setupDone = new Set(); // serials granted this run
-    this.tcpipDone = new Set(); // serials whose TCP mode was checked this run
     this.lastPort = new Map(); // phone address -> the wireless debugging port that last worked
     this.misses = 0; // tries in a row that found no way in
     // Phones (by id) adb has reached before. Android keeps the computer's key (Settings lists it),
@@ -263,7 +261,7 @@ class PhoneBridge extends EventEmitter {
       this._known(true);
       this.serial = ready;
       await this._setup(ready);
-      if (await this._tcpip(ready)) return; // adbd restarts: found again on the next poll
+
       await this._checkInput(ready);
       return this._startControl();
     }
@@ -411,40 +409,14 @@ class PhoneBridge extends EventEmitter {
 
   async _setup(serial) {
     if (this.setupDone.has(serial)) return;
-    this._set('connecting', 'Setting up the phone…');
-    const cmds = [
-      `pm grant ${APP_ID} android.permission.WRITE_SECURE_SETTINGS`,
-      // Android forgets a computer's pairing after 7 days without a connection; 0 keeps it.
-      'settings put global adb_allowed_connection_time 0',
-      `pm grant ${APP_ID} android.permission.POST_NOTIFICATIONS`,
-      `appops set ${APP_ID} SYSTEM_ALERT_WINDOW allow`,
-      `cmd notification allow_listener ${APP_ID}/${APP_ID}.NotifListener`,
-      `dumpsys deviceidle whitelist +${APP_ID}`,
-      `appops set ${APP_ID} RUN_ANY_IN_BACKGROUND allow`,
-      // Overview's most used apps, auto-rotate and Do not disturb from the computer (DevCtl.kt).
-      `appops set ${APP_ID} GET_USAGE_STATS allow`,
-      `appops set ${APP_ID} WRITE_SETTINGS allow`,
-      `cmd notification allow_dnd ${APP_ID}`,
-    ];
-    if (this.getSettings().phone && this.getSettings().phone.wallpaper !== false) cmds.push(`appops set ${APP_ID} MANAGE_EXTERNAL_STORAGE allow`);
-    for (const c of cmds) await this.adb.shell(serial, c, { timeout: 8000 });
+    // Phone permissions are granted by the user in Android's own settings.
+    // Connecting must not grant notification/storage/settings access, exempt the
+    // app from battery policy, or disable Android's ADB authorization expiry.
     this.setupDone.add(serial);
     setTimeout(() => this.server.sendToClient({ t: T.PHONE_APPS_LIST }), 500);
   }
 
-  // TCP mode on (once per phone restart), for a direct Wi-Fi link later. True: adbd restarts now.
-  // On the USB cable wired.js has done it before the session moved onto it (here it would restart adbd under it).
-  async _tcpip(serial) {
-    if (this.tcpipDone.has(serial) || !serial.includes(':')) return false;
-    this.tcpipDone.add(serial);
-    const r = await this.adb.shell(serial, 'getprop service.adb.tcp.port', { timeout: 4000 });
-    if (r.out.trim() === String(TCPIP_PORT)) return false;
-    this._set('connecting', 'Setting up the phone for Wi-Fi Direct…');
-    await this.adb.run(['-s', serial, 'tcpip', String(TCPIP_PORT)], { timeout: 8000 });
-    setTimeout(() => this._kick(), 2000);
-    return true;
-  }
-
+  // Preserve the phone's debugging configuration; never activate legacy TCP mode.
   async _startControl() {
     if (this.control && !this.control.closed) return this._set('ready');
     this._set('connecting', 'Connecting to the phone’s screen…');
@@ -478,7 +450,7 @@ class PhoneBridge extends EventEmitter {
   }
 
   // Install the full build over the phone's TwinDesk: settings and pairing stay (same app, same
-  // signature). The app restarts, so we grant notification access, open it and invite it back.
+  // signature). Open it and invite it back; the user grants notification access on the phone.
   async installFull() {
     const apk = fullApk();
     const c = this.server.current;
@@ -494,9 +466,8 @@ class PhoneBridge extends EventEmitter {
         : (text.split('\n').pop() || 'no answer');
       return this._install('failed', `Couldn’t install (${why})`);
     }
-    await this.adb.shell(serial, `cmd notification allow_listener ${APP_ID}/${APP_ID}.NotifListener`, { timeout: 8000 });
     await this.adb.shell(serial, `am start -n ${APP_ID}/.MainActivity`, { timeout: 8000 });
-    this._install('done', 'Installed. The phone’s notifications can show here now.');
+    this._install('done', 'Installed. Open DuoDesk on the phone to choose its permissions.');
     setTimeout(() => this.phone.connect(id), 3000); // the app restarted: ask it to come back
   }
 

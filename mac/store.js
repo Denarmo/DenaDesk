@@ -88,7 +88,7 @@ const DEFAULT_SETTINGS = {
   // (everything allowed, or skipped), so it never takes over the window again (General shows the rest).
   ui: { tab: 'overview', setupSkipped: '', setupDone: false },
   app: { openAtLogin: false, keepAwake: true, hud: true }, // hud = popup when switching computers
-  updates: { auto: true, notified: '', skipped: '' }, // check GitHub for new releases; notified = last version announced, skipped = version ignored
+  updates: { auto: false, notified: '', skipped: '' }, // check GitHub for new releases; notified = last version announced, skipped = version ignored
   audio: { send: false, receive: false, muteLocal: false, volume: 1, phoneMedia: false }, // Independent, both ways; phoneMedia: a phone's media controls on Overview
   rezume: require('../shared/rezume.js').DEFAULTS, // ReZume tab (shared/rezume.js): off until turned on; what goes, which ways, where it shows
   remote: { allow: false }, // Remote tab (shared/phone-remote.js): the phone's Remote page moves the pointer and types here

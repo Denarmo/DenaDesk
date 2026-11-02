@@ -488,10 +488,15 @@ Accessibility come with the full app, which the computer installs once over wire
 
 ## Privacy
 
-DuoDesk only talks to devices you've paired with, directly over your own network, Bluetooth, a
-direct Wi-Fi link or a cable. There are no accounts, no telemetry and no cloud relay. Your calls,
-texts, photos and camera go straight from the phone to your computer and nowhere else. The only
-internet request is an update check against GitHub's public releases, which you can turn off.
+Device-sharing traffic goes directly between paired devices over your network, Bluetooth,
+a direct Wi-Fi link or a cable, with no account, telemetry or cloud relay. Calls, texts, photos
+and camera streams are not sent to the support service. Optional update checks contact this
+fork's GitHub releases and are off by default on a fresh install. The Tip page contacts
+beyond-media.ai only after you click Load tip service; starting a tip opens Stripe Checkout
+in your browser. Feedback opens your mail app or a pre-filled GitHub issue, or copies text.
+Those services receive normal connection metadata and any information you choose to submit.
+
+This fork's security defaults and build limitations are documented in [SECURITY.md](SECURITY.md).
 
 <br>
 

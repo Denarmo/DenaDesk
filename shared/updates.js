@@ -10,7 +10,7 @@
 //   notify(title, body, onClick) once per new version; open() shows the download in the browser.
 'use strict';
 
-const REPO = '0xCodez/DuoDesk';
+const REPO = 'Denarmo/DuoDesk';
 const API = `https://api.github.com/repos/${REPO}/releases/latest`;
 const RELEASES = `https://github.com/${REPO}/releases`;
 const FIRST_DELAY = 15 * 1000;
@@ -192,7 +192,7 @@ class Updates {
 
   get cfg() {
     const s = this.getSettings();
-    if (!s.updates || typeof s.updates !== 'object') s.updates = { auto: true, notified: '', skipped: '' };
+    if (!s.updates || typeof s.updates !== 'object') s.updates = { auto: false, notified: '', skipped: '' };
     if (typeof s.updates.skipped !== 'string') s.updates.skipped = '';
     return s.updates;
   }
@@ -203,7 +203,7 @@ class Updates {
     clearInterval(this.timer);
     this.first = null;
     this.timer = null;
-    if (this.cfg.auto === false) return;
+    if (this.cfg.auto !== true) return;
     this.first = setTimeout(() => this.check(false), FIRST_DELAY);
     this.timer = setInterval(() => this.check(false), EVERY);
     if (this.timer.unref) this.timer.unref();

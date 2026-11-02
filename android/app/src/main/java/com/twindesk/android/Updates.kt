@@ -3,7 +3,7 @@
 // its tag with this app's version and picks this build's APK (the full one for DuoDesk with
 // notifications, the standard one otherwise). Nothing is installed here; Download opens the APK (or
 // the release page) in the browser. Only DuoDesk-named APKs count: REPO is DuoDesk's own
-// (0xCodez/DuoDesk); upstream TwinDesk's TwinDesk-*.apk are never offered, and a release without
+// (Denarmo/DuoDesk); upstream TwinDesk's TwinDesk-*.apk are never offered, and a release without
 // any DuoDesk file is not an update.
 //   prefs: updates.auto (check 15 s after start and every 6 hours), updates.notified (the last
 //   version a notification announced, so each one is told once).
@@ -31,7 +31,7 @@ class Updates(private val core: Core) {
 
     val current: String get() = BuildConfig.VERSION_NAME
     var auto: Boolean
-        get() = core.store.flag("updates.auto", true)
+        get() = core.store.flag("updates.auto", false)
         set(on) { core.store.setFlag("updates.auto", on); start(); core.changed() }
 
     private val http by lazy { OkHttpClient.Builder().callTimeout(20, TimeUnit.SECONDS).build() }
@@ -93,7 +93,7 @@ class Updates(private val core: Core) {
     }
 
     companion object {
-        private const val REPO = "0xCodez/DuoDesk"
+        private const val REPO = "Denarmo/DuoDesk"
         private const val API = "https://api.github.com/repos/$REPO/releases/latest"
         const val RELEASES = "https://github.com/$REPO/releases"
         private const val FIRST_DELAY = 15_000L
