@@ -2,7 +2,7 @@
 rem TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 rem Builds bin\macshare-winhelper.exe with the .NET Framework C# compiler (C# 5 only).
 rem AnyCPU: 64-bit on x64 PCs, native on Windows 11 on ARM (it has .NET Framework 4.8.1).
-rem Works while DuoDesk is running: a running .exe can be renamed, so the new build is swapped
+rem Works while DenaDesk is running: a running .exe can be renamed, so the new build is swapped
 rem in and the app picks it up the next time it starts the helper.
 setlocal
 set CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe

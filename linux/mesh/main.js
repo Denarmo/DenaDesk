@@ -80,7 +80,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   Menu.setApplicationMenu(null); // its accelerators would steal keys meant for the other computer
-  // Starting TwinDesk again shows the window (no tray on some desktops); a Mac app's launcher starts
+  // Starting DenaDesk again shows the window (no tray on some desktops); a Mac app's launcher starts
   // "twindesk --mac-app=<id>": open that app instead; the file managers' Send to, --send-files.
   app.on('second-instance', (_e, argv) => {
     if (sendTo && sendTo.handle(argv)) return;
@@ -1079,9 +1079,9 @@ function createMainWindow() {
     y: b.y,
     minWidth: 720,
     minHeight: 480,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
-    backgroundColor: '#0a0a0c', // DuoDesk's Aurora look is dark only
+    backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
@@ -1134,10 +1134,10 @@ function createTray() {
     img.addRepresentation({ scaleFactor: 2, buffer: nativeImage.createFromPath(path.join(__dirname, '..', 'assets', 'tray@2x.png')).toPNG() });
     tray = new Tray(img);
   } catch (e) {
-    console.error('[tray]', e.message); // no tray on this desktop: start DuoDesk again to show the window
+    console.error('[tray]', e.message); // no tray on this desktop: start DenaDesk again to show the window
     return;
   }
-  tray.setToolTip('DuoDesk');
+  tray.setToolTip('DenaDesk');
   tray.on('click', showMain);
   updateTray(buildState());
 }
@@ -1147,7 +1147,7 @@ function createTray() {
 let trayKey = '';
 function updateTray(s) {
   if (!tray) return;
-  tray.setToolTip('DuoDesk: ' + statusLine(s));
+  tray.setToolTip('DenaDesk: ' + statusLine(s));
   const connected = s.link.state === 'connected';
   const name = connected && s.peer ? s.peer.name : '';
   const k = settings.kvm;
@@ -1197,7 +1197,7 @@ function updateTray(s) {
     } })),
     byAddress: () => goTab('connection'),
     lookAgain: () => discovery.probe(),
-    update: s.updates && s.updates.available ? { label: 'Download DuoDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
+    update: s.updates && s.updates.available ? { label: 'Download DenaDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
     open: showMain,
     log: () => require('../../shared/applog.js').open(),
     quit: () => app.quit(),

@@ -1,4 +1,4 @@
-// TwinDesk for Android. Builds from the command line: ./gradlew assembleDebug
+// DenaDesk for Android. Builds from the command line: ./gradlew assembleDebug
 pluginManagement {
     repositories {
         google()
@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "TwinDesk"
+rootProject.name = "DenaDesk"
 include(":app")

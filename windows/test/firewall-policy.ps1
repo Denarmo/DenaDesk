@@ -5,8 +5,8 @@ $global:DuodeskTestCreated = @()
 $exe = (Get-Process -Id $PID).Path
 function Get-NetFirewallApplicationFilter {
   [pscustomobject]@{ Program = $exe; Rules = @(
-    [pscustomobject]@{ DisplayName = 'DuoDesk'; Action = 'Allow' },
-    [pscustomobject]@{ DisplayName = 'DuoDesk'; Action = 'Block' },
+    [pscustomobject]@{ DisplayName = 'DenaDesk'; Action = 'Allow' },
+    [pscustomobject]@{ DisplayName = 'DenaDesk'; Action = 'Block' },
     [pscustomobject]@{ DisplayName = 'Other app'; Action = 'Allow' }
   ) }
 }

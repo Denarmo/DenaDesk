@@ -1,13 +1,13 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Explorer's right-click › TwinDesk (Show more options on Windows 11): one menu with
+// Explorer's right-click › DenaDesk (Show more options on Windows 11): one menu with
 //   Send to phone        files and folders: the Send files flow, as Send to's shortcut (sendto.js)
 //   Import from phone    a folder, or a folder's background: Phone Files opens, and what's saved
 //                        from the phone goes into that folder (received.js redirectTo)
 //   Capture from phone   the same: the phone's camera opens (cam.capture), every photo taken comes
 //                        into that folder until the camera is closed there
 // The keys are the user's own (HKCU\Software\Classes), written at start from one .reg file, and the
-// uninstaller takes them away (installer.nsh). The commands start TwinDesk with --td <what> <path>;
-// a running TwinDesk gets them through second-instance (main.js).
+// uninstaller takes them away (installer.nsh). The commands start DenaDesk with --td <what> <path>;
+// a running DenaDesk gets them through second-instance (main.js).
 'use strict';
 
 const { app } = require('electron');
@@ -41,9 +41,9 @@ class Explorer {
     const esc = (t) => t.replace(/\\/g, '\\\\').replace(/"/g, '\\"'); // a .reg string's escapes
     const cmd = (args) => `"${esc(`"${exe}" ${pre}${args}`)}"`;
     const icon = `"${esc(exe)},0"`;
-    const key = (root, ...sub) => '[' + ['HKEY_CURRENT_USER', 'Software', 'Classes', root, 'shell', 'TwinDesk', ...sub].join('\\') + ']';
+    const key = (root, ...sub) => '[' + ['HKEY_CURRENT_USER', 'Software', 'Classes', root, 'shell', 'DenaDesk', ...sub].join('\\') + ']';
     const menu = (root, items) => [
-      key(root), '"MUIVerb"="DuoDesk"', `"Icon"=${icon}`, '"SubCommands"=""', '',
+      key(root), '"MUIVerb"="DenaDesk"', `"Icon"=${icon}`, '"SubCommands"=""', '',
       ...items.flatMap(([id, label, args, ico]) => [
         key(root, 'shell', id), `"MUIVerb"="${label}"`, `"Icon"="${esc(ico)}"`, '',
         key(root, 'shell', id, 'command'), `@=${cmd(args)}`, '',

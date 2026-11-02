@@ -6,7 +6,7 @@
 //   macName, macId, fp,                       // this Mac's identity (fp = cert SHA-256 hex)
 //   addresses: ['192.168.1.5', ...],           // this Mac's IPv4 addresses (the server listens on P.PORT)
 //   discovery: { on, error, localNetwork },      // discovery.js status
-//   found: [{ id, name, os, address, port, invited }],   // other DuoDesk computers nearby
+//   found: [{ id, name, os, address, port, invited }],   // other DenaDesk computers nearby
 //   guest: { status: {state, message}, pairing: null|{phase, name, address, code, error}, hosts: [...] },  // link.js
 //   connect: { busy, message, error },           // last "Connect by address" / Pair attempt
 //   serverError: null | 'message',            // e.g. port already in use
@@ -49,8 +49,8 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 // (jitterBufferTarget). FlexFEC repairs lost packets without waiting a round trip for a resend; it
 // costs bandwidth only while packets are being lost.
 app.commandLine.appendSwitch('force-fieldtrials', 'WebRTC-ForceSendPlayoutDelay/min_ms:0,max_ms:0/WebRTC-FlexFEC-03/Enabled/WebRTC-FlexFEC-03-Advertised/Enabled/');
-// Renamed (to TwinDesk, now DuoDesk): settings, pairing and the identity stay in the old folder.
-app.setPath('userData', process.env.MACSHARE_PROFILE || path.join(app.getPath('appData'), 'MacShare')); // PROFILE: a second dev copy
+// Renamed (to DenaDesk, now DenaDesk): settings, pairing and the identity stay in the old folder.
+app.setPath('userData', process.env.MACSHARE_PROFILE || path.join(app.getPath('appData'), 'DenaDesk')); // PROFILE: a second dev copy
 require('../shared/applog.js').start(app); // console.* and crashes into the log folder, both apps
 // Multi-device switched on (multi.js, docs/multi-device.md): mesh/main.js runs instead of everything below.
 if (require('./multi').on()) return void require('./mesh/main.js');
@@ -290,7 +290,7 @@ function handleSendLink(url) {
   try { u = new URL(url); } catch { return; }
   const paths = u.searchParams.getAll('p').filter((x) => x.startsWith('/')).slice(0, 1000);
   if (!paths.length) return;
-  if (!peer.current) return hud && hud.show('away', 'Not connected', 'Open DuoDesk on the other computer first');
+  if (!peer.current) return hud && hud.show('away', 'Not connected', 'Open DenaDesk on the other computer first');
   actions.sendFiles(paths);
   hud && hud.show('away', `Sending ${paths.length} item${paths.length === 1 ? '' : 's'} to ${peer.current.name}`);
 }
@@ -317,11 +317,11 @@ function refreshPermissions() {
   pushState();
 }
 
-// After an update signed differently (every ad-hoc build was), macOS still lists DuoDesk as
+// After an update signed differently (every ad-hoc build was), macOS still lists DenaDesk as
 // allowed but the grant belongs to the old signature, so the switches are on and nothing works,
 // and switching them on again does nothing. Once per new signature: whatever reads as missing is
 // reset (tccutil drops the stale entry), so Allow asks afresh and the switch in System Settings
-// really is ours. Builds signed with TwinDesk's certificate keep one signature (build-app.sh).
+// really is ours. Builds signed with DenaDesk's certificate keep one signature (build-app.sh).
 let staleChecked = false;
 function clearStalePermissions() {
   if (staleChecked || !app.isPackaged) return;
@@ -365,7 +365,7 @@ function createWindow() {
     height: 720,
     minWidth: 760,
     minHeight: 520,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     show: false,
     titleBarStyle: 'hiddenInset', // the sidebar runs up under the traffic lights
     vibrancy: 'sidebar',
@@ -466,7 +466,7 @@ function updateTray() {
     found.map((d) => [d.id, d.name, d.os]), updates && updates.status.available && updates.status.latest]);
   if (key === trayKey) return;
   trayKey = key;
-  tray.setToolTip(c ? `DuoDesk: ${c.name}` : 'DuoDesk');
+  tray.setToolTip(c ? `DenaDesk: ${c.name}` : 'DenaDesk');
   tray.setContextMenu(Menu.buildFromTemplate(trayMenu.template({
     connected: !!c,
     status: c ? `Connected to ${c.name}${c.transport === 'ble' ? ' · Bluetooth' : ''}` : 'Not connected',
@@ -492,7 +492,7 @@ function updateTray() {
     lookAgain: () => actions.refreshDiscovery(),
     again: again ? { label: `${g.status.busy ? 'Take Over' : 'Connect to'} ${g.hosts[0].name}`, click: () => actions.connectAgain() } : null,
     disconnect: c ? { label: phone ? 'Disconnect Phone' : `Disconnect ${name}`, click: () => actions.disconnect() } : null,
-    update: updates && updates.status.available ? { label: `DuoDesk ${updates.status.latest} available…`, click: showUpdateWindow } : null,
+    update: updates && updates.status.available ? { label: `DenaDesk ${updates.status.latest} available…`, click: showUpdateWindow } : null,
     rezume: rezumeItems(),
     open: showWindow,
     log: () => require('../shared/applog.js').open(),
@@ -606,7 +606,7 @@ app.whenReady().then(() => {
     const addrs = (state.addresses || []).filter((a) => /^\d+\.\d+\.\d+\.\d+$/.test(a)).slice(0, 4);
     if (!addrs.length) return { url: '', why: 'No network' };
     const q = new URLSearchParams({ id: id.macId, n: id.macName, a: addrs.join(','), p: String(server.port), k: qrPair.nonce });
-    return { url: 'twindesk://pair?' + q.toString(), until: qrPair.until };
+    return { url: 'denadesk://pair?' + q.toString(), until: qrPair.until };
   };
   svc.adbQr = (on) => {
     if (adbQr) { adbQr.stop(); adbQr = null; }
@@ -716,7 +716,7 @@ app.whenReady().then(() => {
   };
   svc.remote = () => svc.phoneRemote || null;
   peer.on(`t:${P.T.REMOTE_HELLO}`, () => !svc.phoneRemote && peer.current && peer.current.os === P.OS.ANDROID
-    && peer.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DuoDesk’s Remote page there' }));
+    && peer.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DenaDesk’s Remote page there' }));
   svc.loadRemote();
   // ReZume: what's in use here goes on on the other device, and theirs here (shared/rezume.js), its
   // offers in the Dock (a Dock icon of their app, dockstub.js), the menu bar and a notification.
@@ -834,7 +834,7 @@ app.whenReady().then(() => {
     if (b.kind === 'send') hud.show('driven', `Received ${b.files} file${b.files === 1 ? '' : 's'} from ${peer.current ? peer.current.name : 'the other computer'}`);
   });
   // Files on their way, live: the percentage beside the menu bar icon, ↓ coming in, ↑ going out
-  // (macOS notifications have no progress bar, and DuoDesk has no Dock icon to put one on).
+  // (macOS notifications have no progress bar, and DenaDesk has no Dock icon to put one on).
   let trayPct = '';
   setInterval(() => {
     const sum = (list, k) => list.reduce((a, f) => [a[0] + (f[k] || 0), a[1] + (f.size || 0)], [0, 0]);

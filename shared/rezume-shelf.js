@@ -63,7 +63,7 @@ class ReZumeShelf {
       webPreferences: { sandbox: true, contextIsolation: true, nodeIntegration: false, javascript: false },
     });
     this.win = win;
-    if (process.platform === 'win32' && this.appId) win.setAppDetails({ appId: this.appId, relaunchDisplayName: 'ReZume' }); // its own button, not in TwinDesk's group
+    if (process.platform === 'win32' && this.appId) win.setAppDetails({ appId: this.appId, relaunchDisplayName: 'ReZume' }); // its own button, not in DenaDesk's group
     const img = o.icon ? `<img src="${esc(o.icon)}">` : '';
     win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(`<!doctype html><meta charset="utf-8"><title>${esc(label)}</title>
 <style>body{margin:0;font:13px system-ui,sans-serif;background:#1f1f22;color:#eee;display:flex;align-items:center;gap:12px;padding:16px;height:78px;box-sizing:border-box}

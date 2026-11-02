@@ -58,7 +58,7 @@ static int ready(void) {
   us.id.bustype = BUS_VIRTUAL;
   us.id.vendor = 0x1209;
   us.id.product = 0x7d03;
-  snprintf(us.name, sizeof us.name, "DuoDesk virtual pen"); // "DuoDesk virtual": not read back (wl.c)
+  snprintf(us.name, sizeof us.name, "DenaDesk virtual pen"); // "DenaDesk virtual": not read back (wl.c)
   if (ioctl(fd, UI_DEV_SETUP, &us) < 0) goto fail;
   abs_setup(ABS_X, 0, PEN_MAXV, 200); // libinput needs a size: about 33 cm wide
   abs_setup(ABS_Y, 0, PEN_MAXV, 200);

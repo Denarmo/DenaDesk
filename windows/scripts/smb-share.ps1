@@ -15,7 +15,7 @@ try {
   $pw = ConvertTo-SecureString (Get-Content -Raw $PwFile).Trim() -AsPlainText -Force
   Remove-Item $PwFile -Force
   if (Get-LocalUser -Name $User -ErrorAction SilentlyContinue) { Set-LocalUser -Name $User -Password $pw -PasswordNeverExpires $true }
-  else { New-LocalUser -Name $User -Password $pw -PasswordNeverExpires -UserMayNotChangePassword -Description 'DuoDesk file sharing (network only)' | Out-Null }
+  else { New-LocalUser -Name $User -Password $pw -PasswordNeverExpires -UserMayNotChangePassword -Description 'DenaDesk file sharing (network only)' | Out-Null }
   $k = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\UserList'
   if (-not (Test-Path $k)) { New-Item -Path $k -Force | Out-Null } # -Force on an existing key deletes and recreates it, unhiding every other account
   New-ItemProperty -Path $k -Name $User -Value 0 -PropertyType DWord -Force | Out-Null

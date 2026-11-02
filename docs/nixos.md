@@ -1,12 +1,12 @@
-# DuoDesk on NixOS & Nix
+# DenaDesk on NixOS & Nix
 
-DuoDesk provides first-class support for NixOS and Nix via `flake.nix`.
+DenaDesk provides first-class support for NixOS and Nix via `flake.nix`.
 
 ---
 
 ## 🚀 Quick Run with Nix Flakes
 
-You can run DuoDesk directly without installing it system-wide:
+You can run DenaDesk directly without installing it system-wide:
 
 ```sh
 nix run github:0xCodez/DuoDesk
@@ -24,7 +24,7 @@ nix develop
 
 ## ❄️ NixOS System Configuration
 
-Add DuoDesk to your system flake inputs and enable the NixOS module:
+Add DenaDesk to your system flake inputs and enable the NixOS module:
 
 ### `flake.nix`
 ```nix
@@ -40,7 +40,7 @@ Add DuoDesk to your system flake inputs and enable the NixOS module:
       modules = [
         twindesk.nixosModules.default
         {
-          # Enable DuoDesk
+          # Enable DenaDesk
           programs.twindesk = {
             enable = true;
             user = "yourusername"; # Automatically adds your user to 'input' and 'uinput' groups
@@ -60,8 +60,8 @@ Add DuoDesk to your system flake inputs and enable the NixOS module:
 
 | Option | Type | Default | Description |
 |---|---|---|---|
-| `programs.twindesk.enable` | `bool` | `false` | Enable DuoDesk application and system integration. |
-| `programs.twindesk.package` | `package` | `twindesk` | The DuoDesk package derivation to use. |
+| `programs.twindesk.enable` | `bool` | `false` | Enable DenaDesk application and system integration. |
+| `programs.twindesk.package` | `package` | `twindesk` | The DenaDesk package derivation to use. |
 | `programs.twindesk.user` | `nullOr str` | `null` | Your username. If specified, adds the user to the `input` and `uinput` groups. |
 | `programs.twindesk.openFirewall` | `bool` | `true` | Automatically opens TCP port `47800` (peer traffic) and UDP ports `47801` (discovery) & `5353` (mDNS). |
 | `programs.twindesk.uinput` | `bool` | `true` | Enables `hardware.uinput.enable` and configures udev rules for Wayland input capture & injection. |
@@ -88,7 +88,7 @@ Creating a secondary access point interface on supported Wi-Fi adapters requires
     group = "root";
   };
   ```
-- DuoDesk automatically detects `/run/wrappers/bin/twindesk-wifiap` and connects without needing `pkexec` prompts.
+- DenaDesk automatically detects `/run/wrappers/bin/twindesk-wifiap` and connects without needing `pkexec` prompts.
 
 ### 3. Extend (Virtual Displays)
 - **GNOME on Wayland**: Uses Mutter's virtual monitor portal. The package wrapper automatically bundles and sets up Python 3 with `pygobject` and `gst-python` with all GStreamer PipeWire plugins and GI typelibs.

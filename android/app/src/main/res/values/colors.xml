@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Aurora: the window behind the app before Compose draws (no white flash), and its accent. -->
-    <color name="aurora_bg">#FF040405</color>
-    <color name="aurora_accent">#FF8A5CFF</color>
+    <color name="aurora_bg">#FF202024</color>
+    <color name="aurora_accent">#FFF1C40F</color>
 </resources>

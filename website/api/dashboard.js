@@ -14,10 +14,10 @@ const same = (a, b) => {
   return timingSafeEqual(h(a), h(b));
 };
 
-// GitHub file name -> the same keys the site sends with a download click. Anything else DuoDesk-named
+// GitHub file name -> the same keys the site sends with a download click. Anything else DenaDesk-named
 // (Mesh builds, checksums, future formats) is counted as "other" so the totals still add up.
 export function assetKey(name) {
-  if (!/^DuoDesk[-_ .]/i.test(name) || /\.(blockmap|sha256|sig|asc|txt|yml|json)$/i.test(name)) return null;
+  if (!/^DenaDesk[-_ .]/i.test(name) || /\.(blockmap|sha256|sig|asc|txt|yml|json)$/i.test(name)) return null;
   const mesh = /mesh/i.test(name);
   let key = 'other';
   if (/\.exe$/i.test(name)) key = /arm64|aarch64/i.test(name) ? 'windows-arm64' : 'windows-x64';

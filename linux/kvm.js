@@ -143,7 +143,7 @@ class Kvm {
       this.applyConfig();
       // A restarted helper has lost its state: nothing is captured or armed any more.
       if (this.mode === 'driving') this._release('');
-      else if (this.mode === 'driven') this._drivenHome('DuoDesk’s helper restarted', true);
+      else if (this.mode === 'driven') this._drivenHome('DenaDesk’s helper restarted', true);
     });
     helper.on('exit', () => this.onChange());
     helper.on('event', (name, msg) => this._onHelper(name, msg));

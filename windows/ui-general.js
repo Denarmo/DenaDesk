@@ -29,7 +29,7 @@ UI.tab({
     // (as the Mac): wake is a switch; Send to sends files from Explorer.
     const wakeSw = UI.switch((v) => api.setWake(v), { label: 'Wake from the network' });
     const wakeRow = UI.row('Let the other computer wake {me}', '', [wakeSw]);
-    const sendToRow = UI.row('DuoDesk in Send to', '');
+    const sendToRow = UI.row('DenaDesk in Send to', '');
     const helperPill = el('span', { class: 'pill' });
     const helperRow = UI.row('Mouse and keyboard helper', '', [helperPill]);
     const vddPill = el('span', { class: 'pill' });
@@ -53,7 +53,7 @@ UI.tab({
 
     // Appearance: the phone's wallpaper behind it here (settings.phone.wallpaper, was on the Phone page).
     const wallSw = UI.switch((v) => api.setPhone({ wallpaper: v }), { label: 'Show the phone’s wallpaper' });
-    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DuoDesk on the phone reads it once wireless debugging is set up', [wallSw]);
+    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DenaDesk on the phone reads it once wireless debugging is set up', [wallSw]);
     // Overview: what it shows (settings.ui.overview).
     const parts = [['media', 'Now playing', 'What plays on the phone, with its controls'], ['qs', 'Quick actions', 'Wi-Fi, Bluetooth, torch, Do not disturb and more, with volume and ringer'],
       ['notifs', 'Latest notifications', 'The newest few, with Copy for one-time codes'], ['apps', 'Most used apps', 'The phone’s most used apps this week'],
@@ -66,7 +66,7 @@ UI.tab({
 
     body.append(
       UI.card('Startup', [
-        UI.row('Start with Windows', 'DuoDesk waits in the tray', [startup]),
+        UI.row('Start with Windows', 'DenaDesk waits in the tray', [startup]),
         recvRow,
       ]),
       UI.card('Appearance', [
@@ -103,7 +103,7 @@ UI.tab({
       wakeRow.setHint(w.error ? w.error : w.busy ? 'Changing…' : !w.checked ? 'Checking…'
         : w.on == null ? 'No network adapter here can wake {me}'
           : 'Its network adapter wakes {me} on a magic packet. Asks for administrator rights to change it');
-      sendToRow.setHint(s.peer ? 'Right-click files › Send to › ' + s.peer.name + ' (DuoDesk)' : 'Shows up once a computer is paired');
+      sendToRow.setHint(s.peer ? 'Right-click files › Send to › ' + s.peer.name + ' (DenaDesk)' : 'Shows up once a computer is paired');
       const h = s.kvmState.helper;
       helperPill.textContent = h ? (h === 'starting' ? 'Starting…' : 'Not running') : 'Running';
       helperPill.className = 'pill ' + (h ? (h === 'starting' ? 'muted' : 'bad') : 'good');

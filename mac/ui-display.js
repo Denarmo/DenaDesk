@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Display › Mac → PC: this Mac's screen on the PC (Monitor 2). Extend/Mirror, which display, the DuoDesk virtual display, stream quality,
+// Display › Mac → PC: this Mac's screen on the PC (Monitor 2). Extend/Mirror, which display, the DenaDesk virtual display, stream quality,
 // input from Monitor 2, live stats.
 'use strict';
 
@@ -28,7 +28,7 @@ UI.tab({
       connecting: 'Connecting…', live: 'Live', 'no viewer': 'Ready — starts when {name} opens it', 'waiting for Wi-Fi': 'Waiting for Wi-Fi', 'nothing connected': 'Waiting for {name}', 'no display to share': 'No display to share', disconnected: 'Reconnecting…', failed: 'Retrying…', closed: 'Closed',
     };
 
-    const helperNote = UI.note('bad', 'Something went wrong in the background. Restart DuoDesk.');
+    const helperNote = UI.note('bad', 'Something went wrong in the background. Restart DenaDesk.');
 
     const mode = UI.segmented([
       { value: 'extend', label: 'Extend' },
@@ -46,7 +46,7 @@ UI.tab({
       presetDirty = false;
       api.setVirtual({ enabled: true, width: p.width, height: p.height, hiDPI: p.hiDPI });
     }, 'small');
-    const virtRow = UI.row('DuoDesk virtual display', '', [virtOn]);
+    const virtRow = UI.row('DenaDesk virtual display', '', [virtOn]);
     const sizeRow = UI.row('Size', '', [preset, applyBtn]);
 
     const streamSize = UI.select([
@@ -105,10 +105,10 @@ UI.tab({
       const sh = s.sharing;
       if (!sh) return;
       mode.set(s.displayMode);
-      modeRow.setHint({ extend: 'Shows the DuoDesk virtual display', mirror: 'Shows {me}’s main screen', custom: '' }[s.displayMode]);
+      modeRow.setHint({ extend: 'Shows the DenaDesk virtual display', mirror: 'Shows {me}’s main screen', custom: '' }[s.displayMode]);
 
       display.options([
-        { value: 'virtual', label: 'DuoDesk virtual display' },
+        { value: 'virtual', label: 'DenaDesk virtual display' },
         ...sh.displays.filter((d) => !d.virtual).map((d) => ({ value: d.id, label: `${d.label}${d.primary ? ' (main)' : ''}` })),
       ]);
       const picked = sh.displays.find((d) => d.id === sh.displayId && !d.virtual);
@@ -138,7 +138,7 @@ UI.tab({
       const p = UI.peer(s);
       statVals.status.textContent = !sh.on ? 'Off' : !c ? `Waiting for ${p.name}` : UI.fill(STATUS[st.status] || st.status);
       const shown = sh.displays.find((d) => d.id === sh.targetId);
-      statVals.display.textContent = shown ? `${shown.virtual ? 'DuoDesk virtual display' : shown.label} · ${shown.pixelWidth} × ${shown.pixelHeight}` : '';
+      statVals.display.textContent = shown ? `${shown.virtual ? 'DenaDesk virtual display' : shown.label} · ${shown.pixelWidth} × ${shown.pixelHeight}` : '';
       statVals.picture.textContent = live ? `${st.width} × ${st.height} · ${st.fps} fps` : '';
       statVals.rate.textContent = live ? `${st.mbps} Mbps${st.targetMbps ? ` of ${st.targetMbps}` : ''}` : '';
       statVals.rtt.textContent = c && c.rttMs != null ? `${c.rttMs} ms` : '';

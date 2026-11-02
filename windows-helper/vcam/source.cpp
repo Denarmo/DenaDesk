@@ -1,8 +1,8 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // twindesk-vcam.dll: the virtual camera's media source. Windows' Frame Server makes it through
-// its COM class (CLSID_TwinDeskVcam, an IMFActivate) and hands its pictures to every app that
-// picks "DuoDesk Camera": one stream, NV12 1280×720 at 30 fps, made from the newest frame
-// DuoDesk put in shared memory (vcam.h), black while there's none.
+// its COM class (CLSID_DenaDeskVcam, an IMFActivate) and hands its pictures to every app that
+// picks "DenaDesk Camera": one stream, NV12 1280×720 at 30 fps, made from the newest frame
+// DenaDesk put in shared memory (vcam.h), black while there's none.
 // Registered once, elevated (regsvr32, windows/scripts/vcam-install.ps1): HKLM, because Frame
 // Server runs as Local Service and doesn't see the user's own classes.
 #include <windows.h>
@@ -30,12 +30,12 @@ static volatile LONG g_objects;
 // PINNAME_VIDEO_CAPTURE (= PINNAME_CAPTURE)
 static const GUID PIN_CAPTURE = { 0xfb6c4281, 0x0353, 0x11d1, { 0x90, 0x5f, 0x00, 0x00, 0xc0, 0xcc, 0x16, 0xba } };
 
-// ---- the frames DuoDesk writes ----
+// ---- the frames DenaDesk writes ----
 
 class FrameMap {
 public:
   FrameMap() {
-    // Frame Server may make a Global\ one, for DuoDesk in the user's session; elsewhere (the self
+    // Frame Server may make a Global\ one, for DenaDesk in the user's session; elsewhere (the self
     // test in one process) a Local\ one.
     SECURITY_ATTRIBUTES sa = { sizeof(sa), nullptr, FALSE };
     PSECURITY_DESCRIPTOR sd = nullptr;
@@ -585,7 +585,7 @@ static Factory g_factory;
 
 static void ClsidKey(wchar_t* out, size_t n) {
   wchar_t clsid[64];
-  StringFromGUID2(CLSID_TwinDeskVcam, clsid, 64);
+  StringFromGUID2(CLSID_DenaDeskVcam, clsid, 64);
   swprintf_s(out, n, L"Software\\Classes\\CLSID\\%s", clsid);
   (void)n;
 }
@@ -605,7 +605,7 @@ HRESULT __stdcall DllCanUnloadNow() { return g_objects == 0 ? S_OK : S_FALSE; }
 HRESULT __stdcall DllGetClassObject(REFCLSID clsid, REFIID riid, void** ppv) {
   if (!ppv) return E_POINTER;
   *ppv = nullptr;
-  if (clsid != CLSID_TwinDeskVcam) return CLASS_E_CLASSNOTAVAILABLE;
+  if (clsid != CLSID_DenaDeskVcam) return CLASS_E_CLASSNOTAVAILABLE;
   return g_factory.QueryInterface(riid, ppv);
 }
 

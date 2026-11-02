@@ -223,7 +223,7 @@ const start = (p, a, b) => {
     start(p, a, b);
     a.now = { kind: 'web', url: 'https://example.com/again', title: 'Again' };
     await tick(a);
-    a.now = null; // the tab isn't in front any more (TwinDesk's own window is)
+    a.now = null; // the tab isn't in front any more (DenaDesk's own window is)
     p.bus.up = false;
     p.bus.a.emit('closed');
     p.bus.b.emit('closed');

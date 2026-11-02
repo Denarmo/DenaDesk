@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
 // Notifications across every connected device (docs/mesh.md, one pool): this Mac's notifications go
 // to every device that accepts them (`notif.policy`); the other devices' show here as native
-// notifications from DuoDesk. Reading needs Full Disk Access (the helper reads the Notification
+// notifications from DenaDesk. Reading needs Full Disk Access (the helper reads the Notification
 // Center database). Port of windows/notifs.js; the Mac keeps the subtitle line.
 //
 // Events: 'change' — this.view changed; 'click' ({app, appName, originId}) — one of the others' was clicked.
@@ -52,7 +52,7 @@ class Notifs extends EventEmitter {
     this.peerName = opts.peerName;
     this.Notification = opts.Notification || require('electron').Notification;
     this.iconsOut = new IconsOut(); // our app icons go with the first notification of each app per device session
-    this.iconsIn = new IconsIn(require('electron').nativeImage); // none: macOS shows DuoDesk's icon with every notification
+    this.iconsIn = new IconsIn(require('electron').nativeImage); // none: macOS shows DenaDesk's icon with every notification
     this.pool = new Pool({ name: 'notif', selfId: this.mesh.selfId, peers: () => notifPeers(this.mesh, this) });
     this.access = 'unknown'; // 'ok' | 'noAccess' (Full Disk Access) | 'unknown'
     this.apps = new Map(); // app -> {app, appName, at} seen here (newest first in the view)
@@ -167,7 +167,7 @@ class Notifs extends EventEmitter {
     const now = Date.now();
     this.echoes = this.echoes.filter((e) => e.until > now);
     if (this.echoes.some((e) => e.title === str(ev.title, 200) && str(ev.body).includes(e.body))) return;
-    if (isOwn(app, ev.appName)) return; // DuoDesk's own toasts are never forwarded
+    if (isOwn(app, ev.appName)) return; // DenaDesk's own toasts are never forwarded
     if (this.guard.repeat('out', app, ev.title, ev.body)) return;
     this.apps.set(app, { app, appName: str(ev.appName, 100) || app, at: Date.now() });
     if (this.cfg.send && !(this.cfg.muted || []).includes(app) && this._anyAccepts()) {

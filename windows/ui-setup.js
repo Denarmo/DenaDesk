@@ -17,11 +17,11 @@ UI.setup = (() => {
   const helperRow = UI.row('Mouse and keyboard helper', '', [helperPill, helperDone]);
   const drvBtn = UI.button('Install', () => api.installVdd(), 'small');
   const drvDone = done();
-  const drvRow = UI.row('DuoDesk virtual display', '', [drvBtn, drvDone]);
+  const drvRow = UI.row('DenaDesk virtual display', '', [drvBtn, drvDone]);
 
   const page = el('section', { class: 'setup-page', hidden: true }, [
     el('div', { class: 'app-mark', attrs: { 'aria-hidden': 'true' } }),
-    el('h1', { text: 'Set up DuoDesk' }),
+    el('h1', { text: 'Set up DenaDesk' }),
     el('p', { text: 'A few things before {me} can share with the other computer.' }),
     UI.card('', [fwRow, helperRow, drvRow]),
     el('div', { class: 'setup-foot' }, [
@@ -49,7 +49,7 @@ UI.setup = (() => {
     const h = s.kvmState.helper;
     const helperBad = s.setup.missing.includes('helper');
     helperRow.hidden = !shown.has('helper');
-    helperRow.setHint(helperBad ? h + '. Restart DuoDesk if it stays like this.' : '');
+    helperRow.setHint(helperBad ? h + '. Restart DenaDesk if it stays like this.' : '');
     helperPill.hidden = !helperBad;
     helperDone.hidden = helperBad;
 

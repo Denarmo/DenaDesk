@@ -145,7 +145,7 @@ func handle(_ line: String) {
     reply(id, ["front": NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "",
                "files": urls.map { $0.path }])
   case "requestAccess":
-    // Asking registers DuoDesk (our responsible app) in that System Settings list, so the person
+    // Asking registers DenaDesk (our responsible app) in that System Settings list, so the person
     // only flips a switch instead of adding the app with + and a file browser.
     var granted = false
     switch (msg["kind"] as? String) ?? "" {
@@ -162,7 +162,7 @@ func handle(_ line: String) {
     let height = (msg["height"] as? NSNumber)?.intValue ?? 1080
     let hiDPI = (msg["hiDPI"] as? Bool) ?? false
     let hz = (msg["hz"] as? NSNumber)?.doubleValue ?? 60
-    let name = (msg["name"] as? String) ?? "DuoDesk"
+    let name = (msg["name"] as? String) ?? "DenaDesk"
     virtualDisplay.create(width: width, height: height, hiDPI: hiDPI, hz: hz, name: name) { result in
       switch result {
       case .success(let info): reply(id, info)

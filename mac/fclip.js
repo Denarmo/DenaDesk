@@ -193,7 +193,7 @@ class FileClip extends EventEmitter {
     try {
       const src = await this.helper.request('fileSource');
       if (src.front === 'com.apple.finder') dir = await finderFolder();
-      // An app in front (not Finder, nor DuoDesk and its windows): the files go into it.
+      // An app in front (not Finder, nor DenaDesk and its windows): the files go into it.
       else if (src.front && !src.front.startsWith('org.macshare.')) into = { app: src.front };
     } catch { /* Desktop */ }
     if (into) dir = pastefiles.pasteDir();

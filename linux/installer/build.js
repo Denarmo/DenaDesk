@@ -93,7 +93,7 @@ async function main() {
     return file + '=' + f.path;
   });
   fs.writeFileSync(path.join(STAGE, 'package.json'), JSON.stringify({
-    name: 'twindesk', productName: pkg.productName, version: pkg.version, description: pkg.description,
+    name: 'denadesk', productName: pkg.productName, version: pkg.version, description: pkg.description,
     license: pkg.license, author: { name: '0xCodez', email: '0xCodez@users.noreply.github.com' },
     homepage: 'https://github.com/0xCodez/DuoDesk', main: 'linux/main.js', dependencies: pkg.dependencies,
   }, null, 2));
@@ -105,7 +105,7 @@ async function main() {
     publish: 'never', // the workflow uploads to the release itself; on a tag push electron-builder would otherwise try to publish and need GH_TOKEN
     config: {
       appId: 'org.macshare.linux',
-      productName: 'DuoDesk',
+      productName: 'DenaDesk',
       copyright: 'Copyright (C) 2026 0xCodez. Includes code Copyright (C) 2026 Inuka Asith. GPL-3.0.',
       electronVersion,
       directories: { app: STAGE, output: path.join(LIN, 'dist') },
@@ -113,15 +113,15 @@ async function main() {
       npmRebuild: false,
       linux: {
         icon: path.join(LIN, 'assets', 'icon.png'),
-        executableName: 'twindesk',
+        executableName: 'denadesk',
         category: 'Utility',
         synopsis: 'Share mouse, keyboard, clipboard, files and screens with your other computer',
         maintainer: '0xCodez <0xCodez@users.noreply.github.com>',
-        desktop: { entry: { Name: 'DuoDesk', StartupWMClass: 'DuoDesk', Keywords: 'KVM;mouse;keyboard;clipboard;screen;share;' } },
-        artifactName: 'DuoDesk-${version}-${arch}.${ext}',
+        desktop: { entry: { Name: 'DenaDesk', StartupWMClass: 'DenaDesk', Keywords: 'KVM;mouse;keyboard;clipboard;screen;share;' } },
+        artifactName: 'DenaDesk-${version}-${arch}.${ext}',
       },
       deb: {
-        // Electron's own needs plus what DuoDesk calls: openssl (host certificate), pactl (sound),
+        // Electron's own needs plus what DenaDesk calls: openssl (host certificate), pactl (sound),
         // dbus-monitor (notifications), pkexec (firewall / input access fixes), GIO (the helper's
         // Bluetooth through BlueZ). Bluetooth and the Wi-Fi it moves to (NetworkManager) are for
         // devices not on this network: recommended, not needed.

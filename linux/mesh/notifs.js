@@ -4,7 +4,7 @@
 // them (`notif.policy`); we read them off the session bus (`dbus-monitor` on
 // org.freedesktop.Notifications.Notify, which every desktop's notification daemon serves), only while
 // something would be sent. Notifications from the other devices show here as desktop notifications
-// from DuoDesk (libnotify).
+// from DenaDesk (libnotify).
 const electron = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -52,7 +52,7 @@ class Notifs {
     this.selfName = opts.selfName;
     this.Notification = opts.Notification || electronNotification;
     this.spawn = opts.spawn || spawn;
-    this.iconsIn = electron.nativeImage ? new IconsIn(electron.nativeImage, path.join(__dirname, '..', 'assets', 'sidebar-icon@2x.png')) : null; // DuoDesk's for apps without one
+    this.iconsIn = electron.nativeImage ? new IconsIn(electron.nativeImage, path.join(__dirname, '..', 'assets', 'sidebar-icon@2x.png')) : null; // DenaDesk's for apps without one
     this.pool = new Pool({ name: 'notif', selfId: this.mesh.selfId, peers: () => notifPeers(this.mesh) });
     this.readable = null; // dbus-monitor could start
     this.apps = new Map(); // app → {app, appName, at} seen here
@@ -152,7 +152,7 @@ class Notifs {
     if (this.mon) return;
     let proc;
     try {
-      // Tied to our stdin: if DuoDesk dies without quitting, the pipe closes and dbus-monitor goes
+      // Tied to our stdin: if DenaDesk dies without quitting, the pipe closes and dbus-monitor goes
       // too (it would keep sockets it inherited from Electron open).
       proc = this.spawn('sh', ['-c', 'command -v dbus-monitor >/dev/null || exit 127; dbus-monitor --session "$1" & p=$!; cat >/dev/null; kill $p',
         'sh', "type='method_call',interface='org.freedesktop.Notifications',member='Notify'"], { stdio: ['pipe', 'pipe', 'pipe'] });
@@ -203,7 +203,7 @@ class Notifs {
     }
     const arg = (a) => (a && a.startsWith('string "') ? a.slice(8).replace(/"$/, '') : '');
     const appName = arg(args[0]);
-    if (!appName || /^(DuoDesk|TwinDesk|Electron|macshare)/i.test(appName)) return; // ours (from another device)
+    if (!appName || /^(DenaDesk|DenaDesk|Electron|macshare)/i.test(appName)) return; // ours (from another device)
     this._local({ id: String(Date.now()), app: appName, appName, title: arg(args[3]), body: arg(args[4]), at: Date.now() });
   }
 
@@ -215,7 +215,7 @@ class Notifs {
     const now = Date.now();
     this.echoes = this.echoes.filter((e) => e.until > now);
     if (this.echoes.some((e) => e.title === str(ev.title, 200) && str(ev.body).includes(e.body))) return;
-    if (isOwn(app, ev.appName)) return; // DuoDesk's own notifications are never forwarded
+    if (isOwn(app, ev.appName)) return; // DenaDesk's own notifications are never forwarded
     if (this.guard.repeat('out', app, ev.title, ev.body)) return;
     this.apps.set(app, { app, appName: str(ev.appName, 100) || app, at: Date.now() });
     if (this.apps.size > 60) this.apps.delete(this.apps.keys().next().value);

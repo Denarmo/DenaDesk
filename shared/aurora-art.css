@@ -21,11 +21,11 @@
 /* ---------- kit classes ---------- */
 /* The one accent: the feature's colour, softened towards a cool grey so no page reads loud (a yellow or a green
    comes out pale, never neon). The first declaration is the fallback where color-mix() isn't known. */
-.ka-s1 { stop-color: var(--fa1, #a98bff); stop-color: color-mix(in srgb, var(--fa1, #a98bff) 60%, #c7c7cc); }
+.ka-s1 { stop-color: var(--fa1, #f1c40f); stop-color: color-mix(in srgb, var(--fa1, #f1c40f) 60%, #c7c7cc); }
 .ka-s2 { stop-color: var(--fa2, #7fdcf5); stop-color: color-mix(in srgb, var(--fa2, #7fdcf5) 60%, #c7c7cc); }
-.ka-f1 { fill: var(--fa1, #a98bff); fill: color-mix(in srgb, var(--fa1, #a98bff) 60%, #c7c7cc); }
+.ka-f1 { fill: var(--fa1, #f1c40f); fill: color-mix(in srgb, var(--fa1, #f1c40f) 60%, #c7c7cc); }
 .ka-f2 { fill: var(--fa2, #7fdcf5); fill: color-mix(in srgb, var(--fa2, #7fdcf5) 60%, #c7c7cc); }
-.ka-st1 { stroke: var(--fa1, #a98bff); stroke: color-mix(in srgb, var(--fa1, #a98bff) 60%, #c7c7cc); }
+.ka-st1 { stroke: var(--fa1, #f1c40f); stroke: color-mix(in srgb, var(--fa1, #f1c40f) 60%, #c7c7cc); }
 .ka-st2 { stroke: var(--fa2, #7fdcf5); stroke: color-mix(in srgb, var(--fa2, #7fdcf5) 60%, #c7c7cc); }
 .ka-text { font-family: var(--ui, "Geist", system-ui, sans-serif); }
 .ka-mono { font-family: var(--mono, "Geist Mono", ui-monospace, monospace); }
@@ -73,7 +73,7 @@
 .feature-art h2 { margin-top: 14px; font-weight: 400; letter-spacing: -0.02em; }
 
 /* ---------- Multi-device's mesh (shared/mesh-intro.js, devices from the kit) ---------- */
-.mesh-art { --fa1: #a98bff; --fa2: #7fdcf5; }
+.mesh-art { --fa1: #f1c40f; --fa2: #7fdcf5; }
 .mesh-art svg { overflow: visible; }
 
 /* ---------- the Connection page's devices (windows|linux|mac ui-overview.js: .device.pc / .mac / .phone) ---------- */
@@ -104,7 +104,7 @@ html.ka-peer-linux .hero .hero-device:last-child .device.pc { width: 130px; heig
 /* The phone: a hairline glass frame with a punch-hole dot, its own wallpaper (--phone-wall) or the kit's screen. */
 .hero-device .device.phone, .device.phone.big {
   border: 1px solid rgba(255, 255, 255, 0.34); border-radius: 11px; opacity: 0.62;
-  background: var(--phone-wall, var(--ka-hero-phone)) center / cover no-repeat, #0a0a0c;
+  background: var(--phone-wall, var(--ka-hero-phone)) center / cover no-repeat, #202024;
   box-shadow: inset 0 0 0 2px #0c0c0f, inset 0 1px 0 2px rgba(255, 255, 255, 0.05);
   filter: none; transition: opacity 0.6s, border-color 0.6s, transform 0.6s cubic-bezier(0.2, 0.9, 0.1, 1);
 }
@@ -129,7 +129,7 @@ html.ka-peer-linux .hero .hero-device:last-child .device.pc { width: 130px; heig
 .hero .hero-link { height: 1px; border-radius: 1px; margin-top: 1px;
   background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0 4px, transparent 4px 9px); background-size: auto; }
 .hero .hero-link.up { animation: none; box-shadow: none; background-size: auto;
-  background: linear-gradient(90deg, transparent, rgba(255, 61, 154, 0.5) 12%, rgba(138, 92, 255, 0.55) 34%, rgba(47, 214, 255, 0.5) 60%, rgba(61, 255, 168, 0.42) 82%, transparent); }
+  background: linear-gradient(90deg, transparent, rgba(226, 181, 47, 0.5) 12%, rgba(241, 196, 15, 0.55) 34%, rgba(247, 221, 119, 0.5) 60%, rgba(61, 255, 168, 0.42) 82%, transparent); }
 .hero:has(.hero-link.up) .hero-mid::before { content: none; animation: none; }
 .hero .hero-link.up .hero-pulse { height: 1px; width: 48px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
   animation: ap-travel 5s cubic-bezier(0.45, 0, 0.55, 1) infinite; }

@@ -3,7 +3,7 @@
 // Driver (https://github.com/VirtualDrivers/Virtual-Display-Driver — MIT, signed by SignPath
 // Foundation; an IddCx driver). Installed once, elevated (scripts\vdd-install.ps1); after that the
 // monitor is switched on/off without a prompt through two SYSTEM scheduled tasks the user may run.
-// It is on only while Extend is on, like the Mac's DuoDesk display.
+// It is on only while Extend is on, like the Mac's DenaDesk display.
 const { app } = require('electron');
 const { execFile } = require('child_process');
 const fs = require('fs');

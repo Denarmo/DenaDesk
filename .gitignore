@@ -33,3 +33,13 @@ result-*
 # Vercel project link (website/)
 .vercel/
 .env*
+# Android generated outputs and private signing material
+android/.gradle/
+android/.kotlin/
+android/local.properties
+android/**/build/
+android/dist/
+android/signing.properties
+android/.signing/
+*.jks
+*.keystore

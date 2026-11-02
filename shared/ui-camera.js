@@ -5,7 +5,7 @@
 // the phone's own Camera page starts it too); the other computer's, which it shares only with
 // "Let … see this camera" on there (camshare.js). Its picture shows on the page (turned with
 // Rotate), in a window with Window (or a click on the picture), and with Virtual camera on, in a
-// camera every app here can pick ("DuoDesk Camera", shared/vcam.js), installed the first time
+// camera every app here can pick ("DenaDesk Camera", shared/vcam.js), installed the first time
 // it's turned on. This computer's own camera goes to the other one the same way.
 // With Multi-device on (state.camera.mesh, shared/camshare-mesh.js): Start runs the selected
 // device's camera; one runs at a time, and while it runs the tab is about that device
@@ -108,7 +108,7 @@
       const virtual = UI.switch((v) => cam({ do: 'virtual', on: v }), { label: 'Virtual camera' });
       const vRemove = UI.button('Remove', () => cam({ do: 'vcamRemove' }));
       const vRow = UI.row('Virtual camera', '', [vRemove, virtual]);
-      // Which camera it feeds, where there's a choice (the Mac: DuoDesk Camera or OBS Virtual Camera).
+      // Which camera it feeds, where there's a choice (the Mac: DenaDesk Camera or OBS Virtual Camera).
       const vTarget = UI.select([], (t) => cam({ do: 'vcamTarget', target: t }));
       const vTargetRow = UI.row('Send to', 'The camera other apps pick', [vTarget]);
       const vCard = UI.card('Virtual camera', [vTargetRow, vRow]);
@@ -133,7 +133,7 @@
         const phone = isPhone(s);
         const mesh = !!c.mesh;
         const on = running(s);
-        const vName = `“${v.name || 'DuoDesk Camera'}”`;
+        const vName = `“${v.name || 'DenaDesk Camera'}”`;
         const w = phone ? phoneCam(s) : null;
         if (w && w.facing && w.facing !== facing) {
           facing = w.facing; // started or switched elsewhere (the phone's Camera page)
@@ -185,7 +185,7 @@
                 : v.ready && v.live ? `Sharing now: in Zoom, Teams, the browser…, choose only ${vName} as the camera`
                   : v.ready ? `Ready: the camera running here goes to ${vName}. Choose only that one in the app you call from`
                     : v.on ? (v.message || 'Not installed')
-                      : v.message || `Off: the picture stays in DuoDesk. On: it’s also ${vName}, a camera other apps can pick`);
+                      : v.message || `Off: the picture stays in DenaDesk. On: it’s also ${vName}, a camera other apps can pick`);
 
         // This computer's own camera (not with a phone).
         ourCard.hidden = phone;

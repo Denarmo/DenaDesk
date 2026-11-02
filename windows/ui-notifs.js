@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Notifications tab: the other computer's notifications here as Windows
-// toasts from TwinDesk, and this PC's on the other computer (read from Windows' notification
+// toasts from DenaDesk, and this PC's on the other computer (read from Windows' notification
 // database by the helper). Two direction cards, then the apps seen sending.
 'use strict';
 
@@ -41,7 +41,7 @@ UI.tab({
       pair.update(s);
       note.set('');
       hideSw.set(n.hideText);
-      recvRow.setHint(n.receive && n.shown ? n.shown + ' shown' : 'As Windows notifications, from DuoDesk');
+      recvRow.setHint(n.receive && n.shown ? n.shown + ' shown' : 'As Windows notifications, from DenaDesk');
       sendRow.setHint(n.readable === false ? 'Windows’ notification list can’t be read'
         : !n.send ? '' : !connected ? 'Also switches it on the other computer' : n.sent ? n.sent + ' sent' : 'As native notifications there');
 

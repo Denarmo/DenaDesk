@@ -22,7 +22,7 @@ UI.tab({
     const hideSw = UI.switch((v) => api.setNotifs({ hideText: v }), { label: 'Hide message text' });
     const hideRow = UI.row('Hide message text', 'Only the app and the title', [hideSw]);
     const fdaBtn = UI.button('Allow', () => api.allowFullDisk(), 'small primary');
-    const fdaRow = UI.row('Allow Full Disk Access', 'Click +, or drag DuoDesk into the list', [fdaBtn]);
+    const fdaRow = UI.row('Allow Full Disk Access', 'Click +, or drag DenaDesk into the list', [fdaBtn]);
     const recvSw = UI.switch((v) => api.setNotifs({ receive: v }), { label: 'Show notifications here' });
     const recvRow = UI.row('Show {name}’s notifications on {me}', '', [recvSw]);
     const apps = el('div');
@@ -43,7 +43,7 @@ UI.tab({
       fdaRow.hidden = n.access !== 'noAccess';
       sendRow.setHint(!n.send ? '' : n.access === 'noAccess' ? 'Needs Full Disk Access'
         : !s.client ? 'Also switches it on the other computer' : n.sent ? `${n.sent} sent` : 'As native notifications there');
-      recvRow.setHint(n.receive && n.shown ? `${n.shown} shown` : 'As native notifications, from DuoDesk');
+      recvRow.setHint(n.receive && n.shown ? `${n.shown} shown` : 'As native notifications, from DenaDesk');
       void p;
 
       const k = JSON.stringify([n.apps.map((a) => a.app), n.muted]);

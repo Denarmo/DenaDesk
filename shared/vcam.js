@@ -2,14 +2,14 @@
 // Where a running camera's picture goes (Windows, Mac and Linux). Its window (the other computer's
 // camera, or a phone's) is hidden and sends the picture on (shared/vcam-feed.js): to the Camera tab
 // ('vcam:preview', a small JPEG, passed to ui()), and while Virtual camera is on to a camera every
-// app on this computer can pick ("DuoDesk Camera": NV12, 1280×720, on 'vcam:frame', to the
+// app on this computer can pick ("DenaDesk Camera": NV12, 1280×720, on 'vcam:frame', to the
 // driver's feed process; black without frames). The windows say hello and are told what to do
 // ('vcam:set' {vcam, rotate}). Virtual camera is off until turned on; turning it on installs the
 // camera the first time (each platform's driver: windows/vcam.js, linux/vcam.js, mac/vcam.js).
 // Camera › Rotate (settings.camera.rotate, quarter turns) turns the picture everywhere.
 //
 // driver: {name, always?, check() → {supported, installed, message}, install(say), remove(), feed(onExit) → ChildProcess}
-//   targets?: [{value, label}], cameras it can feed (the Mac: DuoDesk Camera or OBS Virtual Camera),
+//   targets?: [{value, label}], cameras it can feed (the Mac: DenaDesk Camera or OBS Virtual Camera),
 //   chosen in settings.camera.target and passed to check, install, remove and feed as their last
 //   argument; nameOf(target), removable(target).
 //   say(text): what installing waits for now (the Mac: the person allowing it in System Settings).

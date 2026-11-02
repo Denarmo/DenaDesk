@@ -2,7 +2,7 @@
 // ReZume here (shared/rezume.js): what is in use in the window in front. The helper's
 // frontActivity (Activity.cs) names its .exe and title and reads a browser's address bar; a browser
 // it can't read goes through its own files (shared/browsertabs.js); a document is the one Windows
-// lists as recently opened under the name the title shows. TwinDesk's own windows and the shell's
+// lists as recently opened under the name the title shows. DenaDesk's own windows and the shell's
 // (the taskbar, Start, File Explorer) are nothing to go on with.
 'use strict';
 

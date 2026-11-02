@@ -136,7 +136,7 @@ UI.tab({
     const soundCard = UI.card('Sound', [audioRow, statusRow]);
 
     // Setting it up: the person pairs the two in the systems' own Bluetooth settings, over classic
-    // Bluetooth (what a call goes through); TwinDesk doesn't pair them itself, only says how, and
+    // Bluetooth (what a call goes through); DenaDesk doesn't pair them itself, only says how, and
     // connects once they are. Forget at the bottom: both forget each other, classic and LE.
     const settingsBtn = UI.button('Open Bluetooth settings', () => api.hub({ do: 'audio', a: 'settings' }), 'small primary');
     const step1 = UI.row('', '');
@@ -249,7 +249,7 @@ UI.tab({
         else if (bt.le) status = `${phone} and {me} are paired over Bluetooth LE only, which can’t carry a call: Forget below, then pair them again in Bluetooth settings`;
         else if (bt.forget) status = `${phone} keeps its old pairing with {me}: forget {me} in Bluetooth settings on ${phone} (they opened there), then pair them again in Bluetooth settings`;
         else if (bt.radio === false) status = `Bluetooth is off on ${phone}`;
-        else if (a.state === 'needs-pair') status = `Not paired with ${phone} over classic Bluetooth: pair them in Bluetooth settings, as below. DuoDesk connects once they are`;
+        else if (a.state === 'needs-pair') status = `Not paired with ${phone} over classic Bluetooth: pair them in Bluetooth settings, as below. DenaDesk connects once they are`;
       }
       statusRow.setHint(status);
       retryBtn.hidden = !(a && ['failed', 'off'].includes(a.state));
@@ -277,8 +277,8 @@ UI.tab({
         step2.setHint((a && a.pairHow) || `In {me}’s Bluetooth settings, add a device and pick ${phone}`);
         settingsBtn.hidden = !h.btSettings;
         step3.setHint(bt && bt.bonding ? `Pairing… Confirm it on ${phone} and on {me}`
-          : h.pairWatch ? `Looking for ${phone}… DuoDesk connects as soon as they’re paired`
-            : 'DuoDesk connects as soon as they’re paired');
+          : h.pairWatch ? `Looking for ${phone}… DenaDesk connects as soon as they’re paired`
+            : 'DenaDesk connects as soon as they’re paired');
       }
       forgetRow.setHint(`${phone} and {me} forget each other, over classic Bluetooth and LE, then pair again from the start`);
       if (setupCard.hidden) unsure();

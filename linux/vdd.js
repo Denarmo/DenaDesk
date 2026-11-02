@@ -17,11 +17,11 @@
 //   X11 with NVIDIA's own driver — it names its outputs itself and ignores the kernel's connector
 //     status, so none of that works. Install puts the screen in its configuration instead: a free
 //     DisplayPort output forced connected (ConnectedMonitor, which replaces its detection, so the
-//     ports in use are listed too) with a DuoDesk EDID of common sizes (CustomEDID), read when X
+//     ports in use are listed too) with a DenaDesk EDID of common sizes (CustomEDID), read when X
 //     starts (log out and back in once). Extend then switches that output on at the size nearest
 //     the other screen's shape, and off after; off at start too once the person says so (the
 //     desktop turns every connected screen on at login, and switching it off blanks every monitor).
-// It is on only while Extend is on, like the Mac's DuoDesk display.
+// It is on only while Extend is on, like the Mac's DenaDesk display.
 const fs = require('fs');
 const path = require('path');
 const { spawn, execFile } = require('child_process');
@@ -33,7 +33,7 @@ const HELPER = process.env.TWINDESK_CONNECTOR
 const POLICY = process.env.TWINDESK_CONNECTOR_POLICY
   || (fs.existsSync('/run/current-system/sw/share/polkit-1/actions/org.twindesk.linux.connector.policy') ? '/run/current-system/sw/share/polkit-1/actions/org.twindesk.linux.connector.policy' : '/usr/share/polkit-1/actions/org.twindesk.linux.connector.policy');
 const HELPER_SH = String.raw`#!/bin/sh
-# TwinDesk: makes a spare display output count as connected while Extend is on, and gives it back
+# DenaDesk: makes a spare display output count as connected while Extend is on, and gives it back
 # to the driver's detection after (the DRM connector's status). Run through pkexec: the polkit
 # action org.twindesk.linux.connector lets the person at the computer do it without a password.
 # Usage: twindesk-connector on|detect <connector, e.g. HDMI-A-2 or Virtual-2>
@@ -47,17 +47,17 @@ exit 1
 `;
 const NV_CONF = '/etc/X11/xorg.conf.d/20-twindesk-nvidia.conf';
 const NV_EDID = '/etc/X11/twindesk-virtual.edid';
-const EDID_NAME = 'DuoDesk'; // the monitor's name in the display settings
-const OLD_EDID_NAME = 'TwinDesk'; // what older versions installed: still ours (installing again renames it)
+const EDID_NAME = 'DenaDesk'; // the monitor's name in the display settings
+const OLD_EDID_NAME = 'DenaDesk'; // what older versions installed: still ours (installing again renames it)
 const POLICY_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
-  <vendor>DuoDesk</vendor>
+  <vendor>DenaDesk</vendor>
   <vendor_url>https://github.com/0xCodez/DuoDesk</vendor_url>
   <action id="org.twindesk.linux.connector">
-    <description>Switch a spare display output on for DuoDesk's Extend</description>
-    <message>DuoDesk wants to switch a spare display output on or off</message>
+    <description>Switch a spare display output on for DenaDesk's Extend</description>
+    <message>DenaDesk wants to switch a spare display output on or off</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
@@ -311,7 +311,7 @@ async function outputs(probe = true) {
   return list;
 }
 
-// Our NVIDIA screen: the output whose EDID names DuoDesk (or TwinDesk, from an older version).
+// Our NVIDIA screen: the output whose EDID names DenaDesk (or DenaDesk, from an older version).
 const OUR_EDIDS = [EDID_NAME, OLD_EDID_NAME].map((n) => Buffer.from(n).toString('hex'));
 const nvOurs = (outs) => outs.find((o) => o.connected && OUR_EDIDS.some((e) => o.edid.includes(e))) || null;
 
@@ -334,7 +334,7 @@ function dtd(w, h) {
 const text13 = (tag, t) => Buffer.concat([Buffer.from([0, 0, 0, tag, 0]), Buffer.from((t + '\n').padEnd(13, ' ').slice(0, 13), 'ascii')]);
 const checksum = (b) => { b[127] = (256 - (b.subarray(0, 127).reduce((x, y) => x + y, 0) % 256)) % 256; return b; };
 
-// DuoDesk's virtual screen as NVIDIA reads it (CustomEDID): EDID 1.4 with 1920 × 1080 preferred,
+// DenaDesk's virtual screen as NVIDIA reads it (CustomEDID): EDID 1.4 with 1920 × 1080 preferred,
 // 2560 × 1440, and a CTA extension with the 16:10 and Mac shapes.
 const NV_SIZES = [[1920, 1080], [2560, 1440], [1920, 1200], [2560, 1600], [1680, 1050], [1440, 900], [2560, 1664], [1280, 720]];
 function edid() {
@@ -380,7 +380,7 @@ function nvPorts() {
 
 const spareOf = (outs) => outs.filter((o) => !o.connected && o.crtcs > 0 && hasConnector(o));
 const SWITCHED_OFF = 'something on this computer switched it off again (in a virtual machine, its guest tools do that)';
-const modeName = (w, h) => 'DuoDesk_' + cvtRB(w, h).width + 'x' + h;
+const modeName = (w, h) => 'DenaDesk_' + cvtRB(w, h).width + 'x' + h;
 
 class Vdd {
   // opts: onChange(), popup?(kind, text)
@@ -425,7 +425,7 @@ class Vdd {
         const { app } = require('electron');
         this._set({ checked: true, kind: 'xrandr', hint: '', installed: spare && ready, setup: spare && !ready,
           removable: ready && !(app.isPackaged && !process.env.APPIMAGE), // the .deb's own files stay
-          message: spare ? '' : NVIDIA() ? 'NVIDIA’s driver doesn’t let DuoDesk add a monitor on X11. Extend works on GNOME with Wayland, or with the open-source driver'
+          message: spare ? '' : NVIDIA() ? 'NVIDIA’s driver doesn’t let DenaDesk add a monitor on X11. Extend works on GNOME with Wayland, or with the open-source driver'
             : 'Your graphics driver has no spare output for a virtual monitor' });
       }
     } catch (e) {
@@ -435,7 +435,7 @@ class Vdd {
 
   // Our screens found on at start (the desktop's login layout, an older version's mode), to switch
   // off: asked first, not done by itself (each is a mode change, and on NVIDIA that blanks every
-  // monitor for a moment). Leave it on: not asked again until DuoDesk starts again. Off only if
+  // monitor for a moment). Leave it on: not asked again until DenaDesk starts again. Off only if
   // Extend didn't take it meanwhile.
   async _offAsked(names) {
     this.declined = this.declined || new Set();
@@ -445,9 +445,9 @@ class Vdd {
     try {
       const { dialog } = require('electron');
       const r = await dialog.showMessageBox({
-        type: 'question', title: 'DuoDesk', buttons: ['Switch it off', 'Leave it on'], defaultId: 0, cancelId: 1,
-        message: 'Switch off DuoDesk’s extra screen?',
-        detail: 'DuoDesk’s extra screen for Extend is on (' + names.join(', ') + '), so windows can end up on a screen nobody sees until Extend is on. '
+        type: 'question', title: 'DenaDesk', buttons: ['Switch it off', 'Leave it on'], defaultId: 0, cancelId: 1,
+        message: 'Switch off DenaDesk’s extra screen?',
+        detail: 'DenaDesk’s extra screen for Extend is on (' + names.join(', ') + '), so windows can end up on a screen nobody sees until Extend is on. '
           + 'Switching it off makes your monitors go black for a moment.',
       });
       if (r.response !== 0) { for (const n of names) this.declined.add(n); return; }
@@ -479,7 +479,7 @@ class Vdd {
         : conf ? 'Log out and back in once to finish installing.'
           : 'NVIDIA’s driver needs the extra screen in its settings. Install asks for your password once, then log out and back in. If you later plug a monitor into another port, install again.',
       message: ours ? (conf ? '' : 'Removed: log out and back in to finish') : conf ? 'Log out and back in once to finish adding the extra screen for Extend'
-        : ports && ports.pick ? '' : 'NVIDIA’s driver doesn’t let DuoDesk add a monitor on X11, and this card has no free DisplayPort port for one',
+        : ports && ports.pick ? '' : 'NVIDIA’s driver doesn’t let DenaDesk add a monitor on X11, and this card has no free DisplayPort port for one',
     });
   }
 
@@ -679,10 +679,10 @@ class Vdd {
       if (this.state.kind === 'nvidia') {
         const ports = nvPorts();
         if (!ports.pick) throw new Error('no free DisplayPort port');
-        const conf = `# DuoDesk: an extra screen for Extend on NVIDIA's driver (Share screen › Extend; Remove takes it away).
+        const conf = `# DenaDesk: an extra screen for Extend on NVIDIA's driver (Share screen › Extend; Remove takes it away).
 # ConnectedMonitor replaces the driver's detection: the ports in use when it was installed, and ours.
 Section "OutputClass"
-    Identifier "DuoDesk virtual screen"
+    Identifier "DenaDesk virtual screen"
     MatchDriver "nvidia-drm"
     Option "ConnectedMonitor" "${[...ports.connected, ports.pick].join(', ')}"
     Option "CustomEDID" "${ports.pick}:${NV_EDID}"

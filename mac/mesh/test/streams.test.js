@@ -17,7 +17,7 @@ const test = (name, fn) => tests.push([name, fn]);
 const MODEL = [
   { id: '1', name: 'Built-in', x: 0, y: 0, w: 3024, h: 1964, scale: 2, primary: true },
   { id: '2', name: 'Left', x: -1920, y: 0, w: 1920, h: 1080, scale: 1, primary: false },
-  { id: '9', name: 'TwinDesk', x: 3024, y: 0, w: 1920, h: 1080, scale: 1, primary: false },
+  { id: '9', name: 'DenaDesk', x: 3024, y: 0, w: 1920, h: 1080, scale: 1, primary: false },
 ];
 
 function fakeStream(log) {

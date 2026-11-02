@@ -40,7 +40,7 @@ class LiveProgress {
 
   _notify(tag, title, body, hints, timeout, replace = this.ids[tag] || 0, last = false) {
     this.busy[tag] = true;
-    this._call(['--method', 'org.freedesktop.Notifications.Notify', q('DuoDesk'), String(replace), q(this.icon), q(title), q(body), '[]', hints, String(timeout)], (out) => {
+    this._call(['--method', 'org.freedesktop.Notifications.Notify', q('DenaDesk'), String(replace), q(this.icon), q(title), q(body), '[]', hints, String(timeout)], (out) => {
       this.busy[tag] = false;
       const m = /uint32 (\d+)/.exec(out || '');
       if (m && !last) this.ids[tag] = Number(m[1]);

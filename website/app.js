@@ -1,4 +1,4 @@
-/* DuoDesk website. Made by 0xCodez. Based on TwinDesk by Inuka Asith, GPL-3.0.
+/* DenaDesk website. Made by 0xCodez. Based on DenaDesk by Inuka Asith, GPL-3.0.
    Loaded in <head> without defer so the "js" class is on <html> before the first paint (reveal
    animations start hidden only when this script runs); everything else waits for the DOM. */
 'use strict';
@@ -421,14 +421,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Which installer a click means. The links open the latest release page, so the asset is the one that
   // fits the visitor's system: CPU from Client Hints where the browser gives it (Chromium), otherwise the
-  // common case (x64 Windows, Apple silicon Mac). A direct file link (…/download/DuoDesk-…) names it exactly.
+  // common case (x64 Windows, Apple silicon Mac). A direct file link (…/download/DenaDesk-…) names it exactly.
   let arch = '';
   try {
     navigator.userAgentData?.getHighEntropyValues?.(['architecture'])
       .then((v) => { arch = String(v.architecture || ''); }, () => {});
   } catch { /* no client hints */ }
   const fromFile = (href) => {
-    const m = href.match(/\/releases\/(?:latest\/)?download\/(?:[^/]+\/)?(DuoDesk[^/?#]*)$/i);
+    const m = href.match(/\/releases\/(?:latest\/)?download\/(?:[^/]+\/)?(DenaDesk[^/?#]*)$/i);
     if (!m || /mesh/i.test(m[1])) return null;
     const f = m[1];
     if (/\.exe$/i.test(f)) return /arm64|aarch64/i.test(f) ? 'windows-arm64' : 'windows-x64';
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (o === 'android') return 'android';
     return null;
   };
-  const isRelease = (href) => /github\.com\/0xCodez\/DuoDesk\/releases\/(latest|download|tag)\b/i.test(href);
+  const isRelease = (href) => /github\.com\/0xCodez\/DenaDesk\/releases\/(latest|download|tag)\b/i.test(href);
   document.addEventListener('click', (e) => {
     const link = e.target.closest && e.target.closest('a[href]');
     if (!link) return;
@@ -459,8 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const place = link.closest('#top') ? 'hero' : link.closest('#download') ? 'download' : link.closest('.final, .foot') ? 'footer' : 'other';
       if (asset) track({ t: 'dl', k: asset, w: place });
       else track({ t: 'click', k: 'releases-latest' });
-    } else if (/github\.com\/0xCodez\/DuoDesk\/releases\/?$/i.test(href)) track({ t: 'click', k: 'all-releases' });
-    else if (/github\.com\/0xCodez\/DuoDesk\/?$/i.test(href)) track({ t: 'click', k: 'github' });
+    } else if (/github\.com\/0xCodez\/DenaDesk\/releases\/?$/i.test(href)) track({ t: 'click', k: 'all-releases' });
+    else if (/github\.com\/0xCodez\/DenaDesk\/?$/i.test(href)) track({ t: 'click', k: 'github' });
     else if (/beyond-media\.ai\/tips/.test(href)) track({ t: 'click', k: 'tips-page' });
     else if (link.getAttribute('href') === '#support') track({ t: 'click', k: 'support-link' });
   });

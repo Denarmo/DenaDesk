@@ -14,7 +14,7 @@ const PORTAL = ['--session', '--dest', 'org.freedesktop.portal.Desktop', '--obje
 let watcher = null;
 
 const apply = (scheme) => {
-  const want = 'dark'; // DuoDesk's Aurora look is dark only, whatever the desktop asks
+  const want = 'dark'; // DenaDesk's Aurora look is dark only, whatever the desktop asks
   if (nativeTheme.themeSource !== want) nativeTheme.themeSource = want;
 };
 

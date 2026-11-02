@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Other apps' notifications. macOS has no API for them, so we read the Notification
 // Center database (SQLite, read-only) once a second for records newer than the last one seen.
-// Needs Full Disk Access for the responsible app (DuoDesk). Emits `notif` and `notifState`.
+// Needs Full Disk Access for the responsible app (DenaDesk). Emits `notif` and `notifState`.
 import Cocoa
 import SQLite3
 

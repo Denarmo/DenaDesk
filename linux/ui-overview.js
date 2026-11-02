@@ -137,7 +137,7 @@ UI.tab({
       if (p) {
         if (mine) mine.seen = true;
         if (p.phase === 'failed') {
-          const fw = s.firewall && s.firewall.ok === false ? ' The firewall blocks DuoDesk here: Fix firewall above.' : '';
+          const fw = s.firewall && s.firewall.ok === false ? ' The firewall blocks DenaDesk here: Fix firewall above.' : '';
           return { fail: true, text: named(p.error, dev) + fw };
         }
         if (p.phase === 'code') return { code: p.code };
@@ -150,7 +150,7 @@ UI.tab({
         return null;
       }
       if (Date.now() - mine.since > LIMIT_MS) {
-        return { fail: true, text: 'Can’t reach ' + dev.name + ' at ' + dev.address + '. Is DuoDesk open there, on the same Wi-Fi?' };
+        return { fail: true, text: 'Can’t reach ' + dev.name + ' at ' + dev.address + '. Is DenaDesk open there, on the same Wi-Fi?' };
       }
       return { busy: true, text: mine.kind === 'take' ? 'Taking over…' : 'Connecting…' };
     }
@@ -173,7 +173,7 @@ UI.tab({
       const bad = l.state === 'identity_changed';
       status.textContent = bad ? 'This ' + p.kind + ' looks different now. Forget it and pair again.'
         : connected ? s.kvmState.message || (WHERE[s.input] || 'Connected').replace('{there}', p.the).replace('{There}', p.the.charAt(0).toUpperCase() + p.the.slice(1))
-          : s.peer ? 'Open DuoDesk on ' + s.peer.name + '.'
+          : s.peer ? 'Open DenaDesk on ' + s.peer.name + '.'
             : 'Pick a computer below, or connect by address.';
       status.classList.toggle('bad', bad);
       // Disconnected here or by the other side, taken over, or in use by another device.
@@ -217,7 +217,7 @@ UI.tab({
       const busy = !!s.pairing && s.pairing.phase !== 'failed';
       ipBtn.disabled = busy || !!asking;
       const failed = s.pairing && s.pairing.phase === 'failed';
-      ipRow.setHint(asking ? 'Looking for DuoDesk at ' + asking + '…' : failed ? s.pairing.error : '');
+      ipRow.setHint(asking ? 'Looking for DenaDesk at ' + asking + '…' : failed ? s.pairing.error : '');
       ipRow.hint.classList.toggle('bad', !asking && !!failed);
 
       // found nearby
@@ -263,7 +263,7 @@ UI.tab({
           r.classList.add('with-ico');
           return r;
         });
-        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DuoDesk on the other computer.'));
+        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DenaDesk on the other computer.'));
         foundList.replaceChildren(...rows);
         if (focus) focus.focus();
       }

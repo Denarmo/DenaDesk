@@ -31,7 +31,7 @@ function connectTo(m) {
 function template(m) {
   const status = { label: m.status, enabled: false };
   if (!m.connected) {
-    return [status, ...(m.again ? [m.again] : []), connectTo(m), sep, { label: 'Open DuoDesk…', click: m.open }, { label: 'Quit DuoDesk', click: m.quit }];
+    return [status, ...(m.again ? [m.again] : []), connectTo(m), sep, { label: 'Open DenaDesk…', click: m.open }, { label: 'Quit DenaDesk', click: m.quit }];
   }
   return [
     status,
@@ -57,9 +57,9 @@ function template(m) {
     { label: 'Connection', submenu: [...(m.disconnect ? [m.disconnect, sep] : []), connectTo(m)] },
     sep,
     ...(m.update ? [m.update] : []),
-    { label: 'Open DuoDesk…', click: m.open },
+    { label: 'Open DenaDesk…', click: m.open },
     { label: 'Open Log Folder', click: m.log },
-    { label: 'Quit DuoDesk', click: m.quit },
+    { label: 'Quit DenaDesk', click: m.quit },
   ];
 }
 

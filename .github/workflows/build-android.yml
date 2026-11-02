@@ -40,35 +40,33 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # Signed with the ANDROID_KEYSTORE secret when it's there, so the APKs install over the ones
-      # people already have (and the computers can install the full one over the standard one).
-      # Without it they're signed with this runner's own debug key: fine to try, but they won't
-      # install over a build signed with yours.
-      - name: Signing key
+      - name: Load release signing key
         env:
           KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
         run: |
-          if [ -z "$KEYSTORE" ]; then
-            echo "::warning::No ANDROID_KEYSTORE secret: signed with the runner's debug key"
-          else
-            mkdir -p ~/.android
-            echo "$KEYSTORE" | base64 -d > ~/.android/debug.keystore
-          fi
+          test -n "$KEYSTORE" || { echo "::error::ANDROID_KEYSTORE release signing secret is required"; exit 1; }
+          echo "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/denadesk-release.jks"
+          chmod 600 "$RUNNER_TEMP/denadesk-release.jks"
 
       - name: Build the standard and full APKs
         working-directory: android
+        env:
+          DENADESK_KEYSTORE: ${{ runner.temp }}/denadesk-release.jks
+          DENADESK_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          DENADESK_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          DENADESK_KEY_ALIAS: denadesk
         run: |
           ./gradlew --no-daemon assembleRelease
           v=$(grep -m1 versionName app/build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
           mkdir -p dist
-          cp app/build/outputs/apk/standard/release/app-standard-release.apk "dist/DuoDesk-$v.apk"
-          cp app/build/outputs/apk/full/release/app-full-release.apk "dist/DuoDesk-$v-full.apk"
+          cp app/build/outputs/apk/standard/release/app-standard-release.apk "dist/DenaDesk-$v.apk"
+          cp app/build/outputs/apk/full/release/app-full-release.apk "dist/DenaDesk-$v-full.apk"
 
       - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
           name: duodesk-android
-          path: android/dist/DuoDesk-*.apk
+          path: android/dist/DenaDesk-*.apk
 
       # Straight onto the release, no download and re-upload.
       - name: Upload to the release
@@ -80,4 +78,4 @@ jobs:
           DRAFT: ${{ github.event_name != 'push' && 'true' || '' }}
         run: |
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" ${DRAFT:+--draft} --prerelease --target "$(git rev-parse HEAD)" --title "$TAG" --notes "" || true
-          gh release upload "$TAG" android/dist/DuoDesk-*.apk --clobber
+          gh release upload "$TAG" android/dist/DenaDesk-*.apk --clobber

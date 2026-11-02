@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
-// TwinDesk mesh core. The design is in docs/mesh.md: read it before changing this file.
+// DenaDesk mesh core. The design is in docs/mesh.md: read it before changing this file.
 //
 // Pure JavaScript: no I/O, no timers, no dependencies (EventEmitter is built in). The same file is
 // required by the Windows, Mac and Linux main processes, and re-implemented by hand in Kotlin for

@@ -2,12 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
   <key>CFBundleIdentifier</key><string>org.macshare.mac.helper</string>
-  <key>CFBundleName</key><string>DuoDesk Helper</string>
-  <key>NSBluetoothAlwaysUsageDescription</key><string>DuoDesk connects to your phone and computers over Bluetooth when they aren't on your network.</string>
-  <key>NSBluetoothPeripheralUsageDescription</key><string>DuoDesk connects to your phone and computers over Bluetooth when they aren't on your network.</string>
-  <key>NSLocationUsageDescription</key><string>macOS shows Wi-Fi networks only to apps with Location. DuoDesk joins your phone's or PC's Wi-Fi to send files when they aren't on your network.</string>
-  <key>NSLocationWhenInUseUsageDescription</key><string>macOS shows Wi-Fi networks only to apps with Location. DuoDesk joins your phone's or PC's Wi-Fi to send files when they aren't on your network.</string>
-  <key>NSLocalNetworkUsageDescription</key><string>DuoDesk finds and connects to your phone and PC on the local network.</string>
-  <key>NSMicrophoneUsageDescription</key><string>DuoDesk sends sound between your Mac and your devices.</string>
-  <key>NSAudioCaptureUsageDescription</key><string>DuoDesk sends your Mac's sound to your devices.</string>
+  <key>CFBundleName</key><string>DenaDesk Helper</string>
+  <key>NSBluetoothAlwaysUsageDescription</key><string>DenaDesk connects to your phone and computers over Bluetooth when they aren't on your network.</string>
+  <key>NSBluetoothPeripheralUsageDescription</key><string>DenaDesk connects to your phone and computers over Bluetooth when they aren't on your network.</string>
+  <key>NSLocationUsageDescription</key><string>macOS shows Wi-Fi networks only to apps with Location. DenaDesk joins your phone's or PC's Wi-Fi to send files when they aren't on your network.</string>
+  <key>NSLocationWhenInUseUsageDescription</key><string>macOS shows Wi-Fi networks only to apps with Location. DenaDesk joins your phone's or PC's Wi-Fi to send files when they aren't on your network.</string>
+  <key>NSLocalNetworkUsageDescription</key><string>DenaDesk finds and connects to your phone and PC on the local network.</string>
+  <key>NSMicrophoneUsageDescription</key><string>DenaDesk sends sound between your Mac and your devices.</string>
+  <key>NSAudioCaptureUsageDescription</key><string>DenaDesk sends your Mac's sound to your devices.</string>
 </dict></plist>

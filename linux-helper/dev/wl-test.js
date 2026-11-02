@@ -61,7 +61,7 @@ function findNode(name) {
 
   // 1. absolute move lands where asked (read from the virtual pointer's node)
   await sleep(300);
-  const node = findNode('DuoDesk virtual pointer');
+  const node = findNode('DenaDesk virtual pointer');
   ok('virtual pointer node', !!node, node || '');
   const absSeen = [];
   let rd = null;

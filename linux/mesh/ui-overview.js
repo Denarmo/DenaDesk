@@ -133,7 +133,7 @@ UI.tab({
     const adbWhere = el('input', { type: 'text', placeholder: 'Address:port (optional)', autocomplete: 'off', spellcheck: false, attrs: { 'aria-label': 'Pairing address' } });
     const adbPair = UI.button('Pair', () => api.phonePair({ code: adbCode.value, where: adbWhere.value }), 'small primary');
     adbCode.onkeydown = adbWhere.onkeydown = (e) => { if (e.key === 'Enter') adbPair.click(); };
-    const adbPairRow = UI.row('Pairing code', 'Or type it on the phone, in DuoDesk’s notification', [adbCode, adbWhere, adbPair]);
+    const adbPairRow = UI.row('Pairing code', 'Or type it on the phone, in DenaDesk’s notification', [adbCode, adbWhere, adbPair]);
     const adbCard = UI.card('Phone screen, mouse and keyboard', [adbRow, adbPairRow]);
 
     // Every phone whose screen/mouse/keyboard connection (wireless debugging or cable) is not working yet, each with
@@ -188,7 +188,7 @@ UI.tab({
       const bad = l.state === 'identity_changed';
       status.textContent = bad ? 'This ' + p.kind + ' looks different now. Forget it and pair again.'
         : connected ? s.kvmState.message || (WHERE[s.input] || 'Connected').replace('{there}', p.the).replace('{There}', p.the.charAt(0).toUpperCase() + p.the.slice(1))
-          : s.peer ? 'Open DuoDesk on ' + s.peer.name + '.'
+          : s.peer ? 'Open DenaDesk on ' + s.peer.name + '.'
             : 'Pick a computer below, or connect by address.';
       status.classList.toggle('bad', bad);
       // Disconnected here or by the other side, taken over, or in use by another device.
@@ -264,7 +264,7 @@ UI.tab({
       const busy = !!s.pairing && s.pairing.phase !== 'failed';
       ipBtn.disabled = busy || !!asking;
       const failed = s.pairing && s.pairing.phase === 'failed';
-      ipRow.setHint(asking ? 'Looking for DuoDesk at ' + asking + '…' : failed ? s.pairing.error : '');
+      ipRow.setHint(asking ? 'Looking for DenaDesk at ' + asking + '…' : failed ? s.pairing.error : '');
       ipRow.hint.classList.toggle('bad', !asking && !!failed);
 
       // found nearby
@@ -300,7 +300,7 @@ UI.tab({
           r.classList.add('with-ico');
           return r;
         });
-        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DuoDesk on the other computer.'));
+        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DenaDesk on the other computer.'));
         foundList.replaceChildren(...rows);
         if (focus) focus.focus();
       }

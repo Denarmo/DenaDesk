@@ -109,9 +109,9 @@
           : 'A phone app opens here in a window of its own, as it was');
         status.setHint(!h.connected ? 'Not connected'
           : !h.on ? 'Off here'
-            : !h.peerKnows ? 'No ReZume there yet: update DuoDesk on {name}'
+            : !h.peerKnows ? 'No ReZume there yet: update DenaDesk on {name}'
               : !h.peerOn ? 'Off on {name}: turn it on there too'
-                : phone && !h.peerDetects ? (h.mirrorReady ? 'Ready: the phone’s apps through wireless debugging (its pages need DuoDesk’s Accessibility there)' : 'Ready for pages and documents. For what’s in use on the phone, turn on DuoDesk’s Accessibility there, or wireless debugging')
+                : phone && !h.peerDetects ? (h.mirrorReady ? 'Ready: the phone’s apps through wireless debugging (its pages need DenaDesk’s Accessibility there)' : 'Ready for pages and documents. For what’s in use on the phone, turn on DenaDesk’s Accessibility there, or wireless debugging')
                   : h.incoming ? 'Ready: something to go on with, above' : 'Ready');
         out.hidden = !h.out;
         if (h.out) {

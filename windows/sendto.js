@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Explorer's right-click › Send to
-// gets "<peer name> (DuoDesk)", a shortcut in shell:sendto to `DuoDesk.exe --send-files`. Explorer
-// appends the chosen paths; that copy of DuoDesk hands them to this one (second-instance) and they
+// gets "<peer name> (DenaDesk)", a shortcut in shell:sendto to `DenaDesk.exe --send-files`. Explorer
+// appends the chosen paths; that copy of DenaDesk hands them to this one (second-instance) and they
 // go with the Send files flow (filedrop.js, drop:'send'). The shortcut follows the paired computer's
 // name and goes when nothing is paired; the uninstaller removes it too (installer.nsh).
 'use strict';
@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ARG = '--send-files';
-const SUFFIX = ' (DuoDesk).lnk';
-const OLD_SUFFIXES = [' (MacShare).lnk', ' (TwinDesk).lnk']; // the app's old names: replaced by the new one
+const SUFFIX = ' (DenaDesk).lnk';
+const OLD_SUFFIXES = [' (MacShare).lnk', ' (DenaDesk).lnk']; // the app's old names: replaced by the new one
 
 class SendTo {
   // opts: fileDrop, link, peerName() → name | '', popup(kind, text, sub)
@@ -42,7 +42,7 @@ class SendTo {
       const args = (app.isPackaged ? [] : [app.getAppPath()]).map((x) => (/\s/.test(x) ? '"' + x + '"' : x)).concat(ARG).join(' ');
       const file = path.join(this.dir, name + SUFFIX);
       const ok = shell.writeShortcutLink(file, fs.existsSync(file) ? 'replace' : 'create', {
-        target: process.execPath, args, description: 'Send to ' + name + ' with DuoDesk', icon: process.execPath, iconIndex: 0,
+        target: process.execPath, args, description: 'Send to ' + name + ' with DenaDesk', icon: process.execPath, iconIndex: 0,
       });
       if (!ok) console.warn('[sendto] Windows refused the Send to shortcut');
     } catch (e) {

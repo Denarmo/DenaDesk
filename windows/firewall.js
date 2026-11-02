@@ -30,10 +30,10 @@ function interpret(payload) {
   const publicNets = lan.filter((n) => n.category === 'Public').map((n) => ({ index: n.index, alias: n.alias }));
   let message = 'OK';
   if (!lan.length) message = 'No network connection.';
-  else if (publicNets.length) message = 'The network "' + publicNets[0].alias + '" is Public. Use a trusted Private network for sharing. DuoDesk will not change its trust level.';
+  else if (publicNets.length) message = 'The network "' + publicNets[0].alias + '" is Public. Use a trusted Private network for sharing. DenaDesk will not change its trust level.';
   else if (unread) message = 'Couldn’t read Windows Firewall rules. Ask your administrator to check access.';
-  else if (blocked) message = 'A Windows Firewall block rule applies to DuoDesk. Repair preserves it; ask your administrator to review it.';
-  else if (!covered) message = 'DuoDesk isn’t allowed through Windows Firewall on this network.';
+  else if (blocked) message = 'A Windows Firewall block rule applies to DenaDesk. Repair preserves it; ask your administrator to review it.';
+  else if (!covered) message = 'DenaDesk isn’t allowed through Windows Firewall on this network.';
   return { ok: lan.length > 0 && !publicNets.length && !blocked && covered, message, publicNets, blocked, covered, admin: payload.admin !== false, unread };
 }
 

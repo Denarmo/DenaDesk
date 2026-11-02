@@ -141,12 +141,12 @@ if ! command -v smbd >/dev/null 2>&1; then
   elif command -v pacman >/dev/null 2>&1; then pacman -S --noconfirm --needed samba >/dev/null
   else echo "Install Samba first (no package manager found)" >&2; exit 3; fi
 fi
-id ${USER} >/dev/null 2>&1 || useradd -r -M -d /nonexistent -s "$(command -v nologin || echo /bin/false)" -c 'DuoDesk file sharing (network only)' ${USER}
+id ${USER} >/dev/null 2>&1 || useradd -r -M -d /nonexistent -s "$(command -v nologin || echo /bin/false)" -c 'DenaDesk file sharing (network only)' ${USER}
 printf '%s\\n%s\\n' "$PW" "$PW" | smbpasswd -s -a ${USER} >/dev/null
 smbpasswd -e ${USER} >/dev/null
 mkdir -p /etc/samba
 [ -f /etc/samba/smb.conf ] || printf '[global]\\n   workgroup = WORKGROUP\\n' > /etc/samba/smb.conf
-printf '# DuoDesk: the folder shared with the other computer (managed by DuoDesk)\\n[${SHARE}]\\n   comment = DuoDesk\\n   path = %s\\n   valid users = ${USER}\\n   force user = %s\\n   read only = no\\n   browseable = no\\n   create mask = 0644\\n   directory mask = 0755\\n' ${q(folder)} ${q(me)} > ${CONF}
+printf '# DenaDesk: the folder shared with the other computer (managed by DenaDesk)\\n[${SHARE}]\\n   comment = DenaDesk\\n   path = %s\\n   valid users = ${USER}\\n   force user = %s\\n   read only = no\\n   browseable = no\\n   create mask = 0644\\n   directory mask = 0755\\n' ${q(folder)} ${q(me)} > ${CONF}
 grep -qxF 'include = ${CONF}' /etc/samba/smb.conf || printf '\\ninclude = ${CONF}\\n' >> /etc/samba/smb.conf
 if command -v selinuxenabled >/dev/null 2>&1 && selinuxenabled; then chcon -R -t samba_share_t ${q(folder)} || true; setsebool -P samba_enable_home_dirs on || true; fi
 if systemctl is-active -q ufw 2>/dev/null; then ufw allow samba >/dev/null 2>&1 || ufw allow 445/tcp >/dev/null; fi

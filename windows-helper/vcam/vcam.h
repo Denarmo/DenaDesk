@@ -2,7 +2,7 @@
 // The virtual camera (Windows 11, MFCreateVirtualCamera): what twindesk-vcam.dll (the camera's
 // media source, run by Windows' Frame Server) and twindesk-vcam.exe (adds it, feeds it) share.
 // The picture goes through shared memory: the source makes it (Frame Server is a service, so it
-// may make a Global\ one), the exe writes each frame DuoDesk sends it there, and the source hands
+// may make a Global\ one), the exe writes each frame DenaDesk sends it there, and the source hands
 // apps the newest one 30 times a second, or a black picture while none comes.
 #pragma once
 #include <windows.h>
@@ -11,16 +11,16 @@
 #define VCAM_H 720
 #define VCAM_FPS 30
 #define VCAM_FRAME (VCAM_W * VCAM_H * 3 / 2) // NV12
-#define VCAM_NAME L"DuoDesk Camera"
+#define VCAM_NAME L"DenaDesk Camera"
 // Its name before 2.5 (the same CLSID): `add` takes a camera of that name away first, so an
 // existing install shows the new name after the next start (windows/vcam.js migrates).
-#define VCAM_LEGACY_NAME L"TwinDesk Camera"
-#define VCAM_MAP L"TwinDeskVirtualCamera" // under Global\ (Frame Server) or Local\ (the self test)
+#define VCAM_LEGACY_NAME L"DenaDesk Camera"
+#define VCAM_MAP L"DenaDeskVirtualCamera" // under Global\ (Frame Server) or Local\ (the self test)
 #define VCAM_MAGIC 0x43564454 // 'TDVC'
 #define VCAM_STALE_MS 1500 // no new frame for this long: black
 
 // {36D4122A-6D38-4C6A-B622-E9DD756F6C5D}
-static const GUID CLSID_TwinDeskVcam = { 0x36d4122a, 0x6d38, 0x4c6a, { 0xb6, 0x22, 0xe9, 0xdd, 0x75, 0x6f, 0x6c, 0x5d } };
+static const GUID CLSID_DenaDeskVcam = { 0x36d4122a, 0x6d38, 0x4c6a, { 0xb6, 0x22, 0xe9, 0xdd, 0x75, 0x6f, 0x6c, 0x5d } };
 
 // A seqlock: the writer makes seq odd, copies the frame, makes it even again; a reader that saw
 // it odd, or changed by the end of its copy, keeps the frame it had.

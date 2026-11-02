@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Phone Files page (Mac, PC and Linux): the phone's storage, folder by folder, through TwinDesk on
+// Phone Files page (Mac, PC and Linux): the phone's storage, folder by folder, through DenaDesk on
 // the phone with All files access (Hub.kt, FsBrowse.kt there), so no ADB: Mount is the drive in the
 // file manager, through ADB. Open a folder, Save files and folders here (into Downloads, as Send
 // does), Upload into the folder that's open (or drop files on it), New folder, Rename, Delete.
@@ -78,7 +78,7 @@ UI.tab({
     const serveSw = UI.switch((v) => api.hub({ do: 'share', a: 'serve', on: v }), { label: 'Share a folder with the phone' });
     const mineRow = UI.row('Share a folder with the phone', '', [chooseBtn, defaultBtn, serveSw]);
     const shareCard = UI.card('Shared folders', [phoneRow, mineRow]);
-    // Explorer's Import from phone (Windows: right-click a folder › TwinDesk): Save goes there.
+    // Explorer's Import from phone (Windows: right-click a folder › DenaDesk): Save goes there.
     const importRow = UI.row('', 'Choose files on the phone, then Import. They go into this folder.', [UI.button('Cancel', () => api.importCancel && api.importCancel(), 'small')]);
     const importCard = UI.card('', [importRow], { cls: 'import-card' });
     importCard.hidden = true;
@@ -99,7 +99,7 @@ UI.tab({
       ejectBtn.hidden = !p.mounted;
       phoneRow.setHint(p.message || (p.busy === 'mounting' ? 'Opening…' : p.busy === 'wifi' ? 'Connecting with Wi-Fi Direct…'
         : p.wifi ? `“${p.name}”: Open connects with Wi-Fi Direct and shows it in ${fm}`
-        : !p.offered ? `None shared: on ${ph}, DuoDesk › File access › Share a folder`
+        : !p.offered ? `None shared: on ${ph}, DenaDesk › File access › Share a folder`
           : p.mounted ? `“${p.name}”, in ${fm}${fm === 'Finder' ? ' under Locations' : ''}` : `“${p.name}”: Open shows it in ${fm}`));
       phoneRow.hint.classList.toggle('bad', !!p.message);
       const m = sh.mine;

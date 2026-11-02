@@ -146,7 +146,7 @@ UI.tab({
         return null;
       }
       if (Date.now() - mine.since > LIMIT_MS[mine.kind]) {
-        return { fail: true, text: mine.kind === 'invite' ? `${dev.name} didn’t answer. Is DuoDesk open there?` : `Can’t reach ${dev.name} at ${dev.address}. Is DuoDesk open there, on the same Wi-Fi?` };
+        return { fail: true, text: mine.kind === 'invite' ? `${dev.name} didn’t answer. Is DenaDesk open there?` : `Can’t reach ${dev.name} at ${dev.address}. Is DenaDesk open there, on the same Wi-Fi?` };
       }
       return mine.kind === 'invite' ? { wait: true, text: `Asked ${dev.name} to pair. Confirm there…` } : { busy: true, text: mine.kind === 'take' ? 'Taking over…' : 'Connecting…' };
     }
@@ -172,14 +172,14 @@ UI.tab({
       const lost = s.permissions && s.ui && s.ui.setupDone ? PERMS.filter(([, , miss]) => miss(s.permissions)).map(([, label]) => label) : [];
       permCard.hidden = !lost.length;
       permRow.label.textContent = `${lost.join(', ')} ${lost.length > 1 ? 'aren’t' : 'isn’t'} allowed`;
-      permRow.setHint('DuoDesk needs it to share this Mac with the other computer. After an update, allow it again.');
+      permRow.setHint('DenaDesk needs it to share this Mac with the other computer. After an update, allow it again.');
 
       // nearby
       const d = s.discovery || { on: true, localNetwork: true };
       const blocked = !d.on || !d.localNetwork;
       discRow.hidden = !blocked;
       discRow.label.textContent = 'Can’t look for computers on this network.';
-      discRow.setHint(!d.localNetwork ? 'Allow Local Network for DuoDesk, or connect by address.' : d.error);
+      discRow.setHint(!d.localNetwork ? 'Allow Local Network for DenaDesk, or connect by address.' : d.error);
       discFix.hidden = d.localNetwork;
       const pairedIds = new Set([...s.paired.map((x) => x.id), ...g.hosts.map((x) => x.id)]);
       const phoneGoing = s.phone && s.phone.connecting ? s.phone.connecting.id : ''; // a phone connecting: its row turns
@@ -207,7 +207,7 @@ UI.tab({
           r.classList.add('with-ico');
           return r;
         });
-        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DuoDesk on the other computer.'));
+        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DenaDesk on the other computer.'));
         foundList.replaceChildren(...rows);
       }
 
@@ -225,7 +225,7 @@ UI.tab({
       const bad = s.serverError || (g.status.state === 'identity_changed' && g.status.message);
       status.textContent = bad
         || (c ? UI.fill(WHERE[inp.where] || 'Connected')
-          : pairedIds.size ? 'Open DuoDesk on the other computer to connect.'
+          : pairedIds.size ? 'Open DenaDesk on the other computer to connect.'
             : 'Pick a computer above, or connect by address.');
       // Disconnected (here or by the other side), taken over, or the Mac we connect to is in use.
       const gStopped = !c && g.hosts.length && g.status.state === 'stopped';

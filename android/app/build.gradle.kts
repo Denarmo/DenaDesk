@@ -4,20 +4,18 @@ plugins {
 }
 
 android {
-    namespace = "com.twindesk.android"
-    compileSdk = 37
+    namespace = "com.denarmo.denadesk"
+    compileSdk { version = release(37) }
     defaultConfig {
-        applicationId = "com.twindesk.android"
+        applicationId = "com.denarmo.denadesk"
         minSdk = 29 // Android 10: wireless debugging needs 11, everything else works from 10
         targetSdk = 36
-        versionCode = 20500
-        versionName = "2.5.0"
+        versionCode = 20600
+        versionName = "2.6.0"
     }
-    // Two builds of the same app (same id and signature, so one installs over the other):
-    //   standard — what people download: no notification access, SMS or Accessibility service, which
-    //              Play Protect blocks on apps installed from a browser, a messaging app or a file manager;
-    //   full     — with them (notifications, Messages, the mouse and keyboard without ADB): the computer
-    //              installs it over the standard one through wireless debugging, which Play Protect doesn't check.
+    // Both variants use the same identity and release key. Standard omits the
+    // notification listener, SMS and Accessibility services. Full includes them;
+    // the owner must choose any sensitive access in Android's own settings.
     flavorDimensions += "dist"
     productFlavors {
         create("standard") {
@@ -31,11 +29,19 @@ android {
             buildConfigField("boolean", "ACCESSIBILITY", "true")
         }
     }
+    signingConfigs {
+        create("denadesk") {
+            System.getenv("DENADESK_KEYSTORE")?.let { storeFile = file(it) }
+            storePassword = System.getenv("DENADESK_STORE_PASSWORD")
+            keyAlias = System.getenv("DENADESK_KEY_ALIAS") ?: "denadesk"
+            keyPassword = System.getenv("DENADESK_KEY_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
-            // Sideloaded from GitHub releases: signed with this machine's debug key until a release key exists.
-            signingConfig = signingConfigs.getByName("debug")
+            // A release must use the stable private DenaDesk key, never a debug key.
+            signingConfig = signingConfigs.getByName("denadesk")
         }
     }
     lint {
@@ -59,3 +65,29 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.5.0")
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0") // Scan QR code (pairing): Google's scanner, no camera permission
 }
+
+// Record the reviewed source revision inside each APK, as the Windows build does.
+val reviewAssets = layout.buildDirectory.dir("generated/denadeskAssets")
+android.sourceSets.getByName("main").assets.srcDir(reviewAssets)
+val writeBuildInfo = tasks.register("writeBuildInfo") {
+    outputs.dir(reviewAssets)
+    outputs.upToDateWhen { false }
+    doLast {
+        val repo = rootProject.projectDir.parentFile
+        fun git(vararg args: String): String {
+            val process = ProcessBuilder(listOf("git") + args).directory(repo).start()
+            val output = process.inputStream.bufferedReader().readText().trim()
+            check(process.waitFor() == 0) { "Cannot determine source revision" }
+            return output
+        }
+        check(git("status", "--porcelain").isEmpty()) { "Commit reviewed changes before packaging" }
+        val file = reviewAssets.get().file("build-info.json").asFile
+        file.parentFile.mkdirs()
+        file.writeText(groovy.json.JsonOutput.toJson(mapOf(
+            "sourceRepository" to "https://github.com/Denarmo/DuoDesk",
+            "sourceCommit" to git("rev-parse", "HEAD"),
+            "version" to "2.6.0"
+        )))
+    }
+}
+tasks.named("preBuild") { dependsOn(writeBuildInfo) }

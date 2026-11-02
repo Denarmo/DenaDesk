@@ -97,7 +97,7 @@ class PhoneRemote {
 
   // Why it isn't taken now, '' when it is.
   get why() {
-    if (!this.allow) return 'Remote is off on this computer: turn it on in DuoDesk’s Remote page there';
+    if (!this.allow) return 'Remote is off on this computer: turn it on in DenaDesk’s Remote page there';
     if (!this.atHome()) return 'This computer’s mouse is on another device now (Cursor): bring it back first';
     return '';
   }

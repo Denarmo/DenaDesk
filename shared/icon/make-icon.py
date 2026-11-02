@@ -1,5 +1,5 @@
 # TeinDesk — Copyright (C) 2026 TeinDesk contributors. GPL-3.0, see LICENSE.
-# Usage: python make-icon.py [out_dir]  → DuoDesk app icons, light and dark (needs Pillow).
+# Usage: python make-icon.py [out_dir]  → DenaDesk app icons, light and dark (needs Pillow).
 # The mark, Aurora style: a smoked-glass macOS window in front of a smoked-glass Windows
 # window on a near-black tile lit by a spectral glow, and one cursor where they overlap.
 import os
@@ -62,7 +62,7 @@ def glass(im, box, r, tint):
 
 
 def icon(dark=False):
-    # DuoDesk, Aurora: a near-black tile with a spectral glow rising from the bottom edge
+    # DenaDesk, Aurora: a near-black tile with a spectral glow rising from the bottom edge
     # (pink, violet, cyan, mint, amber) for the smoked glass to blur. The light version only
     # lifts the tile a little; both stay dark like the app.
     im = gradient([(0, hexc('#2a2a31' if not dark else '#1d1d22')), (1, hexc('#050506'))])

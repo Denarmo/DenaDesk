@@ -64,7 +64,7 @@ UI.tab({
       picturesRow.hidden = !c.imageSupport;
       pictures.set(!!c.images);
       picturesRow.setHint(!c.images ? 'Pictures and screenshots you copy, up to 10 MB, both ways'
-        : s.link.state === 'connected' && !c.peerImages ? 'Turn on Pictures on ' + UI.peer(s).name + ' too (an older version there can’t: update DuoDesk)'
+        : s.link.state === 'connected' && !c.peerImages ? 'Turn on Pictures on ' + UI.peer(s).name + ' too (an older version there can’t: update DenaDesk)'
           : 'Pictures and screenshots you copy, up to 10 MB, both ways. Not over Bluetooth');
       concealed.set(c.skipConcealed);
       maxKB.set(c.maxKB);

@@ -19,7 +19,7 @@ UI.mediaControlsRow = () => {
       sw.set(on);
       const m = s.phoneMedia;
       row.setHint(on && m && m.why === 'listener'
-        ? 'Needs the full DuoDesk app on the phone, with its notification access on'
+        ? 'Needs the full DenaDesk app on the phone, with its notification access on'
         : 'What plays on a connected phone, with Play, Pause, Next and Previous, on the Phone page while it plays');
     },
   };
@@ -55,7 +55,7 @@ UI.phoneAudioCard = () => {
       media.set(a.phoneMedia !== false);
       const m = s.phoneMedia;
       mediaRow.setHint(m && m.why === 'listener' && a.phoneMedia !== false
-        ? 'Needs the full DuoDesk app on {name}, with its notification access on'
+        ? 'Needs the full DenaDesk app on {name}, with its notification access on'
         : 'What plays on {name}, with Play, Pause, Next and Previous, on the Phone page while it plays');
     },
   };

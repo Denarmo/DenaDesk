@@ -241,7 +241,7 @@ function startTestPattern() {
     g.fillRect(x, h / 2 - 100, 200, 200);
     g.fillStyle = '#ffffff';
     g.font = '48px system-ui, Ubuntu, Cantarell, sans-serif';
-    g.fillText('DuoDesk test pattern, 1920×1080, frame ' + frame, 60, 100);
+    g.fillText('DenaDesk test pattern, 1920×1080, frame ' + frame, 60, 100);
     g.font = '20px Consolas, monospace';
     g.fillText('The quick brown fox jumps over the lazy dog 0123456789', 60, 150);
     frame++;

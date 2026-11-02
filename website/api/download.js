@@ -1,5 +1,5 @@
 // /api/download?os=win|win-arm64|mac|linux|deb|android|android-full
-// Sends the visitor straight to the matching file of the latest DuoDesk release on GitHub, so a
+// Sends the visitor straight to the matching file of the latest DenaDesk release on GitHub, so a
 // Download button starts the download instead of opening the release page. File names carry the
 // version, so they are looked up from the GitHub API (cached per function instance for 10 min).
 const REPO = '0xCodez/DuoDesk';
@@ -7,13 +7,13 @@ const PAGE = `https://github.com/${REPO}/releases/latest`;
 const TTL = 10 * 60 * 1000;
 
 const PICK = {
-  win: (n) => /^DuoDesk-Setup-.*\.exe$/.test(n) && !/-arm64\.exe$/.test(n),
-  'win-arm64': (n) => /^DuoDesk-Setup-.*-arm64\.exe$/.test(n),
-  mac: (n) => /^DuoDesk-.*-arm64\.dmg$/.test(n),
-  linux: (n) => /^DuoDesk-.*\.AppImage$/.test(n),
-  deb: (n) => /^DuoDesk-.*\.deb$/.test(n),
-  android: (n) => /^DuoDesk-.*\.apk$/.test(n) && !/-full\.apk$/.test(n),
-  'android-full': (n) => /^DuoDesk-.*-full\.apk$/.test(n),
+  win: (n) => /^DenaDesk-Setup-.*\.exe$/.test(n) && !/-arm64\.exe$/.test(n),
+  'win-arm64': (n) => /^DenaDesk-Setup-.*-arm64\.exe$/.test(n),
+  mac: (n) => /^DenaDesk-.*-arm64\.dmg$/.test(n),
+  linux: (n) => /^DenaDesk-.*\.AppImage$/.test(n),
+  deb: (n) => /^DenaDesk-.*\.deb$/.test(n),
+  android: (n) => /^DenaDesk-.*\.apk$/.test(n) && !/-full\.apk$/.test(n),
+  'android-full': (n) => /^DenaDesk-.*-full\.apk$/.test(n),
 }
 
 let cache = { at: 0, assets: null };

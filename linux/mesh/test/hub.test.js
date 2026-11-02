@@ -79,7 +79,7 @@ async function world(names, pairs, { clip = false, notifs = false } = {}) {
         settings: n.settings,
         save: () => {},
         spawn: require('./support/fake-net.js').fakeMonitor().spawn, // no real dbus-monitor in tests
-        selfIds: ['TwinDesk.test'],
+        selfIds: ['DenaDesk.test'],
         peerName: () => '',
         onChange: () => {},
         onClick: () => {},

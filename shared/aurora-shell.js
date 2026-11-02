@@ -159,7 +159,7 @@
   const routeTxt = h('span');
   const routePill = h('span', 'au-pill au-route', [routeIc, routeTxt]);
   const secPill = h('span', 'au-pill au-sec', [icon('lock'), h('span', null, null, { text: 'encrypted' })], { title: 'TLS with a pinned certificate, on every route' });
-  const kbd = h('button', 'au-kbd', null, { text: MOD + ' K', title: 'Ask DuoDesk (' + MOD + '+K)', type: 'button' });
+  const kbd = h('button', 'au-kbd', null, { text: MOD + ' K', title: 'Ask DenaDesk (' + MOD + '+K)', type: 'button' });
   const topbar = h('div', 'au-topbar', [crumb, h('span', 'au-sp'), peerPill, routePill, secPill, kbd]);
   content.prepend(topbar);
   content.addEventListener('scroll', () => topbar.classList.toggle('scrolled', content.scrollTop > 4), { passive: true });
@@ -550,7 +550,7 @@
     secPill.hidden = !live;
     meName.textContent = devs[0].name;
     meSub.textContent = 'this desk · ' + OS_NAME[OS];
-    meCard.title = s.version ? 'DuoDesk ' + s.version : '';
+    meCard.title = s.version ? 'DenaDesk ' + s.version : '';
   }
   let lastActive = null;
   function renderTitle() {
@@ -563,10 +563,10 @@
     // The section's own name (the first one hosts Home: same name as in the sidebar), "Set up" over setup.
     const setup = isSetup();
     html.classList.toggle('au-setup', setup);
-    const key = setup ? 'Set up' : title || 'DuoDesk';
+    const key = setup ? 'Set up' : title || 'DenaDesk';
     if (crumb._k !== key) {
       crumb._k = key;
-      crumb.replaceChildren(h('span', null, null, { text: 'DuoDesk' }), h('i', null, null, { text: '/' }), h('b', null, null, { text: key }));
+      crumb.replaceChildren(h('span', null, null, { text: 'DenaDesk' }), h('i', null, null, { text: '/' }), h('b', null, null, { text: key }));
     }
     // The open section stays in sight in the sidebar's scrolling column.
     const btn = active && active.closest('.nav-item');
@@ -583,7 +583,7 @@
   // ======================================================================
   // Command bar
   // ======================================================================
-  const inp = h('input', 'au-inp', null, { type: 'text', placeholder: 'Ask DuoDesk anything…', spellcheck: false, autocomplete: 'off', attrs: { 'aria-label': 'Ask DuoDesk', enterkeyhint: 'send' } });
+  const inp = h('input', 'au-inp', null, { type: 'text', placeholder: 'Ask DenaDesk anything…', spellcheck: false, autocomplete: 'off', attrs: { 'aria-label': 'Ask DenaDesk', enterkeyhint: 'send' } });
   const attach = h('button', 'au-cb', [icon('plus')], { type: 'button', title: 'Send files…', attrs: { 'aria-label': 'Send files' } });
   const agentName = h('span', null, null, { text: 'All devices' });
   const agent = h('button', 'au-agent', [agentName, icon('chev')], { type: 'button', title: 'Which device', attrs: { 'aria-haspopup': 'menu' } });
@@ -598,7 +598,7 @@
   const exp = h('div', 'au-layer au-exp off', [tx, res, h('div', 'au-row', [agent2, h('span', 'au-sp'), again, close])]);
   const cmd = h('div', 'au-cmd', [h('div', 'au-aur', [h('i'), h('i')], { attrs: { 'aria-hidden': 'true' } }), idle, exp]);
   const sugs = h('div', 'au-sugs');
-  const dock = h('div', 'au-dock', [sugs, h('div', 'au-halo-w', [h('div', 'au-halo')], { attrs: { 'aria-hidden': 'true' } }), cmd], { attrs: { role: 'search', 'aria-label': 'Ask DuoDesk' } });
+  const dock = h('div', 'au-dock', [sugs, h('div', 'au-halo-w', [h('div', 'au-halo')], { attrs: { 'aria-hidden': 'true' } }), cmd], { attrs: { role: 'search', 'aria-label': 'Ask DenaDesk' } });
   content.append(dock);
 
   let state = 'idle';

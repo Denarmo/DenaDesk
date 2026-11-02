@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // What the Calls, Messages, Photos and Files pages share, on the Mac, PC and Linux alike (they use only
 // the UI kit's common API): the line at the top of each saying what's missing — the phone, its
-// permission (Allow asks on the phone, only now), the right TwinDesk on it — and the phone's
+// permission (Allow asks on the phone, only now), the right DenaDesk on it — and the phone's
 // answers (phonehub.js passes them on as 'hub' messages) by type.
 'use strict';
 
@@ -74,7 +74,7 @@
     const n = b.sound || {};
     if (n.on) return `Playing. ${ph} captures it, so it plays there too (wireless debugging moves it off the phone)`;
     if (n.error) return n.error;
-    if (n.waiting) return `Tap Start on ${ph} (its notification, or Sound in DuoDesk there)`;
+    if (n.waiting) return `Tap Start on ${ph} (its notification, or Sound in DenaDesk there)`;
     if (n.net) return `Asking ${ph}…`;
     if (b.state === 'ready') return 'Through wireless debugging';
     return `Over Wi-Fi: through wireless debugging, or captured by ${ph}`;
@@ -114,16 +114,16 @@
       let msg = '', kind = 'info', canAllow = false, canInstall = false;
       if (!h[what]) msg = `Off. When you switch it on, ${phone} asks for what it needs.`;
       else if (!h.connected) msg = `Connect ${phone} to use ${LABEL[what]}: click it at the top of the sidebar.`;
-      else if (!h.supported) msg = `Waiting for ${phone}… DuoDesk on it needs to be up to date for ${LABEL[what]}.`;
+      else if (!h.supported) msg = `Waiting for ${phone}… DenaDesk on it needs to be up to date for ${LABEL[what]}.`;
       else if (st.perm === 'none' && what === 'files') { msg = `Files needs Android 11 or later on ${phone}. Mount works through ADB instead.`; kind = 'warn'; }
       else if (st.perm === 'none') {
-        msg = `${LABEL[what]} need DuoDesk with notifications on ${phone} (Android doesn’t let downloaded apps read texts). ${s.phone && s.phone.adb && s.phone.adb.address ? 'Install puts it on the phone through wireless debugging; your settings stay.' : 'Set up wireless debugging on the Phone page, then Install.'}`;
+        msg = `${LABEL[what]} need DenaDesk with notifications on ${phone} (Android doesn’t let downloaded apps read texts). ${s.phone && s.phone.adb && s.phone.adb.address ? 'Install puts it on the phone through wireless debugging; your settings stay.' : 'Set up wireless debugging on the Phone page, then Install.'}`;
         kind = 'warn';
         canInstall = !!UI.api.phoneInstallFull;
       } else if (st.perm === 'ask') {
-        msg = what === 'media' ? `Allow ${phone} to share its photos and videos with DuoDesk.`
-          : what === 'files' ? `Allow All files access for DuoDesk on ${phone}: it reads and writes the phone’s storage itself, no ADB. Android opens the setting there.`
-            : `Allow ${LABEL[what]} on ${phone}: DuoDesk asks for ${Object.values(NEEDS[what]).join(', ')}.`;
+        msg = what === 'media' ? `Allow ${phone} to share its photos and videos with DenaDesk.`
+          : what === 'files' ? `Allow All files access for DenaDesk on ${phone}: it reads and writes the phone’s storage itself, no ADB. Android opens the setting there.`
+            : `Allow ${LABEL[what]} on ${phone}: DenaDesk asks for ${Object.values(NEEDS[what]).join(', ')}.`;
         kind = 'warn';
         canAllow = true;
       } else if (st.perm === 'partial') {

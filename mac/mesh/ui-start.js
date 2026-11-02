@@ -281,7 +281,7 @@
       $('pair-code').hidden = $('pair-code-label').hidden = true;
       $('pair-allow').hidden = true;
       $('pair-deny').textContent = 'Cancel';
-      $('pair-hint').textContent = `DuoDesk on ${inv.name} asks to pair with this Mac. Press Pair there, then compare the codes.`;
+      $('pair-hint').textContent = `DenaDesk on ${inv.name} asks to pair with this Mac. Press Pair there, then compare the codes.`;
       return;
     }
     const code = (p || g).code;

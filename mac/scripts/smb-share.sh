@@ -1,6 +1,6 @@
 #!/bin/sh
 # TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-# Share one folder with the paired PC over SMB. Run as root (DuoDesk starts it through
+# Share one folder with the paired PC over SMB. Run as root (DenaDesk starts it through
 # the macOS administrator prompt). Usage: smb-share.sh <folder> <password-file>
 # Creates a hidden, login-less account "macshare" with SMB (NT) password hashes, gives it
 # read/write on the folder with an ACL, shares the folder as "MacShare" over SMB only (no guest),

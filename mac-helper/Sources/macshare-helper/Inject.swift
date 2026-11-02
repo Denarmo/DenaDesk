@@ -56,7 +56,7 @@ final class Injector {
     let now = ProcessInfo.processInfo.systemUptime
     if now - lastActivity < 1 { return }
     lastActivity = now
-    IOPMAssertionDeclareUserActivity("DuoDesk remote input" as CFString, kIOPMUserActiveLocal, &activityID)
+    IOPMAssertionDeclareUserActivity("DenaDesk remote input" as CFString, kIOPMUserActiveLocal, &activityID)
   }
 
   private func cgButton(_ b: Int) -> CGMouseButton {

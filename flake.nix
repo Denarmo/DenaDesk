@@ -1,5 +1,5 @@
 {
-  description = "DuoDesk — All your computers and your phone, working as one desk";
+  description = "DenaDesk — All your computers and your phone, working as one desk";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -26,7 +26,7 @@
         in
         rec {
           twindesk = pkgs.stdenv.mkDerivation rec {
-            pname = "twindesk";
+            pname = "denadesk";
             version = "2.5.0-beta.1";
 
             src = self;
@@ -127,11 +127,11 @@ EOF
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
-  <vendor>DuoDesk</vendor>
+  <vendor>DenaDesk</vendor>
   <vendor_url>https://github.com/0xCodez/DuoDesk</vendor_url>
   <action id="org.twindesk.linux.connector">
-    <description>Switch a spare display output on for DuoDesk's Extend</description>
-    <message>DuoDesk wants to switch a spare display output on or off</message>
+    <description>Switch a spare display output on for DenaDesk's Extend</description>
+    <message>DenaDesk wants to switch a spare display output on or off</message>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
@@ -155,12 +155,12 @@ EOF
 
               cat << 'EOF' > "$out/share/applications/twindesk.desktop"
 [Desktop Entry]
-Name=DuoDesk
+Name=DenaDesk
 Comment=Share mouse, keyboard, clipboard, files and screens with your other computer
 Exec=twindesk %U
 Icon=twindesk
 Type=Application
-StartupWMClass=DuoDesk
+StartupWMClass=DenaDesk
 Categories=Utility;
 Keywords=KVM;mouse;keyboard;clipboard;screen;share;
 EOF
@@ -182,7 +182,7 @@ EOF
               homepage = "https://github.com/0xCodez/DuoDesk";
               license = licenses.gpl3Only;
               platforms = supportedSystems;
-              mainProgram = "twindesk";
+              mainProgram = "denadesk";
             };
           };
 
@@ -194,7 +194,7 @@ EOF
         default = {
           type = "app";
           program = "${self.packages.${system}.default}/bin/twindesk";
-          meta.description = "DuoDesk multi-device desktop app";
+          meta.description = "DenaDesk multi-device desktop app";
         };
       });
 
@@ -249,12 +249,12 @@ EOF
           with lib;
           let
             mkTwindeskOptions = {
-              enable = mkEnableOption "DuoDesk multi-device sharing";
+              enable = mkEnableOption "DenaDesk multi-device sharing";
 
               package = mkOption {
                 type = types.package;
                 default = self.packages.${pkgs.system}.default;
-                description = "The DuoDesk package to use.";
+                description = "The DenaDesk package to use.";
               };
 
               openFirewall = mkOption {
@@ -295,7 +295,7 @@ EOF
               # Ensure polkit is enabled for Virtual Display connector and privileged helpers
               security.polkit.enable = mkDefault true;
 
-              # Open ports for DuoDesk communication and discovery
+              # Open ports for DenaDesk communication and discovery
               networking.firewall.allowedTCPPorts = mkIf cfg.openFirewall [ 47800 ];
               networking.firewall.allowedUDPPorts = mkIf cfg.openFirewall [ 47801 5353 ];
 

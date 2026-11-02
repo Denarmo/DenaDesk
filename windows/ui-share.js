@@ -53,7 +53,7 @@ UI.tab({
 
     const installBtn = UI.button('Install', () => api.installVdd(), 'small primary');
     const removeBtn = UI.button('Remove', () => api.removeVdd(), 'small');
-    const driver = UI.row('DuoDesk virtual display', '', [installBtn, removeBtn]); // Extend's screen, from the Virtual Display Driver (vdd.js)
+    const driver = UI.row('DenaDesk virtual display', '', [installBtn, removeBtn]); // Extend's screen, from the Virtual Display Driver (vdd.js)
     const note = UI.note('bad', '');
     // No driver: Extend is greyed out; say why, with Install right there.
     const missingBtn = UI.button('Install', () => api.installVdd(), 'small primary');
@@ -97,7 +97,7 @@ UI.tab({
       details.set({
         Status: (!on ? 'Off' : p.busy ? 'Starting the extra screen…' : p.status === 'live' ? 'On ' + who
           : !connected ? 'Waiting for ' + who : !p.mac.accept ? 'Ready, starts when ' + who + ' opens it' : 'Connecting…') + (p.error ? ': ' + p.error : ''),
-        Display: !on ? '' : p.mode === 'extend' ? `DuoDesk virtual display, ${p.extendPx[0]} × ${p.extendPx[1]}` : mon ? mon.label : '',
+        Display: !on ? '' : p.mode === 'extend' ? `DenaDesk virtual display, ${p.extendPx[0]} × ${p.extendPx[1]}` : mon ? mon.label : '',
         Picture: st ? `${st.width} × ${st.height}, ${st.fps} fps` : '',
         Speed: st ? `${st.mbps} Mbps sent` + (st.targetMbps ? `, network allows ${st.targetMbps}` : '') : '',
         'Round trip': st && st.rttMs != null ? st.rttMs + ' ms' : '',

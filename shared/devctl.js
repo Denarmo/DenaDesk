@@ -6,7 +6,7 @@
 //   dev.state {can: {ring, lock, …}, ringing, bluetooth?, dnd?, volume?, qs?: {wifi, bluetooth, …,
 //             detail: {id: text}, panel: {id: true}, volume, ringer}, top?: [package]}
 // Sent at the start of every session and whenever something changed. A side that doesn't know them
-// (an older TwinDesk) never answers: Overview then leaves the controls out.
+// (an older DenaDesk) never answers: Overview then leaves the controls out.
 // link: on(type | 'welcome' | 'closed', fn), send(msg), current? (the session's ctx: os)
 // local: DevLocal (shared/devlocal.js); adb() → {adb, serial} while a phone's wireless debugging is
 // ready (what an app can't switch on the phone goes that way: shared/devadb.js), else null.

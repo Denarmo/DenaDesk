@@ -26,10 +26,10 @@ function writable() {
 }
 
 const driver = {
-  name: 'DuoDesk Gamepad',
+  name: 'DenaDesk Gamepad',
 
   async check() {
-    if (!fs.existsSync(WRITER)) return { supported: false, message: 'Not in this build of DuoDesk' };
+    if (!fs.existsSync(WRITER)) return { supported: false, message: 'Not in this build of DenaDesk' };
     return { supported: true, installed: writable() };
   },
 

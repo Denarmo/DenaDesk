@@ -57,7 +57,7 @@ UI.tab({
     // X11: Extend's screen is a spare output switched on through a small root helper (vdd.js).
     const installBtn = UI.button('Install', () => api.installVdd(), 'small primary');
     const removeBtn = UI.button('Remove', () => api.removeVdd(), 'small');
-    const driver = UI.row('DuoDesk virtual display', '', [installBtn, removeBtn]);
+    const driver = UI.row('DenaDesk virtual display', '', [installBtn, removeBtn]);
     const driverCard = UI.card('', [driver], { cls: 'keep-on' });
 
     body.append(

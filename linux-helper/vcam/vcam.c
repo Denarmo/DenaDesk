@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
     struct pollfd pf = { .fd = 0, .events = POLLIN };
     if (poll(&pf, 1, (int)(next - t)) <= 0) continue;
     ssize_t n = read(0, in + got, NV12 - got);
-    if (n == 0) break; // DuoDesk stopped: the camera goes with it
+    if (n == 0) break; // DenaDesk stopped: the camera goes with it
     if (n > 0 && (got += (size_t)n) == NV12) {
       to_yuyv(in, out);
       got = 0;

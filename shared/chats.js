@@ -7,7 +7,7 @@
 //                                       notification shows them (MessagingStyle); on chat.want, the
 //                                       ones open on the phone now; afterwards each one as it changes
 //   notif.reply {id, text}              to the phone: an answer, through the notification's own Reply
-// A phone without them (an older TwinDesk) never sends chat.conv: Messages then builds the chats
+// A phone without them (an older DenaDesk) never sends chat.conv: Messages then builds the chats
 // from the notifications (shared/ui-messages.js), as before.
 // link: on('welcome' | 'closed' | type, fn), send(msg), current?: {deviceId}; want(): the switch.
 'use strict';

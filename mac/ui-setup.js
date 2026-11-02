@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Setup: shown instead of the tabs while something TwinDesk needs
-// isn't allowed yet, once: after everything is allowed or it's skipped, General shows what's missing. "Allow" asks macOS first, which puts TwinDesk in the System Settings list, so
+// Setup: shown instead of the tabs while something DenaDesk needs
+// isn't allowed yet, once: after everything is allowed or it's skipped, General shows what's missing. "Allow" asks macOS first, which puts DenaDesk in the System Settings list, so
 // it's one switch there (no + and file browser). Closes by itself when everything is allowed.
 'use strict';
 
@@ -20,11 +20,11 @@ UI.setup = (() => {
   let missingKey = '';
   const page = el('section', { class: 'setup-page', hidden: true }, [
     el('div', { class: 'app-mark', attrs: { 'aria-hidden': 'true' } }),
-    el('h1', { text: 'Set up DuoDesk' }),
+    el('h1', { text: 'Set up DenaDesk' }),
     el('p', { text: 'macOS needs your OK for a few things.' }),
     UI.card('', rows.map((r) => r.row)),
     el('div', { class: 'setup-foot' }, [
-      UI.button('Restart DuoDesk', () => api.relaunch(), ''),
+      UI.button('Restart DenaDesk', () => api.relaunch(), ''),
       UI.button('Skip for now', () => api.skipSetup(missingKey), ''),
     ]),
   ]);

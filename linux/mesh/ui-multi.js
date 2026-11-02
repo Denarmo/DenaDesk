@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
 // Multi-device tab with it on (docs/multi-device.md): what only several devices need, in one place.
-// Turn off (DuoDesk restarts one to one), where the devices sit (the shared layout's grid, docs/mesh.md
+// Turn off (DenaDesk restarts one to one), where the devices sit (the shared layout's grid, docs/mesh.md
 // "Shared layout"), and Join every device automatically (docs/mesh.md "Joining everyone").
 'use strict';
 
@@ -141,7 +141,7 @@ UI.tab({
 
     body.append(
       UI.card('Mesh mode', [
-        UI.row('Use several devices at once', 'On. DuoDesk restarts when you turn it on or off', [turnOff]),
+        UI.row('Use several devices at once', 'On. DenaDesk restarts when you turn it on or off', [turnOff]),
         UI.row('Computers', 'Connect to this one over the same network only, not Bluetooth. Phones over Wi-Fi, a USB cable or Bluetooth, as before', []),
       ]),
       UI.card('Layout', [gridEl, reachNote, layoutHint], { cls: 'keep-on' }),

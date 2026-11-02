@@ -99,7 +99,7 @@ class Phone extends EventEmitter {
     if (this.wired && !this.connected && this.wired.connect(String(id))) {
       const p = this.pairing.list().find((x) => x.id === String(id));
       clearTimeout(this.connecting && this.connecting.timer);
-      this.connecting = { id: String(id), name: p ? p.name : 'The phone', timer: setTimeout(() => this._doneConnecting(`${p ? p.name : 'The phone'} didn’t answer. Open DuoDesk on it.`), CONNECT_WAIT_MS) };
+      this.connecting = { id: String(id), name: p ? p.name : 'The phone', timer: setTimeout(() => this._doneConnecting(`${p ? p.name : 'The phone'} didn’t answer. Open DenaDesk on it.`), CONNECT_WAIT_MS) };
       this.message = '';
       return this.emit('change');
     }
@@ -107,7 +107,7 @@ class Phone extends EventEmitter {
     if (!d || d.os !== P.OS.ANDROID) return this._fail('That phone isn’t nearby any more.');
     if (this.connected && this.server.current.deviceId === d.id) return;
     clearTimeout(this.connecting && this.connecting.timer);
-    this.connecting = { id: d.id, name: d.name, timer: setTimeout(() => this._doneConnecting(`${d.name} didn’t answer. Open DuoDesk on it.`), CONNECT_WAIT_MS) };
+    this.connecting = { id: d.id, name: d.name, timer: setTimeout(() => this._doneConnecting(`${d.name} didn’t answer. Open DenaDesk on it.`), CONNECT_WAIT_MS) };
     this.message = '';
     this.discovery.invite(d.address);
     setTimeout(() => this.connecting && this.connecting.id === d.id && this.discovery.invite(d.address), 700); // UDP may drop one

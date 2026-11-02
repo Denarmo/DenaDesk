@@ -19,7 +19,7 @@
   const api = () => UI.api || window.macshare || {};
   const call = (name, arg) => {
     const f = api()[name];
-    if (typeof f !== 'function') return Promise.resolve({ ok: false, error: 'Not available in this build of DuoDesk' });
+    if (typeof f !== 'function') return Promise.resolve({ ok: false, error: 'Not available in this build of DenaDesk' });
     return Promise.resolve().then(() => f(arg)).catch(() => ({ ok: false, error: 'Something went wrong' }));
   };
   // The headers (pagefx/support.js) read the last snapshot and listen for changes.
@@ -51,7 +51,7 @@
     order: 112,
     title: 'Tip',
     heading: 'Leave a tip',
-    desc: 'DuoDesk is free and open source. A tip keeps it that way.',
+    desc: 'DenaDesk is free and open source. A tip keeps it that way.',
     icon: 'tip',
     color: 'linear-gradient(#ff9ec0, #c77dff)',
     bottom: true,
@@ -221,7 +221,7 @@
   // ===================================================================================================
   const KINDS = [
     { value: 'bug', label: 'Bug', hint: 'What happened, and what did you expect? Steps to make it happen again help a lot.' },
-    { value: 'idea', label: 'Idea', hint: 'What would make DuoDesk better for you?' },
+    { value: 'idea', label: 'Idea', hint: 'What would make DenaDesk better for you?' },
     { value: 'love', label: 'Love it', hint: 'What do you like? (You can leave it empty.)' },
   ];
   UI.tab({
@@ -229,7 +229,7 @@
     order: 114,
     title: 'Feedback',
     heading: 'Send feedback',
-    desc: 'A bug, an idea, or just a hello. It goes straight to the people who make DuoDesk.',
+    desc: 'A bug, an idea, or just a hello. It goes straight to the people who make DenaDesk.',
     icon: 'feedback',
     color: 'linear-gradient(#8fd3ff, #6f8cff)',
     bottom: true,

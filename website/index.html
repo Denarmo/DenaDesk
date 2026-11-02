@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!--
-  DuoDesk website. Static: no build step, fonts are self-hosted in fonts/. The only outside request is the
+  DenaDesk website. Static: no build step, fonts are self-hosted in fonts/. The only outside request is the
   tip card in #support (beyond-media.ai). app.js sends cookieless page and download counts to /api/track
   for the private /dashboard (api/ holds the two Vercel functions).
   Site URL: https://getduodesk.vercel.app is used only by the canonical, og:url and og:image tags below;
   change it in those three places when the site moves. Every download points at the latest GitHub release.
 -->
-<title>DuoDesk: one desk for all your devices</title>
+<title>DenaDesk: one desk for all your devices</title>
 <meta name="description" content="All your computers and your phone, working as one desk. One mouse and keyboard, second screens, apps in windows, clipboard, files, calls, texts and cameras across Mac, Windows, Linux and Android. Free, open source, no account, no cloud.">
 <meta name="theme-color" content="#040405">
 <meta name="color-scheme" content="dark">
@@ -18,8 +18,8 @@
 <link rel="icon" type="image/png" sizes="64x64" href="img/favicon.png">
 <link rel="apple-touch-icon" href="img/icon.png">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="DuoDesk">
-<meta property="og:title" content="DuoDesk: all your computers and your phone, working as one desk">
+<meta property="og:site_name" content="DenaDesk">
+<meta property="og:title" content="DenaDesk: all your computers and your phone, working as one desk">
 <meta property="og:description" content="One mouse and keyboard, second screens, apps, files, clipboard, calls and cameras across Mac, Windows, Linux and Android. Free and open source.">
 <meta property="og:url" content="https://getduodesk.vercel.app/">
 <meta property="og:image" content="https://getduodesk.vercel.app/img/icon.png">
@@ -84,9 +84,9 @@
 </svg>
 
 <header class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="DuoDesk, back to top">
+  <a class="brand" href="#top" aria-label="DenaDesk, back to top">
     <img src="img/icon.png" alt="" width="28" height="28">
-    <span>DuoDesk</span>
+    <span>DenaDesk</span>
   </a>
   <nav class="nav-links" aria-label="Sections">
     <a href="#features">Features</a>
@@ -95,7 +95,7 @@
     <a href="#faq">FAQ</a>
   </nav>
   <div class="nav-end">
-    <a class="nav-gh" href="https://github.com/0xCodez/DuoDesk" aria-label="DuoDesk source code on GitHub"><svg class="i"><use href="#i-gh"/></svg><span>Source</span></a>
+    <a class="nav-gh" href="https://github.com/0xCodez/DuoDesk" aria-label="DenaDesk source code on GitHub"><svg class="i"><use href="#i-gh"/></svg><span>Source</span></a>
     <a class="btn btn-sm btn-light" href="#download">Download</a>
   </div>
 </header>
@@ -104,13 +104,13 @@
   <!-- ============ hero ============ -->
   <section class="hero" id="top">
     <a class="badge reveal" href="#rezume"><span class="badge-dot" aria-hidden="true"></span><span>New in 2.5: <b>ReZume</b><span class="badge-more">, pick up where you left off</span></span><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-    <h1 class="wordmark reveal">DuoDesk</h1>
+    <h1 class="wordmark reveal">DenaDesk</h1>
     <p class="tagline reveal">All your computers and your phone, working as <span class="spec">one&nbsp;desk</span>.</p>
     <p class="lede reveal">Screens, apps, files, clipboard, cameras, calls, texts, notifications, mouse and keyboard, shared between Mac, Windows, Linux and Android. Free and open source. No account, no cloud.</p>
     <div class="cta reveal">
       <a class="btn btn-light btn-lg" id="dl-main" href="https://github.com/0xCodez/DuoDesk/releases/latest">
         <svg class="i" id="dl-main-icon" aria-hidden="true"><use href="#i-down"/></svg>
-        <span id="dl-main-label">Download DuoDesk</span>
+        <span id="dl-main-label">Download DenaDesk</span>
       </a>
       <a class="btn btn-glass btn-lg" href="#demo">See the app<svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></a>
     </div>
@@ -124,7 +124,7 @@
 
   <!-- ============ the app ============ -->
 <section class="sc-shot" id="demo" data-view="home" aria-labelledby="sc-shot-title">
-  <h2 class="sr-only" id="sc-shot-title">The DuoDesk app</h2>
+  <h2 class="sr-only" id="sc-shot-title">The DenaDesk app</h2>
 
   <div class="sc-stage reveal" data-sc-shot>
     <!-- the living glow behind the window: two soft lights, coloured by the open view -->
@@ -135,24 +135,24 @@
       <figure class="sc-win" data-view="home">
         <div class="sc-bar" aria-hidden="true">
           <span class="sc-lights"><i class="sc-l1"></i><i class="sc-l2"></i><i class="sc-l3"></i></span>
-          <span class="sc-title"><img src="img/icon.png" alt="" width="14" height="14">DuoDesk</span>
+          <span class="sc-title"><img src="img/icon.png" alt="" width="14" height="14">DenaDesk</span>
         </div>
         <div class="sc-screen" id="sc-panel" role="tabpanel" aria-label="App screenshot">
           <img class="sc-img on" id="sc-img-home" src="img/app-home-1280.webp"
                srcset="img/app-home-1280.webp 1280w, img/app-home.webp 2560w"
                sizes="(min-width: 1260px) 1180px, calc(100vw - 32px)"
                width="1280" height="800" decoding="async"
-               alt="DuoDesk Home: cards for Workstation (this desk, 2 screens, mouse, keyboard, clipboard and screen on), Studio-Mac (macOS, 9 ms) and Pixel 8 (82 % battery), with the command bar at the bottom.">
+               alt="DenaDesk Home: cards for Workstation (this desk, 2 screens, mouse, keyboard, clipboard and screen on), Studio-Mac (macOS, 9 ms) and Pixel 8 (82 % battery), with the command bar at the bottom.">
           <img class="sc-img" id="sc-img-ask" src="img/app-command-1280.webp"
                srcset="img/app-command-1280.webp 1280w, img/app-command.webp 2560w"
                sizes="(min-width: 1260px) 1180px, calc(100vw - 32px)"
                width="1280" height="800" decoding="async" loading="lazy"
-               alt="The DuoDesk command bar open on Home, running “Extend my screen to Studio-Mac”: Turning on Share screen.">
+               alt="The DenaDesk command bar open on Home, running “Extend my screen to Studio-Mac”: Turning on Share screen.">
           <img class="sc-img" id="sc-img-mouse" src="img/app-mouse-1280.webp"
                srcset="img/app-mouse-1280.webp 1280w, img/app-mouse.webp 2560w"
                sizes="(min-width: 1260px) 1180px, calc(100vw - 32px)"
                width="1280" height="800" decoding="async" loading="lazy"
-               alt="DuoDesk Mouse page: a map of both computers' screens, pointer speed 1.00×, and one switch for each direction between Studio-Mac and Workstation.">
+               alt="DenaDesk Mouse page: a map of both computers' screens, pointer speed 1.00×, and one switch for each direction between Studio-Mac and Workstation.">
           <span class="sc-sheen" aria-hidden="true"></span>
         </div>
       </figure>
@@ -164,7 +164,7 @@
       <span class="sc-tab-k">Home</span><span class="sc-tab-d">Every device, every switch</span><i class="sc-prog" aria-hidden="true"></i>
     </button>
     <button class="sc-tab" type="button" role="tab" aria-selected="false" aria-controls="sc-panel" data-view="ask" tabindex="-1">
-      <span class="sc-tab-k">Ask DuoDesk</span><span class="sc-tab-d">Say it, it happens</span><i class="sc-prog" aria-hidden="true"></i>
+      <span class="sc-tab-k">Ask DenaDesk</span><span class="sc-tab-d">Say it, it happens</span><i class="sc-prog" aria-hidden="true"></i>
     </button>
     <button class="sc-tab" type="button" role="tab" aria-selected="false" aria-controls="sc-panel" data-view="mouse" tabindex="-1">
       <span class="sc-tab-k">Mouse &amp; keyboard</span><span class="sc-tab-d">One pointer, both screens</span><i class="sc-prog" aria-hidden="true"></i>
@@ -279,8 +279,8 @@
       <header class="sec-head left reveal">
         <p class="eyebrow"><i aria-hidden="true"></i>Connections</p>
         <h2 id="conn-title">Works anywhere.<br><span class="muted">Even with no network.</span></h2>
-        <p class="sec-lede">Same Wi-Fi, a USB cable, or no shared network at all: Bluetooth and a direct Wi-Fi link of their own. DuoDesk picks the best one, and moves you to a better one when it can.</p>
-        <p class="mesh-note"><svg class="i" aria-hidden="true"><use href="#i-mesh"/></svg><span><b>DuoDesk Mesh</b> connects every device at once, not just two.</span></p>
+        <p class="sec-lede">Same Wi-Fi, a USB cable, or no shared network at all: Bluetooth and a direct Wi-Fi link of their own. DenaDesk picks the best one, and moves you to a better one when it can.</p>
+        <p class="mesh-note"><svg class="i" aria-hidden="true"><use href="#i-mesh"/></svg><span><b>DenaDesk Mesh</b> connects every device at once, not just two.</span></p>
       </header>
 
       <div class="conn-panel reveal" id="conn">
@@ -314,7 +314,7 @@
         <span class="num">01</span>
         <div class="step-vis sv-dl" aria-hidden="true"><span><svg class="i"><use href="#os-mac"/></svg></span><span><svg class="i"><use href="#os-win"/></svg></span><span><svg class="i"><use href="#os-linux"/></svg></span><span><svg class="i"><use href="#os-android"/></svg></span></div>
         <h3>Install on both</h3>
-        <p>Download DuoDesk for each computer, and the app for your phone or tablet.</p>
+        <p>Download DenaDesk for each computer, and the app for your phone or tablet.</p>
       </li>
       <li class="step reveal">
         <span class="num">02</span>
@@ -397,16 +397,16 @@
     </header>
     <div class="faq">
       <details class="reveal">
-        <summary>Is DuoDesk really free?</summary>
+        <summary>Is DenaDesk really free?</summary>
         <p>Yes. It's free and open source under the GPL-3.0 license, with no paid tier, no ads and no account. The full source is on <a href="https://github.com/0xCodez/DuoDesk">GitHub</a>.</p>
       </details>
       <details class="reveal">
         <summary>Which devices can work together?</summary>
-        <p>Any combination: Mac with Windows, Mac with Mac, PC with PC, Linux with anything, and an Android phone or tablet with any computer. With DuoDesk Mesh, all of them at once.</p>
+        <p>Any combination: Mac with Windows, Mac with Mac, PC with PC, Linux with anything, and an Android phone or tablet with any computer. With DenaDesk Mesh, all of them at once.</p>
       </details>
       <details class="reveal">
         <summary>Do my devices need to be on the same Wi-Fi?</summary>
-        <p>No. The same Wi-Fi is the easiest, but a USB cable works too, and with no shared network at all DuoDesk connects over Bluetooth or makes a direct Wi-Fi link between the devices.</p>
+        <p>No. The same Wi-Fi is the easiest, but a USB cable works too, and with no shared network at all DenaDesk connects over Bluetooth or makes a direct Wi-Fi link between the devices.</p>
       </details>
       <details class="reveal">
         <summary>Does anything go through the cloud?</summary>
@@ -417,18 +417,18 @@
         <p>The apps aren't code-signed with a paid certificate yet, so the system asks once. On <b>macOS</b>, open it, click Done, then go to System Settings › Privacy &amp; Security and click Open Anyway. On <b>Windows</b>, keep files quarantined if Defender detects a threat; request classification review before running them. On <b>Android</b>, allow your browser or Files app to install unknown apps. Updates open normally afterwards.</p>
       </details>
       <details class="reveal">
-        <summary>How is DuoDesk related to TwinDesk?</summary>
-        <p>DuoDesk is a redesigned fork of <a href="https://github.com/InukaAsith/TwinDesk">TwinDesk</a> by Inuka Asith, released under the same GPL-3.0 license. It brings a new interface on top of the same open, local-only foundation.</p>
+        <summary>How is DenaDesk related to DenaDesk?</summary>
+        <p>DenaDesk is a redesigned fork of <a href="https://github.com/InukaAsith/TwinDesk">DenaDesk</a> by Inuka Asith, released under the same GPL-3.0 license. It brings a new interface on top of the same open, local-only foundation.</p>
       </details>
     </div>
   </section>
 
   <!-- ============ final call ============ -->
   <section class="final reveal" aria-labelledby="final-title">
-    <img src="img/icon.png" alt="DuoDesk app icon" width="88" height="88">
+    <img src="img/icon.png" alt="DenaDesk app icon" width="88" height="88">
     <h2 id="final-title">Make every device <span class="spec">one&nbsp;desk</span>.</h2>
     <div class="cta">
-      <a class="btn btn-light btn-lg" href="#download"><svg class="i" aria-hidden="true"><use href="#i-down"/></svg>Download DuoDesk</a>
+      <a class="btn btn-light btn-lg" href="#download"><svg class="i" aria-hidden="true"><use href="#i-down"/></svg>Download DenaDesk</a>
       <a class="btn btn-glass btn-lg" href="https://github.com/0xCodez/DuoDesk"><svg class="i" aria-hidden="true"><use href="#i-gh"/></svg>Star on GitHub</a>
     </div>
   </section>
@@ -440,7 +440,7 @@
       <div class="support-txt reveal">
         <p class="eyebrow"><i aria-hidden="true"></i>Support</p>
         <h2 id="support-title">Free, and staying free.</h2>
-        <p class="sec-lede">DuoDesk has no ads, no paid tier and no account. If it saves you time every day, a tip helps keep it that way.</p>
+        <p class="sec-lede">DenaDesk has no ads, no paid tier and no account. If it saves you time every day, a tip helps keep it that way.</p>
         <p class="support-note">Payments are handled by Stripe on beyond-media.ai, so nothing is charged on this site. <a href="https://beyond-media.ai/tips?creator=beyond-apps">Open the tip page</a> if the card doesn't load.</p>
       </div>
       <div class="tips reveal" id="tips"></div>
@@ -452,7 +452,7 @@
 <footer class="foot">
   <div class="foot-top">
     <div class="foot-brand">
-      <a class="brand" href="#top"><img src="img/icon.png" alt="" width="28" height="28"><span>DuoDesk</span></a>
+      <a class="brand" href="#top"><img src="img/icon.png" alt="" width="28" height="28"><span>DenaDesk</span></a>
       <p>All your computers and your phone, working as one desk.</p>
     </div>
     <nav class="foot-cols" aria-label="Footer">
@@ -462,7 +462,7 @@
         <a href="#connections">Connections</a>
         <a href="#privacy">Privacy</a>
         <a href="#download">Download</a>
-        <a href="#support">Support DuoDesk</a>
+        <a href="#support">Support DenaDesk</a>
       </div>
       <div>
         <h3>Source</h3>
@@ -475,7 +475,7 @@
   </div>
   <div class="foot-bottom">
     <p>Made by <a class="handle" href="https://github.com/0xCodez">0xCodez</a></p>
-    <p>Based on <a href="https://github.com/InukaAsith/TwinDesk">TwinDesk</a> by Inuka Asith — GPL-3.0</p>
+    <p>Based on <a href="https://github.com/InukaAsith/TwinDesk">DenaDesk</a> by Inuka Asith — GPL-3.0</p>
   </div>
 </footer>
 </body>

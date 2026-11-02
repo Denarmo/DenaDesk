@@ -2,8 +2,8 @@
 // ReZume here (shared/rezume.js): what is in use in the app in front. One JavaScript for
 // Automation run (osascript) a look: the front app from NSWorkspace (nothing to allow); a browser's
 // tab from the browser itself (Safari, Chrome, Edge, Brave, Vivaldi, Opera, Arc: macOS asks once per
-// browser, "DuoDesk wants to control …"); any other app's document from its window's AXDocument
-// through System Events (Accessibility, which DuoDesk has for the mouse and keyboard, and System
+// browser, "DenaDesk wants to control …"); any other app's document from its window's AXDocument
+// through System Events (Accessibility, which DenaDesk has for the mouse and keyboard, and System
 // Events' Automation, asked once). Firefox has no scripting: its window's title, then its own
 // session file (shared/browsertabs.js). Nothing runs before ReZume is on.
 'use strict';
@@ -64,11 +64,11 @@ function create({ cfg }) {
       const app = r.id;
       const appName = r.name;
       if (r.browser || /firefox|librewolf|zen/i.test(app)) {
-        if (refused(r.err)) return { why: 'Let DuoDesk control ' + appName + ' to offer its tabs: System Settings › Privacy & Security › Automation › DuoDesk' };
+        if (refused(r.err)) return { why: 'Let DenaDesk control ' + appName + ' to offer its tabs: System Settings › Privacy & Security › Automation › DenaDesk' };
         const url = r.url || (tabs.tabOf(app, r.title || '') || {}).url;
         return url ? { kind: 'web', url, title: tabs.splitTitle(r.title || '').page || r.title || url, app, appName } : null;
       }
-      if (refused(r.serr)) return { why: 'Let DuoDesk control System Events to offer documents: System Settings › Privacy & Security › Automation › DuoDesk' };
+      if (refused(r.serr)) return { why: 'Let DenaDesk control System Events to offer documents: System Settings › Privacy & Security › Automation › DenaDesk' };
       if (typeof r.doc === 'string' && r.doc.startsWith('file://')) {
         let p = '';
         try { p = decodeURIComponent(new URL(r.doc).pathname); } catch (_) { p = ''; }

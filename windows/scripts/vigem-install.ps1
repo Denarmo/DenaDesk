@@ -9,7 +9,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 try {
-  $dir = Join-Path $env:ProgramData 'TwinDesk\vigem'
+  $dir = Join-Path $env:ProgramData 'DenaDesk\vigem'
   New-Item -ItemType Directory -Force -Path $dir | Out-Null
   $exe = Join-Path $dir 'ViGEmBus-setup.exe'
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12

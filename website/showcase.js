@@ -1,4 +1,4 @@
-// DuoDesk site: showcase behaviour (class prefix sc-). Loaded with defer after app.js; no dependencies.
+// DenaDesk site: showcase behaviour (class prefix sc-). Loaded with defer after app.js; no dependencies.
 // CSP-safe: no inline styles or eval; only classes and CSSOM custom properties (el.style.setProperty).
 // Everything pauses offscreen (IntersectionObserver) and while the tab is hidden; reduced motion gets
 // still frames: no autoplay, no tilt, no drifting light.

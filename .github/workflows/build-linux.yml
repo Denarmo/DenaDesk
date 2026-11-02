@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: duodesk-linux-x64
-          path: linux/dist/DuoDesk-*
+          path: linux/dist/DenaDesk-*
 
       # Straight onto the release, no download and re-upload.
       - name: Upload to the release
@@ -80,4 +80,4 @@ jobs:
           DRAFT: ${{ github.event_name != 'push' && 'true' || '' }}
         run: |
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" ${DRAFT:+--draft} --prerelease --target "$(git rev-parse HEAD)" --title "$TAG" --notes "" || true
-          gh release upload "$TAG" linux/dist/DuoDesk-*.AppImage linux/dist/DuoDesk-*.deb --clobber
+          gh release upload "$TAG" linux/dist/DenaDesk-*.AppImage linux/dist/DenaDesk-*.deb --clobber

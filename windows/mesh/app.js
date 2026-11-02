@@ -283,7 +283,7 @@
       $('pair-code-wrap').hidden = true;
       $('pair-match').hidden = true;
       $('pair-cancel').textContent = 'Cancel';
-      $('pair-hint').textContent = 'DuoDesk on ' + inv.name + ' asks to pair with this PC. Press Pair there, then compare the codes.';
+      $('pair-hint').textContent = 'DenaDesk on ' + inv.name + ' asks to pair with this PC. Press Pair there, then compare the codes.';
       return;
     }
     const p = s.pairing;

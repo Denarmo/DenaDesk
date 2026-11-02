@@ -66,7 +66,7 @@ const { apply: applySettings, migrateKvm, load: loadSettings, save: storeSetting
 
 // Packaged: electron-builder's appId is the shortcut's AppUserModelID. In development Windows
 // only shows toasts for an id it knows, and electron.exe's path works.
-const AUMID = app.isPackaged ? 'org.macshare.windows' : process.execPath;
+const AUMID = app.isPackaged ? 'org.denarmo.denadesk' : process.execPath;
 
 // ../main.js has set the command-line switches (WebRTC) and the user data folder before handing over.
 if (!app.requestSingleInstanceLock()) {
@@ -74,7 +74,7 @@ if (!app.requestSingleInstanceLock()) {
 } else {
   Menu.setApplicationMenu(null); // its accelerators would steal keys meant for the Mac
   app.setAppUserModelId(AUMID); // toasts need it; the installer's shortcut carries the same id
-  // A pinned Mac app starts "DuoDesk.exe --mac-app=<id>": open it, else show the window.
+  // A pinned Mac app starts "DenaDesk.exe --mac-app=<id>": open it, else show the window.
   app.on('second-instance', (_e, argv) => {
     if (sendTo && sendTo.handle(argv)) return; // Explorer › Send to
     if (!openMacAppArg(argv) && !openPhoneAppArg(argv)) showMain();
@@ -260,7 +260,7 @@ function start() {
   vdd = new Vdd({ helper, onChange: pushState });
   // Notifications both ways, Send files, copy/paste files with shortcuts
   notifs = new Notifs({
-    bus: hub.bus, mesh, helper, settings, save: saveSettings, selfIds: [AUMID, 'org.macshare.windows'],
+    bus: hub.bus, mesh, helper, settings, save: saveSettings, selfIds: [AUMID, 'org.denarmo.denadesk'],
     peerName: (id) => ((mesh.get(id) || {}).name || ''), selfName: () => device.name, onChange: pushState,
   });
   fileClip = new FileClip({ link, helper, fileDrop, fileRecv, dragRecv, settings, peerName, popup: (kind, text) => hud.show(kind, text), onChange: pushState });
@@ -772,7 +772,7 @@ function openMacAppArg(argv) {
   return true;
 }
 
-// A pinned phone app starts "DuoDesk.exe --phone-app=<package>": open it once the phone's
+// A pinned phone app starts "DenaDesk.exe --phone-app=<package>": open it once the phone's
 // wireless debugging is ready (connecting a paired phone nearby first, if none is connected).
 let pendingPhoneApp = null; // {pkg, until}
 let pendingView = null; // a phone window waiting for wireless debugging (phoneViews.onNoAdb)
@@ -789,7 +789,7 @@ function openPhoneApp(pkg) {
   const first = !pendingPhoneApp;
   pendingPhoneApp = { pkg, until: (pendingPhoneApp && pendingPhoneApp.until) || Date.now() + 2 * 60 * 1000 };
   if (first && hud) hud.show('home', 'Opening it when the phone is ready…');
-  // Until then, every 2 s: the phone may not be up (TwinDesk just started) or nearby yet.
+  // Until then, every 2 s: the phone may not be up (DenaDesk just started) or nearby yet.
   clearTimeout(openPhoneApp.timer);
   if (Date.now() > pendingPhoneApp.until) return (pendingPhoneApp = null);
   if (phone && !phone.connected && !phone.connecting) {
@@ -1028,9 +1028,9 @@ function createMainWindow() {
     y: b.y,
     minWidth: 720,
     minHeight: 480,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
-    backgroundColor: '#0a0a0c', // DuoDesk's Aurora look is dark only
+    backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
@@ -1098,7 +1098,7 @@ function checkTaskbar() {
 
 function createTray() {
   tray = new Tray(trayIcon());
-  tray.setToolTip('DuoDesk');
+  tray.setToolTip('DenaDesk');
   tray.on('click', showMain);
   checkTaskbar();
   updateTray();
@@ -1113,7 +1113,7 @@ function updateTray(s = buildState()) {
   const sharing = s.pcScreen.mode !== 'off';
   const found = s.found.filter((d) => !s.peer || d.id !== s.peer.id);
   const rtt = connected && s.link.rtt != null ? ' · ' + s.link.rtt + ' ms' : '';
-  tray.setToolTip('DuoDesk: ' + statusLine(s));
+  tray.setToolTip('DenaDesk: ' + statusLine(s));
   // Rebuild only when something in the menu changed (state pushes are frequent).
   const watching = screen.sentAccept === true;
   const host = s.paired && s.paired.macName;
@@ -1157,7 +1157,7 @@ function updateTray(s = buildState()) {
     } })),
     byAddress: () => goTab('connection'),
     lookAgain: () => discovery.probe(),
-    update: s.updates && s.updates.available ? { label: 'Download DuoDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
+    update: s.updates && s.updates.available ? { label: 'Download DenaDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
     open: showMain,
     log: () => require('../../shared/applog.js').open(),
     quit: () => app.quit(),

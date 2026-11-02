@@ -1,17 +1,17 @@
 #!/bin/sh
 # TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-# The certificate build-app.sh signs DuoDesk.app with. macOS keeps Screen Recording, Accessibility
+# The certificate build-app.sh signs DenaDesk.app with. macOS keeps Screen Recording, Accessibility
 # and Input Monitoring per app by its signature's designated requirement: ad-hoc, that is the
 # build's hash, so every update looked like a new app (the switches stayed on in System Settings
 # but did nothing). Signed with one certificate, it's "this bundle id, this certificate", the same
 # for every build, and permissions carry over updates.
 #
 # Made once per build machine in its own keychain (~/.twindesk-signing), never committed: anyone
-# with the private key could sign an app macOS treats as TwinDesk. Keep a backup of that folder;
+# with the private key could sign an app macOS treats as DenaDesk. Keep a backup of that folder;
 # a new certificate means people allow everything once more after that update.
-# Prints the keychain path; build-app.sh signs with: codesign --keychain <it> --sign "TwinDesk Self-Signed".
+# Prints the keychain path; build-app.sh signs with: codesign --keychain <it> --sign "DenaDesk Self-Signed".
 set -e
-NAME="TwinDesk Self-Signed"
+NAME="DenaDesk Self-Signed"
 DIR="$HOME/.twindesk-signing"
 KC="$DIR/signing.keychain-db"
 PW=twindesk # the keychain only holds this certificate; the file's permissions guard it

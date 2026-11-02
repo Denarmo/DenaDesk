@@ -54,7 +54,7 @@ ws.on('message', (data) => {
   switch (m.t) {
     case P.T.PAIR_NONCE:
       send({ t: P.T.PAIR_REVEAL, nonce: nw });
-      console.log(`code ${P.sasCode(fp, nw, m.nonce)} — click Allow in the DuoDesk window`);
+      console.log(`code ${P.sasCode(fp, nw, m.nonce)} — click Allow in the DenaDesk window`);
       send({ t: P.T.PAIR_CONFIRM });
       break;
     case P.T.PAIR_OK:

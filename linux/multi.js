@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // The Multi-device switch (docs/multi-device.md): `on` in multi.json, read once at start by main.js.
-// With it on, mesh/main.js runs instead of main.js's own code. Changing it restarts DuoDesk, so the
+// With it on, mesh/main.js runs instead of main.js's own code. Changing it restarts DenaDesk, so the
 // two never run side by side; the window comes back on the Multi-device tab (settings ui.tab).
 const { app } = require('electron');
 const store = require('./store');

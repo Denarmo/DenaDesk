@@ -25,8 +25,8 @@
 #include <linux/input.h>
 #include <linux/uinput.h>
 
-#define NAME_PREFIX "DuoDesk virtual"
-#define OLD_PREFIX "TwinDesk virtual" // older versions' name: a device one of them left is still ours
+#define NAME_PREFIX "DenaDesk virtual"
+#define OLD_PREFIX "DenaDesk virtual" // older versions' name: a device one of them left is still ours
 #define ABS_MAXV 65535
 #define MAX_IN 32
 

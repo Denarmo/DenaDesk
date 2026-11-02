@@ -18,7 +18,7 @@
 //      (error "unregistered": Windows didn't let this app have the phone's line)
 //      {"ev": "call", "status": "incoming"|"dialing"|"talking"|"held"|"ended"|"lost", "here", "muted"}
 //      {"ev": "routing", "local"} (false: Windows can't play calls here: a Bluetooth headset is connected, or no microphone)
-// stdin closed (DuoDesk gone, or the option off): the phone line is let go and this exits.
+// stdin closed (DenaDesk gone, or the option off): the phone line is let go and this exits.
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,8 +30,8 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Radios;
 
-[assembly: AssemblyTitle("DuoDesk")]
-[assembly: AssemblyProduct("DuoDesk")]
+[assembly: AssemblyTitle("DenaDesk")]
+[assembly: AssemblyProduct("DenaDesk")]
 
 namespace MacShare
 {
@@ -50,7 +50,7 @@ namespace MacShare
         static int Main()
         {
             // A Windows app (build.cmd /target:winexe), with no console to set code pages on: its
-            // pipes are DuoDesk's (windows/callaudio.js). Started by Windows itself for a call
+            // pipes are DenaDesk's (windows/callaudio.js). Started by Windows itself for a call
             // (phoneCallActivation) it has none, reads nothing and goes at once, with no window.
             UTF8Encoding utf8 = new UTF8Encoding(false);
             TextReader input = new StreamReader(Console.OpenStandardInput(), utf8);
@@ -322,7 +322,7 @@ namespace MacShare
         }
 
         // The phone forgotten here: every paired Bluetooth device with its name, classic and LE (a
-        // pairing over LE also leaves keys Windows uses for the phone's LE link, DuoDesk's own).
+        // pairing over LE also leaves keys Windows uses for the phone's LE link, DenaDesk's own).
         static async Task Unpair(string name)
         {
             name = name.Trim();

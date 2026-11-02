@@ -58,7 +58,7 @@ UI.tab({
     const media = UI.mediaControlsRow(); // a phone's media controls on the Phone page (shared/ui-nowplaying.js)
     // Appearance: the phone's wallpaper (settings.phone.wallpaper, was on the Phone page).
     const wallSw = UI.switch((v) => api.setPhone({ wallpaper: v }), { label: 'Show the phone’s wallpaper' });
-    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DuoDesk on the phone reads it once wireless debugging is set up', [wallSw]);
+    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DenaDesk on the phone reads it once wireless debugging is set up', [wallSw]);
     // Overview: what it shows (settings.ui.overview).
     const parts = [['media', 'Now playing', 'What plays on the phone, with its controls'], ['qs', 'Quick actions', 'Wi-Fi, Bluetooth, torch, Do not disturb and more, with volume and ringer'],
       ['notifs', 'Latest notifications', 'The newest few, with Copy for one-time codes'], ['apps', 'Most used apps', 'The phone’s most used apps this week'],
@@ -83,7 +83,7 @@ UI.tab({
       UI.card('Permissions', [fwRow, btRow, steadyRow]),
       UI.card('This computer', [deviceRow, sessRow, inRow, helperRow]),
       UI.card('Quit', [
-        UI.row('Quit DuoDesk', 'Stops sharing until you open it again', [UI.button('Quit', () => api.quit(), 'small')]),
+        UI.row('Quit DenaDesk', 'Stops sharing until you open it again', [UI.button('Quit', () => api.quit(), 'small')]),
       ], { cls: 'keep-on' }),
     );
 

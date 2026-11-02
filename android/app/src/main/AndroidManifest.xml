@@ -34,7 +34,7 @@
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" android:usesPermissionFlags="neverForLocation" tools:targetApi="33" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- Calls, Messages and Photos on the computer (Hub.kt): each asked for only when it's switched
-         on, never in Setup. The SMS ones are in TwinDesk with notifications (src/full). -->
+         on, never in Setup. The SMS ones are in DenaDesk with notifications (src/full). -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -60,10 +60,10 @@
     </queries>
 
     <application
-        android:label="DuoDesk"
+        android:label="DenaDesk"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
-        android:theme="@style/Theme.TwinDesk"
+        android:theme="@style/Theme.DenaDesk"
         android:allowBackup="false"
         android:supportsRtl="true">
 
@@ -82,7 +82,7 @@
             android:name=".ViewerActivity"
             android:exported="false"
             android:label="Mac screen"
-            android:theme="@style/Theme.TwinDesk"
+            android:theme="@style/Theme.DenaDesk"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="sensorLandscape"
             android:windowSoftInputMode="adjustNothing"
@@ -93,7 +93,7 @@
             android:name=".RemoteActivity"
             android:exported="false"
             android:label="Remote"
-            android:theme="@style/Theme.TwinDesk"
+            android:theme="@style/Theme.DenaDesk"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask" />
@@ -103,7 +103,7 @@
             android:exported="true"
             android:label="Send to computer"
             android:icon="@mipmap/ic_launcher"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:noHistory="true">
             <intent-filter>
@@ -154,16 +154,16 @@
         <activity
             android:name=".RezumeActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:taskAffinity="" />
 
-        <!-- Pairing by the computer's QR code: the camera app opens twindesk://pair links here -->
+        <!-- Pairing by the computer's QR code: the camera app opens denadesk://pair links here -->
         <activity
             android:name=".QrActivity"
             android:exported="true"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:taskAffinity="">
@@ -171,7 +171,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="twindesk" android:host="pair" />
+                <data android:scheme="denadesk" android:host="pair" />
             </intent-filter>
         </activity>
 
@@ -179,14 +179,14 @@
         <activity
             android:name=".CaptureActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
 
         <activity
             android:name=".ClipActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:taskAffinity="" />
@@ -205,7 +205,7 @@
         <activity
             android:name=".SoundActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
 
@@ -236,7 +236,7 @@
         <activity
             android:name=".AdbActivity"
             android:exported="true"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:taskAffinity="" />
@@ -245,7 +245,7 @@
         <activity
             android:name=".WakeActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
@@ -255,7 +255,7 @@
         <activity
             android:name=".PermActivity"
             android:exported="false"
-            android:theme="@style/Theme.TwinDesk.Invisible"
+            android:theme="@style/Theme.DenaDesk.Invisible"
             android:excludeFromRecents="true"
             android:taskAffinity="" />
 

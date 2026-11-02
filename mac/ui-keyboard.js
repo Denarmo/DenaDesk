@@ -45,7 +45,7 @@ UI.tab({
       shortcutsRow.hidden = p.same;
       swapRow.hidden = p.same;
       swap.set(s.keys && s.keys.swapCtrlCmd);
-      otherHotkey.setHint(`Set in DuoDesk on ${p.name}`);
+      otherHotkey.setHint(`Set in DenaDesk on ${p.name}`);
     };
   },
 });

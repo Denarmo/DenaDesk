@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Notifications both ways: this PC's notifications
 // go to the other computer while it accepts them (`notif.policy`); the helper reads them from the
-// Windows notification database. The other computer's show here as Windows toasts from TwinDesk
+// Windows notification database. The other computer's show here as Windows toasts from DenaDesk
 // (main.js sets the AppUserModelID, or Windows shows none). Port of mac/notifs.js.
 const { Notification, nativeImage } = require('electron');
 const path = require('path');
@@ -17,7 +17,7 @@ const str = (v, n = 500) => (typeof v === 'string' ? v.slice(0, n) : '');
 class Notifs {
   // opts: link, helper, settings (shared), save(), selfIds: [AUMID], peerName(), onChange(), onClick({app, appName})? (main.js: a phone's notification clicked)
   constructor(opts) {
-    this.iconsIn = new IconsIn(nativeImage, path.join(__dirname, 'assets', 'sidebar-icon@2x.png')); // TwinDesk's for apps without one
+    this.iconsIn = new IconsIn(nativeImage, path.join(__dirname, 'assets', 'sidebar-icon@2x.png')); // DenaDesk's for apps without one
     Object.assign(this, opts);
     this.peerAccepts = false; // the other side's notif.policy (assume no until told)
     this.readable = null; // the helper can read the database
@@ -137,15 +137,15 @@ class Notifs {
       this.echoes.push({ title, body: str(m.body).slice(0, 80), until: Date.now() + 30000 });
       const icon = this.iconsIn.for(m);
       const body = [[appName, peer].filter(Boolean).join(' · '), str(m.subtitle, 200), str(m.body)].filter(Boolean).join('\n');
-      // A one-time code: a Copy button on the toast (twindesk:copy, main.js openLink); the toast
-      // itself opens the app as before (twindesk:open).
+      // A one-time code: a Copy button on the toast (denadesk:copy, main.js openLink); the toast
+      // itself opens the app as before (denadesk:open).
       const code = otpOf([title, str(m.body)].join(' '));
       const n = code ? new Notification({
         title,
         icon,
-        toastXml: '<toast launch="' + xmlEsc('twindesk:open?app=' + encodeURIComponent(item.app) + '&name=' + encodeURIComponent(appName)) + '" activationType="protocol">'
+        toastXml: '<toast launch="' + xmlEsc('denadesk:open?app=' + encodeURIComponent(item.app) + '&name=' + encodeURIComponent(appName)) + '" activationType="protocol">'
           + '<visual><binding template="ToastGeneric"><text>' + xmlEsc(title) + '</text><text>' + xmlEsc(body) + '</text></binding></visual>'
-          + '<actions><action content="' + xmlEsc('Copy ' + code) + '" activationType="protocol" arguments="twindesk:copy?code=' + code + '"/></actions></toast>',
+          + '<actions><action content="' + xmlEsc('Copy ' + code) + '" activationType="protocol" arguments="denadesk:copy?code=' + code + '"/></actions></toast>',
       }) : new Notification({ title, icon, body });
       this.live.add(n);
       const drop = () => this.live.delete(n);

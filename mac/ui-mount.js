@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Mount tab: the phone's storage as a drive in Finder (phonedrive.js). Off, TwinDesk doesn't look
+// Mount tab: the phone's storage as a drive in Finder (phonedrive.js). Off, DenaDesk doesn't look
 // for the phone or touch its files at all; on, only Mount does, and only while it's mounted.
 'use strict';
 

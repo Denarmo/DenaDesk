@@ -37,12 +37,12 @@ swiftc -O -swift-version 5 -target "$TARGET" -framework IOBluetooth \
   Sources/macshare-calls/main.swift -o .build/release/macshare-calls
 echo "built .build/release/macshare-calls"
 # Camera › Virtual camera (mac/vcam.js): the Camera Extension and the tool that installs and feeds
-# it (packed into DuoDesk.app by mac/build-app.sh when it's signed for system extensions).
+# it (packed into DenaDesk.app by mac/build-app.sh when it's signed for system extensions).
 swiftc -O -swift-version 5 -target "$TARGET" -framework CoreMediaIO -framework CoreMedia -framework CoreVideo -framework IOKit   Sources/twindesk-camera/main.swift -o .build/release/twindesk-camera
 echo "built .build/release/twindesk-camera"
 swiftc -O -swift-version 5 -target "$TARGET" -framework CoreMediaIO -framework CoreMedia -framework CoreVideo -framework SystemExtensions -framework VideoToolbox   Sources/twindesk-vcam/main.swift -o .build/release/twindesk-vcam
 echo "built .build/release/twindesk-vcam"
-# Share menu extension (packed into DuoDesk.app/Contents/PlugIns by mac/build-app.sh).
+# Share menu extension (packed into DenaDesk.app/Contents/PlugIns by mac/build-app.sh).
 swiftc -O -swift-version 5 -target "$TARGET" -application-extension -parse-as-library \
   -module-name MacShareShare -framework AppKit -Xlinker -e -Xlinker _NSExtensionMain \
   Sources/macshare-share/ShareViewController.swift -o .build/release/macshare-share

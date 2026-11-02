@@ -57,8 +57,8 @@ jobs:
         run: |
           VER="${TAG#v}"
           PKGVER=$(printf '%s' "$VER" | tr -d '-')
-          gh release download "$TAG" -R "${{ github.repository }}" -p "DuoDesk-$VER-amd64.deb"
-          SUM=$(sha256sum "DuoDesk-$VER-amd64.deb" | cut -d' ' -f1)
+          gh release download "$TAG" -R "${{ github.repository }}" -p "DenaDesk-$VER-amd64.deb"
+          SUM=$(sha256sum "DenaDesk-$VER-amd64.deb" | cut -d' ' -f1)
           sed -i -e "s/^pkgver=.*/pkgver=$PKGVER/" -e "s/^_ver=.*/_ver=$VER/" -e "s/^pkgrel=.*/pkgrel=1/" -e "s/^sha256sums=.*/sha256sums=('$SUM')/" PKGBUILD
           grep -E '^(pkgver|_ver|pkgrel|sha256sums)=' PKGBUILD
 

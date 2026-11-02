@@ -25,7 +25,7 @@ UI.tab({
   },
   build(body) {
     const status = UI.row('Now', '');
-    const how = UI.row('On {name}', 'Open DuoDesk › Remote there, then Touchpad and keyboard or Gamepad. Its speed, tap to click and the gamepad’s keys are set there');
+    const how = UI.row('On {name}', 'Open DenaDesk › Remote there, then Touchpad and keyboard or Gamepad. Its speed, tap to click and the gamepad’s keys are set there');
     const card = UI.card('{name} as a remote', [status, how]);
     const note = UI.note('warn', '');
     const padSwitch = UI.switch((v) => UI.api.setRemote({ pad: v }), { label: 'Real gamepad' });

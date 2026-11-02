@@ -1,4 +1,4 @@
-// DuoDesk — PageFX, Home group: Overview, Connection, Multi-device, General, About. Based on TwinDesk —
+// DenaDesk — PageFX, Home group: Overview, Connection, Multi-device, General, About. Based on DenaDesk —
 // Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Each page gets its own quiet header (styles: home.css), built on shared/pagefx/core.js. Minimal art
 // direction: monochrome hairlines, one light figure in Geist, mono captions, ONE accent on the one thing

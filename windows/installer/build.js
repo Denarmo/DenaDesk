@@ -106,7 +106,7 @@ async function main() {
     copy(path.join(ROOT, 'mac', 'vendor', 'scrcpy-server'), path.join(STAGE, 'windows', 'vendor', 'scrcpy-server'));
   }
   await fetchAdb(path.join(STAGE, 'windows', 'vendor', 'adb'));
-  // DuoDesk for Android with notification access, which this PC installs over wireless debugging.
+  // DenaDesk for Android with notification access, which this PC installs over wireless debugging.
   const dist = path.join(ROOT, 'android', 'dist');
   const full = fs.existsSync(dist) && fs.readdirSync(dist).filter((n) => /-full\.apk$/.test(n)).sort().pop();
   if (full) copy(path.join(dist, full), path.join(STAGE, 'windows', 'vendor', 'twindesk-android-full.apk'));
@@ -122,22 +122,22 @@ async function main() {
   }, null, 2));
   fs.writeFileSync(path.join(STAGE, 'package.json'), JSON.stringify({
     name: pkg.name, productName: pkg.productName, version: pkg.version, description: pkg.description,
-    license: pkg.license, author: '0xCodez', homepage: 'https://github.com/0xCodez/DuoDesk', main: 'windows/main.js', dependencies: pkg.dependencies,
+    license: pkg.license, author: pkg.author, homepage: pkg.homepage, main: 'windows/main.js', dependencies: pkg.dependencies,
   }, null, 2));
 
   for (const arch of ARCHS) await pack(arch);
 }
 
 async function pack(arch) {
-  const name = 'DuoDesk-Setup-' + pkg.version + (arch === 'x64' ? '' : '-' + arch) + '.exe';
+  const name = 'DenaDesk-Setup-' + pkg.version + (arch === 'x64' ? '' : '-' + arch) + '.exe';
   console.log('Packaging ' + arch + '…');
   await builder.build({
     targets: builder.Platform.WINDOWS.createTarget('nsis', builder.Arch[arch]),
     projectDir: WIN,
     publish: 'never', // the workflow uploads to the release itself; on a tag push electron-builder would otherwise try to publish and need GH_TOKEN
     config: {
-      appId: 'org.macshare.windows',
-      productName: 'DuoDesk',
+      appId: 'org.denarmo.denadesk',
+      productName: 'DenaDesk',
       copyright: 'Copyright (C) 2026 0xCodez. Includes code Copyright (C) 2026 Inuka Asith. GPL-3.0.',
       electronVersion,
       directories: { app: STAGE, output: path.join(WIN, 'dist') },
@@ -145,7 +145,7 @@ async function pack(arch) {
       npmRebuild: false,
       win: {
         icon: path.join(__dirname, 'icon.ico'),
-        executableName: 'DuoDesk',
+        executableName: 'DenaDesk',
         // electron-builder signs with WIN_CSC_LINK when supplied. Don't silently release an
         // unsigned installer after the signing secret has been configured.
         forceCodeSigning: Boolean(process.env.WIN_CSC_LINK),
@@ -159,7 +159,7 @@ async function pack(arch) {
         uninstallerIcon: path.join(__dirname, 'icon.ico'),
         license: path.join(ROOT, 'LICENSE'),
         include: path.join(__dirname, 'installer.nsh'),
-        shortcutName: 'DuoDesk',
+        shortcutName: 'DenaDesk',
         createDesktopShortcut: true,
         createStartMenuShortcut: true,
         runAfterFinish: false,

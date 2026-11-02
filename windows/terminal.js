@@ -113,7 +113,7 @@ class Terminal {
     if (this.status !== 'ready' || this.onBle) return;
     try { this._writeHost(); } catch (e) { return this._set('error', e.message); }
     const opts = { detached: true, stdio: 'ignore', windowsHide: false };
-    const title = (this.link.snapshot().link.macName || 'DuoDesk').replace(/["&|<>^]/g, '');
+    const title = (this.link.snapshot().link.macName || 'DenaDesk').replace(/["&|<>^]/g, '');
     const wt = spawn('wt.exe', ['--title', title, SSH, SshConfig.ALIAS], opts);
     wt.on('error', () => spawn('cmd.exe', ['/c', 'start', '', SSH, SshConfig.ALIAS], { ...opts, shell: false }).unref());
     wt.unref();

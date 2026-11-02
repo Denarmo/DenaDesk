@@ -60,7 +60,7 @@ namespace MacShare
             if ((r.State == RadioState.On) == on) return was;
             if (r.State == RadioState.Disabled) throw new Exception("Wi-Fi is switched off on this PC (its switch or key)");
             if (await Radio.RequestAccessAsync() != RadioAccessStatus.Allowed || await r.SetStateAsync(on ? RadioState.On : RadioState.Off) != RadioAccessStatus.Allowed)
-                throw new Exception(on ? "Wi-Fi is off and Windows didn’t let DuoDesk switch it on" : "Windows didn’t let DuoDesk switch Wi-Fi off");
+                throw new Exception(on ? "Wi-Fi is off and Windows didn’t let DenaDesk switch it on" : "Windows didn’t let DenaDesk switch Wi-Fi off");
             for (int i = 0; i < 50 && (r.State == RadioState.On) != on; i++) await Task.Delay(100);
             if (on && r.State != RadioState.On) throw new Exception("Wi-Fi didn’t switch on");
             if (on) await Task.Delay(1500); // the adapter comes up after the radio

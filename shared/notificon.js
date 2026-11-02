@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // App icons with notifications (notif {icon}: a small PNG data: URL). The sender adds an app's icon
 // to its first notification in a session only (Bluetooth stays light); the receiver keeps it by app
-// for the ones after, and shows TwinDesk's own icon for an app it has none for.
+// for the ones after, and shows DenaDesk's own icon for an app it has none for.
 'use strict';
 
 const MAX = 48000; // characters of the data: URL (a 64 px PNG is far less)

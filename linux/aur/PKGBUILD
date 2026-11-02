@@ -1,5 +1,5 @@
 # Maintainer: 0xCodez <0xCodez@users.noreply.github.com>
-# Based on TwinDesk by Inuka Asith (https://github.com/InukaAsith/TwinDesk), GPL-3.0
+# Based on DenaDesk by Inuka Asith (https://github.com/InukaAsith/TwinDesk), GPL-3.0
 pkgname=duodesk-bin
 _pkgname=twindesk
 pkgver=2.3.0
@@ -20,13 +20,13 @@ optdepends=('bluez: devices not on this network over Bluetooth'
 provides=("$_pkgname")
 conflicts=("$_pkgname")
 options=('!strip' '!debug')
-source=("DuoDesk-${_ver}-amd64.deb::${url}/releases/download/v${_ver}/DuoDesk-${_ver}-amd64.deb")
+source=("DenaDesk-${_ver}-amd64.deb::${url}/releases/download/v${_ver}/DenaDesk-${_ver}-amd64.deb")
 sha256sums=('3a90972b447407207cc6f4cc2b10231c912f5ea48ff937d0ac4503d7ebc534ac')
 
 package() {
   bsdtar -xf "$srcdir/data.tar."* -C "$pkgdir"
-  # electron-builder's .deb installs to /opt/DuoDesk; its postinst (not run here) links /usr/bin/twindesk
+  # electron-builder's .deb installs to /opt/DenaDesk; its postinst (not run here) links /usr/bin/twindesk
   install -d "$pkgdir/usr/bin"
-  ln -sf /opt/DuoDesk/twindesk "$pkgdir/usr/bin/twindesk"
-  install -Dm644 "$pkgdir/opt/DuoDesk/resources/app/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  ln -sf /opt/DenaDesk/twindesk "$pkgdir/usr/bin/twindesk"
+  install -Dm644 "$pkgdir/opt/DenaDesk/resources/app/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }

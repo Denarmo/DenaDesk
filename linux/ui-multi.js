@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Multi-device tab, one-to-one app: what it is and the button that turns it on (multi.js). DuoDesk
+// Multi-device tab, one-to-one app: what it is and the button that turns it on (multi.js). DenaDesk
 // restarts into mesh/main.js, whose own page (mesh/ui-multi.js) has the settings for several devices.
 'use strict';
 
@@ -25,7 +25,7 @@ UI.tab({
           'Computers and phones connected at the same time: one clipboard and one set of notifications for all, each screen edge leading to another device, a phone and a computer together',
           [turnOn]),
       ]),
-      UI.note('info', 'DuoDesk restarts when you turn it on or off.'),
+      UI.note('info', 'DenaDesk restarts when you turn it on or off.'),
       MeshIntro.art(),
     );
 

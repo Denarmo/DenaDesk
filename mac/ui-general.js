@@ -50,13 +50,13 @@ UI.tab({
     // Bluetooth off altogether while the session is on the same Wi-Fi (blepolicy.js wifiQuiet).
     const bleWifiSw = UI.switch((v) => api.setNet({ bleWifiOff: v }), { label: 'Turn off Bluetooth on Wi-Fi connections' });
     const bleWifiRow = UI.row('Turn off Bluetooth on Wi-Fi connections', '', [bleWifiSw]);
-    const shareRow = UI.row('DuoDesk in the Share menu', 'Share › DuoDesk sends files to the other computer',
+    const shareRow = UI.row('DenaDesk in the Share menu', 'Share › DenaDesk sends files to the other computer',
       [UI.button('Extensions…', () => api.openSettings('extensions'), 'small')]);
 
     const media = UI.mediaControlsRow(); // a phone's media controls on the Phone page (shared/ui-nowplaying.js)
     // Appearance: the phone's wallpaper (settings.phone.wallpaper, was on the Phone page).
     const wallSw = UI.switch((v) => api.setPhone({ wallpaper: v }), { label: 'Show the phone’s wallpaper' });
-    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DuoDesk on the phone reads it once wireless debugging is set up', [wallSw]);
+    const wallRow = UI.row('Show the phone’s wallpaper', 'On its tile and Overview. DenaDesk on the phone reads it once wireless debugging is set up', [wallSw]);
     // Overview: what it shows (settings.ui.overview).
     const parts = [['media', 'Now playing', 'What plays on the phone, with its controls'], ['qs', 'Quick actions', 'Wi-Fi, Bluetooth, torch, Do not disturb and more, with volume and ringer'],
       ['notifs', 'Latest notifications', 'The newest few, with Copy for one-time codes'], ['apps', 'Most used apps', 'The phone’s most used apps this week'],
@@ -96,7 +96,7 @@ UI.tab({
         const ok = p.kind === 'screen' ? v === 'granted' : v === true;
         const unknown = v === null || v === undefined || v === 'unknown';
         pill.className = `pill ${unknown ? 'muted' : ok ? 'good' : 'bad'}`;
-        // macOS counts Accessibility as enough for TwinDesk's keyboard tap: Input Monitoring reads
+        // macOS counts Accessibility as enough for DenaDesk's keyboard tap: Input Monitoring reads
         // as allowed then, with its own switch in System Settings still off (that's fine).
         const viaAx = p.kind === 'inputMonitoring' && ok && s.permissions.accessibility === true;
         pill.hidden = unknown && !!p.state; // macOS doesn't tell: Open shows it
@@ -118,7 +118,7 @@ UI.tab({
         bleWifiRow.setHint(s.net.bleWifiOff === false ? 'Bluetooth stays on beside the Wi-Fi, the way back if it drops'
           : s.net.bleOff ? 'Off now: the session is on the same Wi-Fi. Bluetooth comes back when it ends'
             : 'On the same Wi-Fi network (not Wi-Fi Direct), Bluetooth goes off until the session ends. With a computer, phones can’t find this one meanwhile');
-        const RADIO = { off: 'Bluetooth is off', unauthorized: 'Allow DuoDesk in System Settings › Privacy & Security › Bluetooth', unsupported: 'This Mac can’t advertise over Bluetooth' };
+        const RADIO = { off: 'Bluetooth is off', unauthorized: 'Allow DenaDesk in System Settings › Privacy & Security › Bluetooth', unsupported: 'This Mac can’t advertise over Bluetooth' };
         bleRow.setHint(!s.net.ble ? 'Only phones on this network or a USB cable connect'
           : RADIO[s.net.radio] || 'Phones nearby connect over Bluetooth. Files and screens move to a direct Wi-Fi link for a while');
         blePcRow.setHint(s.net.blePc !== true ? 'Only computers on this network connect'

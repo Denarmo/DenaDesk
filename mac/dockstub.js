@@ -3,7 +3,7 @@
 // the app's name, a per-app bundle id, its icon; mac-helper's macshare-dockstub as the executable,
 // ad-hoc signed) runs while that app has windows here. Its events: activate / focus <i> / quit.
 // It lives in ~/Applications so it shows in Launchpad and Spotlight and can be kept in
-// the Dock; opened on its own it asks DuoDesk (macshare://pc-app/<id>) to open the PC app.
+// the Dock; opened on its own it asks DenaDesk (macshare://pc-app/<id>) to open the PC app.
 'use strict';
 
 const fs = require('fs');

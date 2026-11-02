@@ -3,8 +3,8 @@
 // for the Apps tab, and the per-app windows. Those windows are opened by the Monitor 2 renderer
 // (window.open, so they can show the same video stream, cropped); here they get the app's title,
 // icon and their own AppUserModelID, so each Mac app has its own taskbar button.
-// Each Mac app gets a Start menu shortcut (folder "DuoDesk Apps") that starts
-// `DuoDesk.exe --mac-app=<id>`, and its windows carry the same AppUserModelID and relaunch
+// Each Mac app gets a Start menu shortcut (folder "DenaDesk Apps") that starts
+// `DenaDesk.exe --mac-app=<id>`, and its windows carry the same AppUserModelID and relaunch
 // command, so Pin to Start / Pin to taskbar work. Its windows never go full screen or past 1:1.
 const { app, BrowserWindow, nativeImage, shell, screen: displays } = require('electron');
 const crypto = require('crypto');
@@ -100,7 +100,7 @@ class Apps {
     return 'org.macshare.macapp.' + crypto.createHash('sha1').update(id).digest('hex').slice(0, 10);
   }
 
-  // How this copy of DuoDesk opens one Mac app: "DuoDesk.exe --mac-app=<id>".
+  // How this copy of DenaDesk opens one Mac app: "DenaDesk.exe --mac-app=<id>".
   static relaunch(id) {
     const args = (app.isPackaged ? [] : [app.getAppPath()]).concat('--mac-app=' + id);
     return { target: process.execPath, args: args.map((x) => (/\s/.test(x) ? '"' + x + '"' : x)).join(' ') };
@@ -110,14 +110,14 @@ class Apps {
     return Apps.startMenuDir();
   }
 
-  // Start › DuoDesk Apps, for the Mac's apps and the phone's (phoneview.js). Older versions made
-  // "TwinDesk Apps": the first time, its shortcuts move here and the old folder goes.
+  // Start › DenaDesk Apps, for the Mac's apps and the phone's (phoneview.js). Older versions made
+  // "DenaDesk Apps": the first time, its shortcuts move here and the old folder goes.
   static startMenuDir() {
     const programs = path.join(app.getPath('appData'), 'Microsoft', 'Windows', 'Start Menu', 'Programs');
-    const dir = path.join(programs, 'DuoDesk Apps');
+    const dir = path.join(programs, 'DenaDesk Apps');
     if (Apps.movedOld) return dir;
     Apps.movedOld = true;
-    const old = path.join(programs, 'TwinDesk Apps');
+    const old = path.join(programs, 'DenaDesk Apps');
     try {
       if (fs.existsSync(old)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -129,7 +129,7 @@ class Apps {
         fs.rmdirSync(old);
       }
     } catch (e) {
-      console.log('[apps] Start › TwinDesk Apps not moved: ' + e.message);
+      console.log('[apps] Start › DenaDesk Apps not moved: ' + e.message);
     }
     return dir;
   }
@@ -161,7 +161,7 @@ class Apps {
     try {
       fs.mkdirSync(this.startDir, { recursive: true });
       const ok = shell.writeShortcutLink(file, fs.existsSync(file) ? 'replace' : 'create', {
-        target: r.target, args: r.args, description: a.name + ' on ' + this.peerName() + ' (DuoDesk)', appUserModelId: Apps.aumid(id),
+        target: r.target, args: r.args, description: a.name + ' on ' + this.peerName() + ' (DenaDesk)', appUserModelId: Apps.aumid(id),
         ...(ico ? { icon: ico, iconIndex: 0 } : {}),
       });
       if (!ok) throw new Error('Windows refused the shortcut');
@@ -171,7 +171,7 @@ class Apps {
       return false;
     }
     if (tell) {
-      this.message = a.name + ' is in Start › DuoDesk Apps. Right-click it there to pin it to Start or the taskbar.';
+      this.message = a.name + ' is in Start › DenaDesk Apps. Right-click it there to pin it to Start or the taskbar.';
       this.onChange();
     }
     return true;

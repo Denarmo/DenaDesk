@@ -35,12 +35,12 @@ UI.tab({
       const o = t.toPc || {};
       outSw.set(t.connectPc);
       shellBtn.hidden = !o.ready;
-      const WHY = { waiting: `Waiting for ${pc}…`, not_allowed: `Turned off on ${pc}`, remote_login_off: UI.peer(s).os === 'mac' ? `Turn on Remote Login on ${pc}` : `Set up the SSH server in DuoDesk on ${pc}`,
+      const WHY = { waiting: `Waiting for ${pc}…`, not_allowed: `Turned off on ${pc}`, remote_login_off: UI.peer(s).os === 'mac' ? `Turn on Remote Login on ${pc}` : `Set up the SSH server in DenaDesk on ${pc}`,
         bluetooth: `The terminal doesn’t work over Bluetooth. Connect with Wi-Fi Direct, or join ${pc}’s network.` };
       outRow.setHint(!t.connectPc ? '' : o.ready ? `Ready, signed in as ${o.user}` : WHY[o.why] || (o.why ? `Not ready: ${o.why}` : `Waiting for ${pc}`));
       cmdRow.setHint('');
       inSw.set(t.allowPc);
-      inRow.setHint(!t.allowPc ? '' : t.installed ? 'Ready' : `Turn on Terminal in DuoDesk on ${pc}`);
+      inRow.setHint(!t.allowPc ? '' : t.installed ? 'Ready' : `Turn on Terminal in DenaDesk on ${pc}`);
       rl.setHint(t.remoteLogin ? 'On' : t.remoteLogin === false ? 'Off. Turn it on in Sharing settings.' : '');
     };
   },

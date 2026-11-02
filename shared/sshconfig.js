@@ -10,11 +10,11 @@ const os = require('os');
 const path = require('path');
 
 const ALIAS = 'duodesk';
-const OLD_ALIASES = ['twindesk']; // older versions' name for it: still answers
-const KEY_ALIAS = 'twindesk'; // the name in known_hosts (HostKeyAlias): kept, so keys pinned before stay valid
+const OLD_ALIASES = ['denadesk']; // older versions' name for it: still answers
+const KEY_ALIAS = 'denadesk'; // the name in known_hosts (HostKeyAlias): kept, so keys pinned before stay valid
 const SSH_DIR = path.join(os.homedir(), '.ssh');
 const CONFIG = path.join(SSH_DIR, 'config');
-const BEGIN = '# >>> duodesk (managed by DuoDesk, do not edit)';
+const BEGIN = '# >>> duodesk (managed by DenaDesk, do not edit)';
 const END = '# <<< duodesk';
 const OLD = [['# >>> macshare', '# <<< macshare'], ['# >>> twindesk', '# <<< twindesk']];
 

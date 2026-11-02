@@ -24,7 +24,7 @@ UI.setup = (() => {
 
   const page = el('section', { class: 'setup-page', hidden: true }, [
     el('div', { class: 'app-mark', attrs: { 'aria-hidden': 'true' } }),
-    el('h1', { text: 'Set up DuoDesk' }),
+    el('h1', { text: 'Set up DenaDesk' }),
     el('p', { text: 'A few things before {me} can share with the other computer.' }),
     UI.card('', [sessRow, inRow, fwRow, helperRow]),
     el('div', { class: 'setup-foot' }, [
@@ -45,11 +45,11 @@ UI.setup = (() => {
     const ss = s.session || {};
     sessRow.hidden = !shown.has('session');
     sessPill.textContent = 'No desktop';
-    sessRow.setHint('No X11 or Wayland display found. Start DuoDesk from your desktop.');
+    sessRow.setHint('No X11 or Wayland display found. Start DenaDesk from your desktop.');
 
     const inBad = s.setup.missing.includes('input');
     inRow.hidden = !shown.has('input');
-    inRow.setHint(ss.inputNote || (inBad ? 'Wayland lets DuoDesk share the mouse and keyboard through /dev/uinput and /dev/input. Fix sets that up once (asks for your password); then log out and back in.' : ''));
+    inRow.setHint(ss.inputNote || (inBad ? 'Wayland lets DenaDesk share the mouse and keyboard through /dev/uinput and /dev/input. Fix sets that up once (asks for your password); then log out and back in.' : ''));
     inFix.hidden = !inBad;
     inDone.hidden = inBad;
 
@@ -63,7 +63,7 @@ UI.setup = (() => {
     const h = s.kvmState.helper;
     const helperBad = s.setup.missing.includes('helper');
     helperRow.hidden = !shown.has('helper');
-    helperRow.setHint(helperBad ? h + '. Restart DuoDesk if it stays like this.' : '');
+    helperRow.setHint(helperBad ? h + '. Restart DenaDesk if it stays like this.' : '');
     helperPill.hidden = !helperBad;
     helperDone.hidden = helperBad;
   }

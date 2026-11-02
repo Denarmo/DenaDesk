@@ -5,10 +5,10 @@
 # drives it from here (screenshots, eval, clicks through scripts/cdp.js).
 #
 #   linux/scripts/vm-test.sh sync           copy the checkout to ~/twindesk in the VM, npm install, build the helper
-#   linux/scripts/vm-test.sh start          (re)start DuoDesk in the VM's desktop session (sync first if needed)
+#   linux/scripts/vm-test.sh start          (re)start DenaDesk in the VM's desktop session (sync first if needed)
 #   linux/scripts/vm-test.sh stop
 #   linux/scripts/vm-test.sh log            the app's output
-#   linux/scripts/vm-test.sh shot out.png   screenshot of DuoDesk's window (DevTools); `screen out.png`: the whole VM
+#   linux/scripts/vm-test.sh shot out.png   screenshot of DenaDesk's window (DevTools); `screen out.png`: the whole VM
 #   linux/scripts/vm-test.sh eval 'expr'    run JavaScript in the window (e.g. UI.go('overview'))
 #   linux/scripts/vm-test.sh click x,y
 #   linux/scripts/vm-test.sh sh 'cmd'       a shell command in the VM, as the desktop user
@@ -18,7 +18,7 @@
 # (default: the user with the desktop session). The VM needs Parallels Tools (it shares the Mac's
 # home at /media/psf/Home), node 18+, and the packages from the README's Linux section. It runs on
 # the VM's X11 or Wayland session as is; with the VM on the same network (Parallels "Bridged"),
-# it pairs with this Mac's DuoDesk like any Linux computer.
+# it pairs with this Mac's DenaDesk like any Linux computer.
 set -e
 cd "$(dirname "$0")/../.."
 REPO=$(pwd)

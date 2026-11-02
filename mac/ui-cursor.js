@@ -90,7 +90,7 @@ UI.tab({
       via.set(br.input || (((s.phone || {}).settings || {}).input === 'phone' ? 'phone' : 'adb'));
       adbBtn.hidden = br.state === 'ready';
       viaRow.setHint(br.inputMode === 'auto' ? (br.state === 'ready' ? 'Automatic: ADB, wireless debugging is ready' : 'Automatic: Accessibility until wireless debugging is set up')
-        : br.input === 'phone' ? 'Accessibility: DuoDesk on the phone taps and types. Works over Wi-Fi, Wi-Fi Direct and Bluetooth, no developer options'
+        : br.input === 'phone' ? 'Accessibility: DenaDesk on the phone taps and types. Works over Wi-Fi, Wi-Fi Direct and Bluetooth, no developer options'
           : 'ADB: full control through wireless debugging' + (br.state === 'ready' ? '' : ' (not set up yet)'));
     };
   },

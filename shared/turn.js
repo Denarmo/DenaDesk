@@ -34,7 +34,7 @@ const A = {
 const SUCCESS = 0x0100;
 const ERROR = 0x0110;
 const LIFETIME = 600;
-const REALM = 'twindesk';
+const REALM = 'denadesk';
 
 const pad4 = (n) => (n + 3) & ~3;
 

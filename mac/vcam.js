@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// The virtual camera on the Mac (shared/vcam.js's driver): "DuoDesk Camera", a Camera Extension
-// (mac-helper/Sources/twindesk-camera) inside DuoDesk.app/Contents/Library/SystemExtensions.
+// The virtual camera on the Mac (shared/vcam.js's driver): "DenaDesk Camera", a Camera Extension
+// (mac-helper/Sources/twindesk-camera) inside DenaDesk.app/Contents/Library/SystemExtensions.
 // Installing it is twindesk-vcam activate (Contents/MacOS: the extension must be in its main
 // bundle), and the first time macOS asks the person to allow it in System Settings; twindesk-vcam
 // feed then writes the frames into the camera. macOS loads a camera extension only from an app in
@@ -11,7 +11,7 @@
 // twindesk-vcam feed --name writes into the way OBS does (any build: it's OBS's to install). OBS
 // installs it with Start Virtual Camera, and it's a camera here while it's on in System Settings ›
 // General › Login Items & Extensions › Camera Extensions.
-// Before 2.5 our camera was "TwinDesk Camera" (the same extension, org.macshare.mac.camera): status
+// Before 2.5 our camera was "DenaDesk Camera" (the same extension, org.macshare.mac.camera): status
 // says legacy while that one still runs, and the next start activates this build's, which replaces it
 // (no new approval). Until then, or if that fails, feed writes into the old one.
 const { execFile, spawn } = require('child_process');
@@ -24,9 +24,9 @@ const TOOL = path.join(CONTENTS, 'MacOS', 'twindesk-vcam');
 const EXTENSION = path.join(CONTENTS, 'Library', 'SystemExtensions', 'org.macshare.mac.camera.systemextension');
 
 const OBS = 'OBS Virtual Camera';
-const NAME = 'DuoDesk Camera';
-const TARGETS = [{ value: 'obs', label: OBS }, { value: 'twindesk', label: NAME }]; // OBS's first: the default ('twindesk': the stored value, kept)
-let migrating = false; // this start activated ours over the old "TwinDesk Camera"
+const NAME = 'DenaDesk Camera';
+const TARGETS = [{ value: 'obs', label: OBS }, { value: 'denadesk', label: NAME }]; // OBS's first: the default ('denadesk': the stored value, kept)
+let migrating = false; // this start activated ours over the old "DenaDesk Camera"
 
 function tool(cmd, onLine, timeout = 20000, args = []) {
   return new Promise((resolve) => {
@@ -74,9 +74,9 @@ const driver = {
       };
     }
     if (!fs.existsSync(TOOL) || !fs.existsSync(EXTENSION)) {
-      return { supported: false, message: 'Not in this build: macOS takes camera extensions only from DuoDesk signed by its developer (a release build). Choose OBS Virtual Camera instead' };
+      return { supported: false, message: 'Not in this build: macOS takes camera extensions only from DenaDesk signed by its developer (a release build). Choose OBS Virtual Camera instead' };
     }
-    if (!/^\/Applications\//.test(CONTENTS)) return { supported: false, message: 'Move DuoDesk to the Applications folder first: macOS installs camera extensions only from there' };
+    if (!/^\/Applications\//.test(CONTENTS)) return { supported: false, message: 'Move DenaDesk to the Applications folder first: macOS installs camera extensions only from there' };
     const st = await tool('status');
     if (st.camera !== true && st.legacy === true) return { supported: true, installed: migrating }; // renamed once per start
     return { supported: true, installed: st.camera === true };

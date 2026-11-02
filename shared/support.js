@@ -30,7 +30,7 @@ const CREATOR = 'beyond-apps';
 const RETURN_URL = 'https://beyond-media.ai/tips?creator=beyond-apps'; // an origin the tips API returns to
 const CONTACT = 'contact@beyond-media.ai';
 const ISSUES = 'https://github.com/0xCodez/DuoDesk/issues/new';
-const APP_NAME = 'DuoDesk';
+const APP_NAME = 'DenaDesk';
 const KINDS = { bug: 'Bug', idea: 'Idea', love: 'Love it' };
 const TTL = 10 * 60 * 1000;
 const TIMEOUT = 10000;
@@ -195,7 +195,7 @@ async function createTip(o) {
     }, async (res) => { let body = null; try { body = await res.json(); } catch {} return { r: res, j: body }; });
     if (!r.ok) return { ok: false, error: str(j && j.error, 200) || 'The tip service answered ' + r.status };
     const url = safeUrl(j && j.url, 'checkout');
-    if (!url) return { ok: false, error: 'The tip service sent a link DuoDesk won’t open' };
+    if (!url) return { ok: false, error: 'The tip service sent a link DenaDesk won’t open' };
     return { ok: true, url };
   } catch (e) {
     lastTip = 0;
@@ -239,12 +239,12 @@ function checkFeedback(o) {
   return { kind, message, email, includeInfo: !!(o && o.includeInfo) };
 }
 
-// Subject "DuoDesk feedback · <version> · <os> <arch>". With the info box unticked nothing about the
-// computer goes out, not even in the subject ("DuoDesk feedback · Bug").
+// Subject "DenaDesk feedback · <version> · <os> <arch>". With the info box unticked nothing about the
+// computer goes out, not even in the subject ("DenaDesk feedback · Bug").
 function compose(f) {
   const i = info();
   const subject = f.includeInfo ? `${APP_NAME} feedback · ${i.version} · ${i.os} ${i.arch}` : `${APP_NAME} feedback · ${KINDS[f.kind]}`;
-  const parts = [`[${KINDS[f.kind]}]`, '', f.message || (f.kind === 'love' ? 'Just wanted to say I like DuoDesk.' : '')];
+  const parts = [`[${KINDS[f.kind]}]`, '', f.message || (f.kind === 'love' ? 'Just wanted to say I like DenaDesk.' : '')];
   if (f.email) parts.push('', 'Reply to: ' + f.email);
   if (f.includeInfo) parts.push('', '—', ...infoLines(i));
   return { subject, body: parts.join('\n'), info: i };

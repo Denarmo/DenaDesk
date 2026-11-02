@@ -11,9 +11,9 @@ const P = require('./protocol.js');
 const LIMIT_MS = { connecting: 8000, starting: 15000, waiting: 60000 };
 
 function limitMessage(phase, name, address) {
-  if (phase === 'connecting' && /^ble:/.test(String(address || ''))) return `Can’t reach ${name} over Bluetooth. Is DuoDesk open there, and close by?`;
-  if (phase === 'connecting') return `Can’t reach ${name} at ${address}. Is DuoDesk open there, on the same Wi-Fi? Guest networks keep devices apart.`;
-  if (phase === 'starting') return `${name} didn’t start pairing. Try again, and update DuoDesk there if it keeps happening.`;
+  if (phase === 'connecting' && /^ble:/.test(String(address || ''))) return `Can’t reach ${name} over Bluetooth. Is DenaDesk open there, and close by?`;
+  if (phase === 'connecting') return `Can’t reach ${name} at ${address}. Is DenaDesk open there, on the same Wi-Fi? Guest networks keep devices apart.`;
+  if (phase === 'starting') return `${name} didn’t start pairing. Try again, and update DenaDesk there if it keeps happening.`;
   return `${name} didn’t answer.`;
 }
 
@@ -22,8 +22,8 @@ function versionMessage(msg, name) {
   const m = /\bv(\d+)\b/.exec(String((msg && msg.message) || ''));
   if (!m) return null;
   const theirs = Number(m[1]);
-  if (theirs < P.PROTOCOL_VERSION) return `${name} runs an older DuoDesk. Update it there.`;
-  if (theirs > P.PROTOCOL_VERSION) return `This DuoDesk is older than the one on ${name}. Update it here.`;
+  if (theirs < P.PROTOCOL_VERSION) return `${name} runs an older DenaDesk. Update it there.`;
+  if (theirs > P.PROTOCOL_VERSION) return `This DenaDesk is older than the one on ${name}. Update it here.`;
   return null;
 }
 

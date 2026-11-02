@@ -270,7 +270,7 @@ const UI = {
 
   // A small device glyph for lists: 'mac' | 'win' | 'linux' | 'android'.
   osClass: (os) => (os === 'mac' ? 'mac' : os === 'android' ? 'phone' : 'pc'),
-  // An app's icon in a grid: its own, else (none, or it doesn't load) DuoDesk's.
+  // An app's icon in a grid: its own, else (none, or it doesn't load) DenaDesk's.
   appIcon(src) {
     const fallback = 'assets/sidebar-icon@2x.png';
     const img = UI.el('img', { src: src || fallback, alt: '' });

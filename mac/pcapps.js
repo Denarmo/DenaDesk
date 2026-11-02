@@ -338,7 +338,7 @@ class PcApps extends EventEmitter {
     const pick = ev === 'focus' ? ws[i] : ws.sort((a, b) => b.focusedAt - a.focusedAt)[0];
     if (ev === 'activate') for (const w of ws) w.win.showInactive();
     if (pick) {
-      app.focus({ steal: true }); // TwinDesk has no Dock icon of its own
+      app.focus({ steal: true }); // DenaDesk has no Dock icon of its own
       pick.win.show();
       pick.win.focus();
     }

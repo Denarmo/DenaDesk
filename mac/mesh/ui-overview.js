@@ -113,7 +113,7 @@ UI.tab({
     const adbWhere = el('input', { type: 'text', placeholder: 'Address:port (optional)', autocomplete: 'off', spellcheck: false, attrs: { 'aria-label': 'Pairing address' } });
     const adbPair = UI.button('Pair', () => api.phonePair({ code: adbCode.value, where: adbWhere.value }), 'small primary');
     adbCode.onkeydown = adbWhere.onkeydown = (e) => { if (e.key === 'Enter') adbPair.click(); };
-    const adbPairRow = UI.row('Pairing code', 'Or type it on the phone, in DuoDesk’s notification', [adbCode, adbWhere, adbPair]);
+    const adbPairRow = UI.row('Pairing code', 'Or type it on the phone, in DenaDesk’s notification', [adbCode, adbWhere, adbPair]);
     const adbCard = UI.card('Phone screen, mouse and keyboard', [adbRow, adbPairRow]);
     const pairedList = el('div');
     // Devices: every computer and phone of the mesh. Use makes it the one the features talk to.
@@ -176,14 +176,14 @@ UI.tab({
       const lost = s.permissions && s.ui && s.ui.setupDone ? PERMS.filter(([, , miss]) => miss(s.permissions)).map(([, label]) => label) : [];
       permCard.hidden = !lost.length;
       permRow.label.textContent = `${lost.join(', ')} ${lost.length > 1 ? 'aren’t' : 'isn’t'} allowed`;
-      permRow.setHint('DuoDesk needs it to share this Mac with the other computer. After an update, allow it again.');
+      permRow.setHint('DenaDesk needs it to share this Mac with the other computer. After an update, allow it again.');
 
       // nearby
       const d = s.discovery || { on: true, localNetwork: true };
       const blocked = !d.on || !d.localNetwork;
       discRow.hidden = !blocked;
       discRow.label.textContent = 'Can’t look for computers on this network.';
-      discRow.setHint(!d.localNetwork ? 'Allow Local Network for DuoDesk, or connect by address.' : d.error);
+      discRow.setHint(!d.localNetwork ? 'Allow Local Network for DenaDesk, or connect by address.' : d.error);
       discFix.hidden = d.localNetwork;
       const pairedIds = new Set([...s.paired.map((x) => x.id), ...g.hosts.map((x) => x.id)]);
       const fk = JSON.stringify([s.found, [...pairedIds], c && c.id, blocked]);
@@ -200,7 +200,7 @@ UI.tab({
           r.classList.add('with-ico');
           return r;
         });
-        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DuoDesk on the other computer.'));
+        if (!rows.length && !blocked) rows.push(UI.row('Looking for computers…', 'Open DenaDesk on the other computer.'));
         foundList.replaceChildren(...rows);
       }
 
@@ -218,7 +218,7 @@ UI.tab({
       const bad = s.serverError || (g.status.state === 'identity_changed' && g.status.message);
       status.textContent = bad
         || (c ? UI.fill(WHERE[inp.where] || 'Connected')
-          : pairedIds.size ? 'Open DuoDesk on the other computer to connect.'
+          : pairedIds.size ? 'Open DenaDesk on the other computer to connect.'
             : 'Pick a computer above, or connect by address.');
       // Disconnected (here or by the other side), taken over, or the Mac we connect to is in use.
       const gStopped = !c && g.hosts.length && g.status.state === 'stopped';

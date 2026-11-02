@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Bluetooth LE, the other way round from Ble.swift: this Mac looks for PCs that advertise the
-// DuoDesk service, so one that isn't on this network (and not paired yet) shows in its list, and
+// DenaDesk service, so one that isn't on this network (and not paired yet) shows in its list, and
 // asks one to connect (an invite, like the network's). The PC then connects to us (Ble.swift).
 //
 // Commands: bleLook {on}, bleInvite {dev, msg (JSON text)}.

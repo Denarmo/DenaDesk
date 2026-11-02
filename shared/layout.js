@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
-// TwinDesk shared layout: where every device sits relative to the others, one map for the whole
+// DenaDesk shared layout: where every device sits relative to the others, one map for the whole
 // mesh (docs/mesh.md, "Shared layout"). Pure JavaScript, no I/O, the same file on every platform
 // that runs JS; the Kotlin app keeps a copy of the rules it needs.
 //

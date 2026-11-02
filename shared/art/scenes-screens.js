@@ -1,4 +1,4 @@
-// DuoDesk — Aurora feature pictures: Second screen (share), Screen sharing (mirror), Remote screen (view) and
+// DenaDesk — Aurora feature pictures: Second screen (share), Screen sharing (mirror), Remote screen (view) and
 // Camera sharing (camera). Based on TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Each sets window.AuroraArt[<scene>] = (id, K) => the inner markup of a 400 x 240 picture, drawn with the art kit
 // (shared/art/kit.js, K); shared/feature-art.js puts K.defs(id) in the picture's <defs> first. CSP-safe: SVG

@@ -9,7 +9,7 @@
 //   macName, macId, fp,                       // this Mac's identity (fp = cert SHA-256 hex)
 //   addresses: ['192.168.1.5', ...],           // this Mac's IPv4 addresses (the server listens on P.PORT)
 //   discovery: { on, error, localNetwork },      // discovery.js status
-//   found: [{ id, name, os, address, port, invited }],   // other DuoDesk computers nearby
+//   found: [{ id, name, os, address, port, invited }],   // other DenaDesk computers nearby
 //   guest: { status: {state, message}, pairing: null|{phase, name, address, code, error}, hosts: [...] },  // links.js
 //   peers: [{id, name, os, state, rtt, role, selected, connected, direct}],   // hub.js: every device of the mesh
 //   connect: { busy, message, error },           // last "Connect by address" / Pair attempt
@@ -296,7 +296,7 @@ function handleSendLink(url) {
   try { u = new URL(url); } catch { return; }
   const paths = u.searchParams.getAll('p').filter((x) => x.startsWith('/')).slice(0, 1000);
   if (!paths.length) return;
-  if (!peer.current) return hud && hud.show('away', 'Not connected', 'Open DuoDesk on the other computer first');
+  if (!peer.current) return hud && hud.show('away', 'Not connected', 'Open DenaDesk on the other computer first');
   actions.sendFiles(paths);
   hud && hud.show('away', `Sending ${paths.length} item${paths.length === 1 ? '' : 's'} to ${peer.current.name}`);
 }
@@ -323,11 +323,11 @@ function refreshPermissions() {
   pushState();
 }
 
-// After an update signed differently (every ad-hoc build was), macOS still lists DuoDesk as
+// After an update signed differently (every ad-hoc build was), macOS still lists DenaDesk as
 // allowed but the grant belongs to the old signature, so the switches are on and nothing works,
 // and switching them on again does nothing. Once per new signature: whatever reads as missing is
 // reset (tccutil drops the stale entry), so Allow asks afresh and the switch in System Settings
-// really is ours. Builds signed with TwinDesk's certificate keep one signature (build-app.sh).
+// really is ours. Builds signed with DenaDesk's certificate keep one signature (build-app.sh).
 let staleChecked = false;
 function clearStalePermissions() {
   if (staleChecked || !app.isPackaged) return;
@@ -369,7 +369,7 @@ function createWindow() {
     height: 720,
     minWidth: 760,
     minHeight: 520,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     show: false,
     titleBarStyle: 'hiddenInset', // the sidebar runs up under the traffic lights
     vibrancy: 'sidebar',
@@ -436,7 +436,7 @@ function updateTray() {
   const name = c ? c.name : 'the other computer';
   const k = settings.kvm;
   const where = state.input && state.input.where;
-  tray.setToolTip(c ? `DuoDesk: ${c.name}` : 'DuoDesk');
+  tray.setToolTip(c ? `DenaDesk: ${c.name}` : 'DenaDesk');
   const found = (state.found || []).filter((d) => !c || d.id !== c.id);
   const other = c ? name : 'Other Computer';
   tray.setContextMenu(Menu.buildFromTemplate(trayMenu.template({
@@ -460,7 +460,7 @@ function updateTray() {
     found: found.map((d) => ({ label: `${d.name} (${d.os === 'mac' ? 'Mac' : d.os === 'linux' ? 'Linux' : 'PC'})`, click: () => actions.pairWith(d.id) })),
     byAddress: () => { actions.setTab('connection'); showWindow(); },
     lookAgain: () => actions.refreshDiscovery(),
-    update: updates && updates.status.available ? { label: `DuoDesk ${updates.status.latest} available…`, click: showUpdateWindow } : null,
+    update: updates && updates.status.available ? { label: `DenaDesk ${updates.status.latest} available…`, click: showUpdateWindow } : null,
     open: showWindow,
     log: () => require('../../shared/applog.js').open(),
     quit: () => app.quit(),

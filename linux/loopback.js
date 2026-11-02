@@ -8,8 +8,8 @@
 const { execFile } = require('child_process');
 
 const NAME = 'duodesk_sound';
-const LABEL = 'DuoDesk-Sound';
-const OLD_NAME = 'twindesk_sound'; // older versions' source (TwinDesk-Sound): unloaded like a stale one
+const LABEL = 'DenaDesk-Sound';
+const OLD_NAME = 'twindesk_sound'; // older versions' source (DenaDesk-Sound): unloaded like a stale one
 
 const pactl = (args) => new Promise((resolve, reject) => {
   execFile('pactl', args, { timeout: 8000 }, (err, out, stderr) => {

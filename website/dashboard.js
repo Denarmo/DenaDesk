@@ -1,4 +1,4 @@
-/* DuoDesk Analytics (/dashboard). Reads api/dashboard with the password in the x-dash-key header.
+/* DenaDesk Analytics (/dashboard). Reads api/dashboard with the password in the x-dash-key header.
    The site's CSP allows no inline styles, so every size and colour below is set through the DOM
    (element.style / SVG attributes), never as a style="" attribute in markup. */
 'use strict';
@@ -33,12 +33,12 @@
     places: { hero: 'Top of the page', download: 'Download section', footer: 'Bottom of the page', other: 'Elsewhere' },
     clicks: {
       github: 'Opened GitHub', 'all-releases': 'Opened all releases', 'releases-latest': 'Opened the release (no system detected)',
-      'tips-seen': 'Saw the tip card', 'tips-page': 'Opened the tip page', 'tips-paid': 'Came back after tipping', 'support-link': 'Clicked “Support DuoDesk”',
+      'tips-seen': 'Saw the tip card', 'tips-page': 'Opened the tip page', 'tips-paid': 'Came back after tipping', 'support-link': 'Clicked “Support DenaDesk”',
     },
     sources: { direct: 'Direct / unknown', x: 'X', 'hacker news': 'Hacker News', github: 'GitHub', linkedin: 'LinkedIn', reddit: 'Reddit', telegram: 'Telegram', youtube: 'YouTube', google: 'Google', search: 'Other search' },
     pages: { '/': 'Home', '/dashboard': 'Dashboard' },
   };
-  const FAQ = ['Is it free', 'Which devices', 'Same Wi-Fi', 'Cloud', 'Security warning', 'TwinDesk'];
+  const FAQ = ['Is it free', 'Which devices', 'Same Wi-Fi', 'Cloud', 'Security warning', 'DenaDesk'];
   const GH_NOTES = {
     private: 'The repository is private, so GitHub hides its download counts. Add GITHUB_TOKEN (read-only Contents access to 0xCodez/DuoDesk) in Vercel and redeploy.',
     'token-rejected': 'GitHub rejected GITHUB_TOKEN. Check that it can read 0xCodez/DuoDesk and hasn’t expired.',

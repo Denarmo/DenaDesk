@@ -51,7 +51,7 @@ const httpUrl = (u) => {
   } catch (_) { return ''; }
 };
 const imgUrl = (v) => (typeof v === 'string' && v.length < ICON_MAX && /^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(v) ? v : '');
-// Phone apps that are never something to go on with: home screens, the system bar, TwinDesk itself, keyboards.
+// Phone apps that are never something to go on with: home screens, the system bar, DenaDesk itself, keyboards.
 const NOT_AN_APP = /launcher|\.home$|miui\.home|systemui|com\.twindesk|inputmethod|\.keyboard|permissioncontroller|com\.android\.settings\.intelligence/i;
 
 function normalize(h) {
@@ -234,7 +234,7 @@ class ReZume extends EventEmitter {
       } catch (_) { /* through the session below */ }
     }
     if (!pp || !pp.on || !(a.kind === 'web' ? pp.web : pp.docs)) {
-      this.message = !pp ? '{name} has no ReZume yet: update DuoDesk there' : 'ReZume is off on {name}';
+      this.message = !pp ? '{name} has no ReZume yet: update DenaDesk there' : 'ReZume is off on {name}';
       this.emit('change');
       return false;
     }

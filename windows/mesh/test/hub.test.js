@@ -78,7 +78,7 @@ async function world(names, pairs, { clip = false, notifs = false } = {}) {
         helper: n.helper,
         settings: n.settings,
         save: () => {},
-        selfIds: ['TwinDesk.test'],
+        selfIds: ['DenaDesk.test'],
         peerName: () => '',
         onChange: () => {},
         onClick: () => {},

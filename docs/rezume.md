@@ -17,7 +17,7 @@ nothing is read and no permission is asked. Both sides must have it on.
 | Mac | Document | The front window's `AXDocument` (System Events: asked once) | As above |
 | Linux | Browser tab | The address bar through AT-SPI (X11 and Wayland); otherwise Firefox's session or Chromium's history | As above |
 | Linux | Document | `recently-used.xbel` matched to the window title | As above |
-| Phone | Browser tab | The address bar by its view id (DuoDesk's Accessibility, full app) | Default browser |
+| Phone | Browser tab | The address bar by its view id (DenaDesk's Accessibility, full app) | Default browser |
 | Phone | App | The app in front (Accessibility), or through wireless debugging when Accessibility is off | A phone window (Mirror apps; needs wireless debugging) |
 
 Only `http` and `https` addresses are ever opened. A document's path never leaves the device: only
@@ -35,7 +35,7 @@ On a computer, each one can be switched on or off (ReZume › Where it shows):
 
 On the phone: a quiet notification (replaced by the next), the ReZume page, and **Open on computer**
 in the share sheet (there only while ReZume is on). Something sent with Send to opens at once when
-DuoDesk may show over other apps; otherwise its notification rings once.
+DenaDesk may show over other apps; otherwise its notification rings once.
 
 ## Protocol
 

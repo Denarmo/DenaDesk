@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Dev tool: measures the Mac's stream on this Mac (loopback). Needs the Mac app running and
 // dev/.probe.json (run `npm run probe` once). Run from mac/: `npx electron dev/stream-check [seconds]`.
-// Shows an animated pattern with a pixel-encoded clock on the DuoDesk display, receives the
+// Shows an animated pattern with a pixel-encoded clock on the DenaDesk display, receives the
 // stream like Windows does, decodes the clock from each frame -> capture-to-decode latency.
 'use strict';
 
@@ -17,7 +17,7 @@ const pre = path.join(__dirname, 'preload.js');
 app.whenReady().then(() => {
   const all = screen.getAllDisplays();
   const target = all.find((d) => /macshare|duodesk|twindesk/i.test(d.label)) || all.find((d) => d.id !== screen.getPrimaryDisplay().id);
-  if (!target) console.log('no DuoDesk display found — pattern goes on the main display');
+  if (!target) console.log('no DenaDesk display found — pattern goes on the main display');
   const b = (target || screen.getPrimaryDisplay()).bounds;
   const pattern = new BrowserWindow({ x: b.x, y: b.y, width: b.width, height: b.height, frame: false, show: true, webPreferences: { backgroundThrottling: false } });
   pattern.loadFile(path.join(__dirname, 'pattern.html'));

@@ -196,7 +196,7 @@ class Hub extends EventEmitter {
     server.on('listenError', (err) => {
       this._host = {
         on: false,
-        error: err.code === 'EADDRINUSE' ? 'Port ' + P.PORT + ' is in use (another copy of DuoDesk?)' : err.code || err.message,
+        error: err.code === 'EADDRINUSE' ? 'Port ' + P.PORT + ' is in use (another copy of DenaDesk?)' : err.code || err.message,
       };
       this._change();
     });

@@ -3,7 +3,7 @@
 // as their systems arrange them. Drag the other computer along any side; it slides in against our
 // monitors and snaps to touching (shared/kvm-geom.js), and the stretches where the monitors touch,
 // the only places the pointer crosses, are drawn in the accent colour. Before the other computer has
-// sent its monitors (or an older TwinDesk never does) it is a placeholder rectangle: dragging it
+// sent its monitors (or an older DenaDesk never does) it is a placeholder rectangle: dragging it
 // still picks the side. Styles: shared/kvm-map-ui.css. A plain <script> after shared/kvm-geom.js
 // (window.KvmMapUI).
 (function (root) {
@@ -161,7 +161,7 @@
       themKey.textContent = data.them;
       hint.textContent = data.theirs.length
         ? `Drag ${data.them} to where it is on your desk. The pointer crosses only where the screens touch (highlighted).`
-        : `Drag ${data.them} to the side it is on. Its screens show here once it’s connected (with an up-to-date DuoDesk).`;
+        : `Drag ${data.them} to the side it is on. Its screens show here once it’s connected (with an up-to-date DenaDesk).`;
       box.setAttribute('aria-label', `${data.them} is ${{ left: 'to the left of', right: 'to the right of', top: 'above', bottom: 'below' }[side]} ${data.me}`);
       identify.hidden = !data.mine.length;
       if (!drag) render(side, data.along);

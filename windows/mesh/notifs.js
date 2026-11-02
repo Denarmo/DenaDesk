@@ -2,7 +2,7 @@
 // Notifications across every connected device (docs/mesh.md, one pool): this PC's notifications go
 // to every device that accepts them (`notif.policy`); the helper reads them from the Windows
 // notification database. Notifications from the other devices show here as Windows toasts from
-// TwinDesk (main.js sets the AppUserModelID, or Windows shows none). Port of mac/notifs.js.
+// DenaDesk (main.js sets the AppUserModelID, or Windows shows none). Port of mac/notifs.js.
 const electron = require('electron');
 const path = require('path');
 const P = require('../../shared/protocol.js');
@@ -51,7 +51,7 @@ class Notifs {
     this.onClick = opts.onClick;
     this.selfName = opts.selfName;
     this.Notification = opts.Notification || electronNotification;
-    this.iconsIn = electron.nativeImage ? new IconsIn(electron.nativeImage, path.join(__dirname, '..', 'assets', 'sidebar-icon@2x.png')) : null; // DuoDesk's for apps without one
+    this.iconsIn = electron.nativeImage ? new IconsIn(electron.nativeImage, path.join(__dirname, '..', 'assets', 'sidebar-icon@2x.png')) : null; // DenaDesk's for apps without one
     this.pool = new Pool({ name: 'notif', selfId: this.mesh.selfId, peers: () => notifPeers(this.mesh) });
     this.readable = null; // the helper can read the database
     this.apps = new Map(); // app → {app, appName, at} seen here
@@ -161,7 +161,7 @@ class Notifs {
     const now = Date.now();
     this.echoes = this.echoes.filter((e) => e.until > now);
     if (this.echoes.some((e) => e.title === str(ev.title, 200) && str(ev.body).includes(e.body))) return;
-    if (isOwn(app, ev.appName)) return; // DuoDesk's own toasts are never forwarded
+    if (isOwn(app, ev.appName)) return; // DenaDesk's own toasts are never forwarded
     if (this.guard.repeat('out', app, ev.title, ev.body)) return;
     this.apps.set(app, { app, appName: str(ev.appName, 100) || app, at: Date.now() });
     if (this.apps.size > 60) this.apps.delete(this.apps.keys().next().value);

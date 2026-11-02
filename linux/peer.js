@@ -52,7 +52,7 @@ class Peer {
     server.on('listening', () => { this.host = { on: true, error: '' }; this._changed(); });
     server.on('listenError', (err) => {
       console.error('[server]', err.code || err.message);
-      this.host = { on: false, error: err.code === 'EADDRINUSE' ? 'Port ' + P.PORT + ' is in use (another copy of DuoDesk?)' : err.code || err.message };
+      this.host = { on: false, error: err.code === 'EADDRINUSE' ? 'Port ' + P.PORT + ' is in use (another copy of DenaDesk?)' : err.code || err.message };
       this._changed();
     });
     server.on('client', (ctx) => {

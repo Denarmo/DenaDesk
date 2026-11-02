@@ -34,15 +34,15 @@ function session() {
 async function checkFirewall(fixed) {
   const ufw = await run('systemctl', ['is-active', 'ufw']);
   if (ufw.out === 'active') {
-    return fixed ? { ok: true, tool: 'ufw', message: 'ufw lets DuoDesk in' }
-      : { ok: false, tool: 'ufw', message: 'ufw is on and may block DuoDesk.' };
+    return fixed ? { ok: true, tool: 'ufw', message: 'ufw lets DenaDesk in' }
+      : { ok: false, tool: 'ufw', message: 'ufw is on and may block DenaDesk.' };
   }
   const fwd = await run('firewall-cmd', ['--state']);
   if (fwd.out === 'running') {
     const tcp = await run('firewall-cmd', ['--query-port=' + PORTS.tcp + '/tcp']);
     const udp = await run('firewall-cmd', ['--query-port=' + PORTS.udp + '/udp']);
     const ok = tcp.out === 'yes' && udp.out === 'yes';
-    return { ok, tool: 'firewalld', message: ok ? 'firewalld lets DuoDesk in' : 'firewalld blocks DuoDesk.' };
+    return { ok, tool: 'firewalld', message: ok ? 'firewalld lets DenaDesk in' : 'firewalld blocks DenaDesk.' };
   }
   return { ok: true, tool: '', message: 'No firewall is on' };
 }

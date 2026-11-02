@@ -1,5 +1,5 @@
 # TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-# dmgbuild settings for DuoDesk.dmg (build-dmg.sh passes app, icon and background with -D).
+# dmgbuild settings for DenaDesk.dmg (build-dmg.sh passes app, icon and background with -D).
 # The app sits on the left and Applications on the right, at the two ends of the arrow drawn in
 # background.html. The window's height counts the title bar (32 points), leaving 660 x 380 of
 # background; the icons sit high enough that their names still show when Finder's path bar and

@@ -1,4 +1,4 @@
-/* DuoDesk website: the features bento comes alive (partials/bento.html, showcase-bento.css).
+/* DenaDesk website: the features bento comes alive (partials/bento.html, showcase-bento.css).
    Each card holds one hairline SVG picture that is already complete without JS (and is the still for
    prefers-reduced-motion). This script runs one gesture per card, slow and eased, and lets the visitor take
    over: the pointer becomes the shared cursor, the window can be dragged onto the tablet, the file line can be

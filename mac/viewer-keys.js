@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Keys from a PC viewer window, taken in main via before-input-event: no renderer
-// hop, and ⌘Q / ⌘W / ⌘H go to the PC instead of acting on TwinDesk.
+// hop, and ⌘Q / ⌘W / ⌘H go to the PC instead of acting on DenaDesk.
 'use strict';
 
 const P = require('../shared/protocol.js');

@@ -183,11 +183,11 @@ class Smb {
     this._busy('');
   }
 
-  // Name the mapped drive in This PC: "DuoDesk on <Mac>" instead of the share path.
+  // Name the mapped drive in This PC: "DenaDesk on <Mac>" instead of the share path.
   _label(addr, share) {
     const mac = this.link.snapshot().link.macName || 'the other computer';
     const key = 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\MountPoints2\\##' + addr + '#' + share;
-    exec('reg.exe', ['add', key, '/v', '_LabelFromReg', '/t', 'REG_SZ', '/d', 'DuoDesk on ' + mac, '/f']).catch(() => {});
+    exec('reg.exe', ['add', key, '/v', '_LabelFromReg', '/t', 'REG_SZ', '/d', 'DenaDesk on ' + mac, '/f']).catch(() => {});
   }
 
   async _unmount(share) {

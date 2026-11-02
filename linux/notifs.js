@@ -3,7 +3,7 @@
 // computer's notifications go to the other computer while it accepts them (`notif.policy`); we read
 // them off the session bus (`dbus-monitor` on org.freedesktop.Notifications.Notify, which every
 // desktop's notification daemon serves), only while something would be sent. The other computer's
-// show here as desktop notifications from DuoDesk (libnotify).
+// show here as desktop notifications from DenaDesk (libnotify).
 const { Notification, nativeImage } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -16,7 +16,7 @@ const str = (v, n = 500) => (typeof v === 'string' ? v.slice(0, n) : '');
 class Notifs {
   // opts: link, helper, settings (shared), save(), selfIds: [AUMID], peerName(), onChange(), onClick({app, appName})? (main.js: a phone's notification clicked)
   constructor(opts) {
-    this.iconsIn = new IconsIn(nativeImage, path.join(__dirname, 'assets', 'sidebar-icon@2x.png')); // DuoDesk's for apps without one
+    this.iconsIn = new IconsIn(nativeImage, path.join(__dirname, 'assets', 'sidebar-icon@2x.png')); // DenaDesk's for apps without one
     Object.assign(this, opts);
     this.peerAccepts = false; // the other side's notif.policy (assume no until told)
     this.readable = null; // the helper can read the database
@@ -83,7 +83,7 @@ class Notifs {
     if (this.mon) return;
     let proc;
     try {
-      // Tied to our stdin: if DuoDesk dies without quitting, the pipe closes and dbus-monitor goes
+      // Tied to our stdin: if DenaDesk dies without quitting, the pipe closes and dbus-monitor goes
       // too (it would keep sockets it inherited from Electron open).
       proc = spawn('sh', ['-c', 'command -v dbus-monitor >/dev/null || exit 127; dbus-monitor --session "$1" & p=$!; cat >/dev/null; kill $p',
         'sh', "type='method_call',interface='org.freedesktop.Notifications',member='Notify'"], { stdio: ['pipe', 'pipe', 'pipe'] });
@@ -134,7 +134,7 @@ class Notifs {
     }
     const str = (a) => (a && a.startsWith('string "') ? a.slice(8).replace(/"$/, '') : '');
     const appName = str(args[0]);
-    if (!appName || /^(DuoDesk|TwinDesk|Electron|macshare)/i.test(appName)) return; // ours (from the other computer)
+    if (!appName || /^(DenaDesk|DenaDesk|Electron|macshare)/i.test(appName)) return; // ours (from the other computer)
     this._local({ id: String(Date.now()), app: appName, appName, title: str(args[3]), body: str(args[4]), at: Date.now() });
   }
 

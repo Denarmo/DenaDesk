@@ -30,22 +30,22 @@ UI.tab({
       });
       return card;
     };
-    const nameEl = el('div', { class: 'about-name', text: 'DuoDesk' });
+    const nameEl = el('div', { class: 'about-name', text: 'DenaDesk' });
     const verEl = el('div', { class: 'about-ver' });
     const hero = el('div', { class: 'card about-hero keep-on' }, [
-      el('div', { class: 'about-icon', attrs: { role: 'img', 'aria-label': 'DuoDesk icon' } }),
+      el('div', { class: 'about-icon', attrs: { role: 'img', 'aria-label': 'DenaDesk icon' } }),
       nameEl,
       verEl,
       el('div', { class: 'about-tag', text: 'Use two computers as one desk' }),
     ]);
 
-    // Updates: new releases of DuoDesk on GitHub.
+    // Updates: new releases of DenaDesk on GitHub.
     const updStatus = el('span', { class: 'value' });
     const updCheck = UI.button('Check now', () => api.checkUpdates(), 'small');
     const updNotes = UI.button('What’s New', () => window.UpdaterModal && window.UpdaterModal.show(), 'small');
     const updUnskip = UI.button('Don’t skip', () => api.unskipUpdate && api.unskipUpdate(), 'small');
     const updGet = UI.button('Download', () => api.openUpdate(), 'small primary');
-    const updRow = UI.row('DuoDesk', '', [updStatus, updNotes, updUnskip, updGet, updCheck]);
+    const updRow = UI.row('DenaDesk', '', [updStatus, updNotes, updUnskip, updGet, updCheck]);
     const updAuto = UI.switch((v) => api.setUpdates({ auto: v }), { label: 'Check for updates automatically' });
 
     const pc = facts('This computer', ['Computer name', 'System', 'Kernel', 'Processor', 'Memory', 'Architecture']);
@@ -64,20 +64,20 @@ UI.tab({
         UI.row('Source code', 'github.com/0xCodez/DuoDesk', [link('GitHub', 'github')]),
         UI.row('All releases', 'Downloads for macOS, Windows, Linux and Android', [link('Releases', 'releases')]),
         UI.row('Report a problem', 'Open an issue on GitHub', [link('Issues', 'issues')]),
-        UI.row('Log files', 'What DuoDesk did and any crash, to attach to a bug report', [link('Open log folder', 'logs')]),
+        UI.row('Log files', 'What DenaDesk did and any crash, to attach to a bug report', [link('Open log folder', 'logs')]),
       ], { cls: 'keep-on' }),
       pc,
       build,
       UI.card('Licence', [
         UI.row('GNU General Public License v3', 'Free and open source. © 2026 0xCodez. Includes code © 2026 Inuka Asith.', [link('Read', 'licence')]),
-        UI.row('Original source', 'The GPL-3.0 code DuoDesk is built on, by Inuka Asith', [link('Open', 'upstream')]),
+        UI.row('Original source', 'The GPL-3.0 code DenaDesk is built on, by Inuka Asith', [link('Open', 'upstream')]),
         thanksRow,
       ], { cls: 'keep-on' }),
     );
 
     return (s) => {
       const a = s.about || { app: {}, pc: {} };
-      nameEl.textContent = a.app.name || 'DuoDesk';
+      nameEl.textContent = a.app.name || 'DenaDesk';
       verEl.textContent = 'Version ' + (a.app.version || s.version || '');
       thanksRow.setHint(a.app.thanks || '');
       thanksRow.hidden = !a.app.thanks;

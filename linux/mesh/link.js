@@ -22,7 +22,7 @@ const PAIR_ERRORS = {
   [P.E.PAIR_REFUSED]: '{Name} refused pairing.',
   [P.E.PAIR_TIMEOUT]: 'Pairing timed out.',
   [P.E.BUSY]: '{Name} is already pairing with another device.',
-  [P.E.VERSION_MISMATCH]: '{Name} runs a different DuoDesk version. Update both apps.',
+  [P.E.VERSION_MISMATCH]: '{Name} runs a different DenaDesk version. Update both apps.',
 };
 
 class Link {
@@ -470,7 +470,7 @@ class Link {
       if (ps && ps.phase !== 'failed') {
         const nobody = /^(ECONNREFUSED|ETIMEDOUT|EHOSTUNREACH|ENETUNREACH)$/.test(this.lastError);
         this._pairFailed(ps.phase === 'connecting'
-          ? (nobody ? 'No DuoDesk at ' + ps.address + '.' : 'Could not connect to ' + ps.address + (this.lastError ? ' (' + this.lastError + ')' : '') + '.')
+          ? (nobody ? 'No DenaDesk at ' + ps.address + '.' : 'Could not connect to ' + ps.address + (this.lastError ? ' (' + this.lastError + ')' : '') + '.')
           : 'The connection to {name} closed.');
       }
       return;

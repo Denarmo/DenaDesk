@@ -274,7 +274,7 @@ class PcView extends EventEmitter {
     if (fresh && !this.session) {
       const pc = this.server.current ? this.server.current.name : 'the other computer';
       const why = !this.server.current ? 'Waiting for the other computer…'
-        : r && !r.on && r.remote ? `Starting ${pc}’s screen…` : `Choose what to share in DuoDesk on ${pc}`;
+        : r && !r.on && r.remote ? `Starting ${pc}’s screen…` : `Choose what to share in DenaDesk on ${pc}`;
       this._toWin({ t: 'stop', why });
       if (this.remote) this._toWin({ t: 'remote', ...this.remote });
     }

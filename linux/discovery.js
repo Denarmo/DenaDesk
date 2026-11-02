@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Discovery v2: one UDP socket on DISCOVERY_PORT that sends our
 // beacon to every broadcast address, answers probes, sends probes, takes invites, and keeps the
-// list of other TwinDesk computers nearby (Macs, PCs, Linux).
+// list of other DenaDesk computers nearby (Macs, PCs, Linux).
 //
 // Events: 'change' (found list or status changed); 'invite' (device): a Mac asked us to connect.
 'use strict';

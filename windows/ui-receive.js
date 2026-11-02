@@ -67,7 +67,7 @@ UI.tab({
       const MODES = ['off', 'mirror', 'extend'];
       mode.el.querySelectorAll('button').forEach((b, i) => { b.disabled = !connected || !r || !r.remote || (i > 0 && !(r.modes || []).includes(MODES[i])); });
       modeRow.setHint(!connected ? 'Connect to choose from here'
-        : !r ? 'Update DuoDesk on the other computer to choose from here'
+        : !r ? 'Update DenaDesk on the other computer to choose from here'
           : !r.remote ? 'The other computer doesn’t allow choosing from here'
             : r.on ? (r.mode === 'extend' ? 'An extra screen for it, shown here' : 'Its main screen, shown here') : 'Pick Mirror or Extend, or just press Open');
       mute.set(!s.monitor.mute);

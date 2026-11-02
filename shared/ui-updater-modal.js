@@ -121,14 +121,14 @@
     const icon = document.createElement('div');
     icon.className = 'updater-icon';
     icon.setAttribute('role', 'img');
-    icon.setAttribute('aria-label', 'DuoDesk icon');
+    icon.setAttribute('aria-label', 'DenaDesk icon');
 
     const titleBox = document.createElement('div');
     titleBox.className = 'updater-title-box';
 
     const title = document.createElement('h2');
     title.className = 'updater-title';
-    title.textContent = 'A new version of DuoDesk is available!';
+    title.textContent = 'A new version of DenaDesk is available!';
 
     const subtitle = document.createElement('p');
     subtitle.className = 'updater-subtitle';
@@ -335,8 +335,8 @@
     const latest = u.latest ? `v${u.latest}` : 'New Version';
     const current = u.current ? `v${u.current}` : '';
 
-    title.textContent = `DuoDesk ${u.latest || ''} is available`;
-    subtitle.textContent = `A new version of DuoDesk is ready to download and install${current ? ` (you have ${current})` : ''}.`;
+    title.textContent = `DenaDesk ${u.latest || ''} is available`;
+    subtitle.textContent = `A new version of DenaDesk is ready to download and install${current ? ` (you have ${current})` : ''}.`;
 
     pillNew.textContent = latest;
     pillCur.textContent = current ? `Current: ${current}` : '';
@@ -380,7 +380,7 @@
       const showBanner = u.available && !u.skipped && bannerDismissedFor !== u.latest;
       banner.hidden = !showBanner;
       if (showBanner) {
-        banner._refs.lead.textContent = `DuoDesk ${u.latest} is available.`;
+        banner._refs.lead.textContent = `DenaDesk ${u.latest} is available.`;
         banner._refs.sub.textContent = u.current ? `(current: v${u.current})` : '';
         banner._refs.getBtn.textContent = u.download ? 'Download' : 'Update';
       }

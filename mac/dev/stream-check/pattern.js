@@ -5,7 +5,7 @@ const BITS = 24, B = 48;
 const c = document.getElementById('c');
 const g = c.getContext('2d');
 c.width = innerWidth; c.height = innerHeight;
-const lorem = 'The quick brown fox jumps over the lazy dog 0123456789 — DuoDesk stream check. ';
+const lorem = 'The quick brown fox jumps over the lazy dog 0123456789 — DenaDesk stream check. ';
 function draw() {
   const now = Date.now() % 2 ** BITS;
   g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);

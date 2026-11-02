@@ -217,7 +217,7 @@ function setupIpc(ctx) {
     copyText(text) {
       if (typeof text === 'string' && text.length < 200) clipboard.writeText(text);
     },
-    // Ask first (that puts DuoDesk in the System Settings list), then open the pane.
+    // Ask first (that puts DenaDesk in the System Settings list), then open the pane.
     async allowPermission(kind) {
       if (!SETTINGS_URLS[kind]) return;
       let granted = false;
@@ -270,13 +270,13 @@ function setupIpc(ctx) {
       if (!on) ctx.input.releaseAll();
       ctx.server.sendToClient({ t: P.T.STREAM_INPUT, on: !!on }); // Windows goes view-only when off
     },
-    // null = the DuoDesk virtual display
+    // null = the DenaDesk virtual display
     selectDisplay(displayId) {
       settings.sharing.displayId = displayId == null ? null : Number(displayId);
       save();
       ctx.stream.restart('display selected');
     },
-    // Extend: Monitor 2 is the DuoDesk virtual display. Mirror: it shows this Mac's main screen.
+    // Extend: Monitor 2 is the DenaDesk virtual display. Mirror: it shows this Mac's main screen.
     setDisplayMode(mode) {
       if (mode === 'mirror') {
         settings.sharing.displayId = screen.getPrimaryDisplay().id;
@@ -349,7 +349,7 @@ function setupIpc(ctx) {
     muteNotifApp(arg) {
       if (arg && typeof arg.app === 'string') ctx.notifs.setMuted(arg.app.slice(0, 200), !!arg.muted);
     },
-    // Full Disk Access has no request API: open the pane and show DuoDesk in Finder to drag in.
+    // Full Disk Access has no request API: open the pane and show DenaDesk in Finder to drag in.
     allowFullDisk() {
       shell.openExternal(SETTINGS_URLS.fullDisk);
       const bundle = process.execPath.replace(/\/Contents\/MacOS\/[^/]+$/, '');
@@ -614,7 +614,7 @@ function setupIpc(ctx) {
       app.exit(0);
     },
     setMulti(on) {
-      require('./multi').set(on === true); // Multi-device: DuoDesk restarts
+      require('./multi').set(on === true); // Multi-device: DenaDesk restarts
     },
   };
 

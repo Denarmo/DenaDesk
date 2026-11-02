@@ -45,24 +45,24 @@
    set again here so they're dark in a light OS too. */
 :root {
   color-scheme: dark;
-  --au-bg: #040405; --au-win: #0a0a0c; --au-raise: #121215; --au-pop: #18181c;
+  --au-bg: #202024; --au-win: #202024; --au-raise: #29292e; --au-pop: #303036;
   --au-glass: rgba(255, 255, 255, 0.035); --au-glass2: rgba(255, 255, 255, 0.07); --au-glass3: rgba(255, 255, 255, 0.12);
   --au-line: rgba(255, 255, 255, 0.07); --au-line2: rgba(255, 255, 255, 0.12);
-  --au-text: #f1f1f3; --au-muted: #8c8c95; --au-dim: #55555d;
-  --au-accent: #a98bff; --au-accent2: #8a5cff; --au-accent-soft: rgba(138, 92, 255, 0.22); --au-accent-line: rgba(169, 139, 255, 0.45);
+  --au-text: #f1f1f3; --au-muted: #b7b7c2; --au-dim: #a0a0aa;
+  --au-accent: #f1c40f; --au-accent2: #f1c40f; --au-accent-soft: rgba(241, 196, 15, 0.22); --au-accent-line: rgba(241, 196, 15, 0.45);
   --au-good: #3dffa8; --au-warn: #ffb340; --au-bad: #ff5c7a;
-  --au-spec: linear-gradient(90deg, #ff3d9a, #8a5cff 30%, #2fd6ff 55%, #3dffa8 75%, #ffb340);
+  --au-spec: linear-gradient(90deg, #e2b52f, #f1c40f 30%, #f7dd77 55%, #3dffa8 75%, #ffb340);
   --au-ui: "Geist", system-ui, -apple-system, "Segoe UI", "Ubuntu", "Cantarell", sans-serif;
   --au-mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, "DejaVu Sans Mono", monospace;
   --au-ease: cubic-bezier(0.2, 0.9, 0.1, 1);
   --au-glassbar: rgba(14, 14, 17, 0.9); /* 0.9: muted labels stay AA over a bright picture */
-  --bar: #101013; --text: #f1f1f3; --muted: #8c8c95; --hover: rgba(255, 255, 255, 0.07);
+  --bar: #101013; --text: #f1f1f3; --muted: #b7b7c2; --hover: rgba(255, 255, 255, 0.07);
 }
 @media (prefers-color-scheme: light) {
-  :root { color-scheme: dark; --bar: #101013; --text: #f1f1f3; --muted: #8c8c95; --hover: rgba(255, 255, 255, 0.07); }
+  :root { color-scheme: dark; --bar: #101013; --text: #f1f1f3; --muted: #b7b7c2; --hover: rgba(255, 255, 255, 0.07); }
 }
 @media (prefers-color-scheme: dark) {
-  :root { color-scheme: dark; --bar: #101013; --text: #f1f1f3; --muted: #8c8c95; --hover: rgba(255, 255, 255, 0.07); }
+  :root { color-scheme: dark; --bar: #101013; --text: #f1f1f3; --muted: #b7b7c2; --hover: rgba(255, 255, 255, 0.07); }
 }
 @property --au-a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 /* the HUD's window is transparent: leave its colour scheme as it was so nothing paints a dark backdrop */
@@ -70,7 +70,7 @@
 
 /* ---------- base: type, selection, scrollbars (no backgrounds: video pages stay black, the HUD transparent) ---------- */
 html, body { font-family: var(--au-ui); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-::selection { background: rgba(138, 92, 255, 0.45); color: #fff; }
+::selection { background: rgba(241, 196, 15, 0.45); color: #fff; }
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 99px; border: 3px solid transparent; background-clip: padding-box; }
@@ -110,7 +110,7 @@ html, body { font-family: var(--au-ui); -webkit-font-smoothing: antialiased; tex
   background: var(--au-spec); --au-blur: 6px; filter: blur(6px); pointer-events: none; animation: au-hue 6s linear infinite;
 }
 .pill .scr { border-color: #f1f1f3; }
-.pill .dot { background: #fff; box-shadow: 0 0 6px #fff, 0 0 12px #a98bff; }
+.pill .dot { background: #fff; box-shadow: 0 0 6px #fff, 0 0 12px #f1c40f; }
 
 .card {
   border-radius: 24px; overflow: hidden; isolation: isolate; color: var(--au-text); font-family: var(--au-ui);
@@ -132,7 +132,7 @@ html, body { font-family: var(--au-ui); -webkit-font-smoothing: antialiased; tex
 .card .wire::before { background: var(--au-spec); }
 .card .spark { background: #fff; }
 /* the screens' ring when they link up: violet, not green (hud.css's own animation name) */
-@keyframes glow { 0% { box-shadow: 0 0 0 0 rgba(138, 92, 255, 0.6); } 100% { box-shadow: 0 0 0 14px rgba(138, 92, 255, 0); } }
+@keyframes glow { 0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.6); } 100% { box-shadow: 0 0 0 14px rgba(241, 196, 15, 0); } }
 
 /* =====================================================================================
    The other computer's screen (monitor.html, mac/pcview.html) and an app (appview.html):
@@ -228,21 +228,21 @@ header#bar button.on svg, header#bar button.active svg, #panel > button.on svg, 
 /* the side panel's Back / Home / Recents gap stays as is; the status text over the empty stage */
 #stage > #status { color: var(--au-muted); font-family: var(--au-ui); font-size: 13px; letter-spacing: -0.05px; }
 /* a file dragged over the phone */
-body.drop #stage { outline: 3px solid var(--au-accent2); outline-offset: -3px; box-shadow: inset 0 0 48px rgba(138, 92, 255, 0.28); }
+body.drop #stage { outline: 3px solid var(--au-accent2); outline-offset: -3px; box-shadow: inset 0 0 48px rgba(241, 196, 15, 0.28); }
 
 /* =====================================================================================
    The call window (callpop.html): a small frameless window in a corner of the screen.
    ===================================================================================== */
 body.callpop {
-  --text: #f1f1f3; --muted: #8c8c95; --card: #0a0a0c; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08);
-  --good: #3dffa8; --bad: #ff5c7a; --accent: #8a5cff; --control: rgba(255, 255, 255, 0.07);
-  background: #0a0a0c; color: var(--au-text); font-family: var(--au-ui);
+  --text: #f1f1f3; --muted: #b7b7c2; --card: #202024; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08);
+  --good: #3dffa8; --bad: #ff5c7a; --accent: #f1c40f; --control: rgba(255, 255, 255, 0.07);
+  background: #202024; color: var(--au-text); font-family: var(--au-ui);
 }
 @media (prefers-color-scheme: light) {
-  body.callpop { --text: #f1f1f3; --muted: #8c8c95; --card: #0a0a0c; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08); --control: rgba(255, 255, 255, 0.07); }
+  body.callpop { --text: #f1f1f3; --muted: #b7b7c2; --card: #202024; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08); --control: rgba(255, 255, 255, 0.07); }
 }
 @media (prefers-color-scheme: dark) {
-  body.callpop { --text: #f1f1f3; --muted: #8c8c95; --card: #0a0a0c; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08); --control: rgba(255, 255, 255, 0.07); }
+  body.callpop { --text: #f1f1f3; --muted: #b7b7c2; --card: #202024; --line: rgba(255, 255, 255, 0.12); --track-off: rgba(255, 255, 255, 0.08); --control: rgba(255, 255, 255, 0.07); }
 }
 body.callpop .cp {
   overflow: hidden; isolation: isolate; border-color: var(--au-line2);
@@ -255,7 +255,7 @@ body.callpop .cp::before {
   transition: opacity 0.5s var(--au-ease); animation: au-hue 10s linear infinite;
 }
 body.callpop .cp:has(#answer:not([hidden]))::before { animation: au-hue 6s linear infinite, au-breathe 1.6s ease-in-out infinite; }
-body.callpop.missed .cp::before { background: linear-gradient(90deg, #ff3d9a, #ff5c7a 50%, #ffb340); opacity: 0.3; animation: none; }
+body.callpop.missed .cp::before { background: linear-gradient(90deg, #e2b52f, #ff5c7a 50%, #ffb340); opacity: 0.3; animation: none; }
 /* the avatar: a letter or the contact's photo, in a spectral ring */
 body.callpop .cp-avatar {
   position: relative; background-color: #16161a; color: var(--au-text); font-weight: 500;
@@ -264,7 +264,7 @@ body.callpop .cp-avatar {
 body.callpop .cp-avatar::before {
   content: ""; position: absolute; inset: -3px; border-radius: 50%; padding: 1.5px; pointer-events: none;
   /* written out here, not as a :root token: a token would be resolved on :root, and --au-a turning here wouldn't move it */
-  background: conic-gradient(from var(--au-a), #ff3d9a, #8a5cff, #2fd6ff, #3dffa8, #ffb340, #ff3d9a);
+  background: conic-gradient(from var(--au-a), #e2b52f, #f1c40f, #f7dd77, #3dffa8, #ffb340, #e2b52f);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   opacity: 0.8;

@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Bluetooth LE for when the other device isn't on this Mac's network: this Mac (the host) is a
-// GATT peripheral that advertises the DuoDesk service. A guest (the phone, a PC) connects, reads
+// GATT peripheral that advertises the DenaDesk service. A guest (the phone, a PC) connects, reads
 // INFO (this Mac's beacon), says who it is on CTRL, and opens a byte pipe: it writes UP, we notify
 // DOWN. main pipes that to the session server on 127.0.0.1 (shared/blepipe.js), so the session runs
 // through Bluetooth exactly as over the network: the same TLS, pinned certificate and token.
@@ -104,7 +104,7 @@ final class BlePeripheral: NSObject, CBPeripheralManagerDelegate {
 
   func peripheralManager(_ p: CBPeripheralManager, didAdd service: CBService, error: Error?) {
     if let error = error { return log("ble: add service: \(error.localizedDescription)") }
-    p.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [Self.serviceId], CBAdvertisementDataLocalNameKey: "DuoDesk"])
+    p.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [Self.serviceId], CBAdvertisementDataLocalNameKey: "DenaDesk"])
   }
 
   func peripheralManagerDidStartAdvertising(_ p: CBPeripheralManager, error: Error?) {

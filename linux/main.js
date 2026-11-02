@@ -75,9 +75,9 @@ app.commandLine.appendSwitch('disable-features', 'WebRtcHideLocalIpsWithMdns');
 app.commandLine.appendSwitch('force-fieldtrials', 'WebRTC-ForceSendPlayoutDelay/min_ms:0,max_ms:0/WebRTC-FlexFEC-03/Enabled/WebRTC-FlexFEC-03-Advertised/Enabled/');
 // Wayland (L6): screen capture through the desktop portal and PipeWire.
 app.commandLine.appendSwitch('enable-features', 'WebRTCPipeWireCapturer');
-// Renamed MacShare → TwinDesk: settings, pairing and keys stay in the folder they've always been
+// Renamed MacShare → DenaDesk: settings, pairing and keys stay in the folder they've always been
 // in (Electron would follow the new product name). A dev copy's --user-data-dir still wins.
-if (!app.commandLine.hasSwitch('user-data-dir')) app.setPath('userData', path.join(app.getPath('appData'), 'MacShare'));
+if (!app.commandLine.hasSwitch('user-data-dir')) app.setPath('userData', path.join(app.getPath('appData'), 'DenaDesk'));
 require('../shared/applog.js').start(app); // console.* and crashes into the log folder, both apps
 // Multi-device switched on (multi.js, docs/multi-device.md): mesh/main.js runs instead of everything below.
 if (require('./multi').on()) return void require('./mesh/main.js');
@@ -85,7 +85,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   Menu.setApplicationMenu(null); // its accelerators would steal keys meant for the other computer
-  // Starting TwinDesk again shows the window (no tray on some desktops); a Mac app's launcher starts
+  // Starting DenaDesk again shows the window (no tray on some desktops); a Mac app's launcher starts
   // "twindesk --mac-app=<id>": open that app instead; the file managers' Send to, --send-files.
   app.on('second-instance', (_e, argv) => {
     if (sendTo && sendTo.handle(argv)) return;
@@ -453,7 +453,7 @@ function startPhone(server, pairing) {
   loadBtAudio();
   // Remote off: its page hears so; on, PhoneRemote answers instead.
   pl.on(`t:${P.T.REMOTE_HELLO}`, () => !phoneRemote && pl.current && pl.current.os === P.OS.ANDROID
-    && pl.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DuoDesk’s Remote page there' }));
+    && pl.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DenaDesk’s Remote page there' }));
   loadRemote();
   phoneViews.on('change', pushState);
   viaWifi(phoneViews, 'openScreen', 'phone');
@@ -1088,7 +1088,7 @@ function qrPairView() {
   const addrs = ownAddresses().filter((a) => isIPv4(a)).slice(0, 4);
   if (!port || !addrs.length) return { url: '', why: !addrs.length ? 'No network' : 'Starting…' };
   const q = new URLSearchParams({ id: device.id, n: device.name, a: addrs.join(','), p: String(port), k: qrPair.nonce });
-  return { url: 'twindesk://pair?' + q.toString(), until: qrPair.until };
+  return { url: 'denadesk://pair?' + q.toString(), until: qrPair.until };
 }
 // Connection › Wireless debugging › Pair with a QR code (shared/adbqr.js): on while shown.
 let adbQr = null;
@@ -1191,9 +1191,9 @@ function createMainWindow(tab) {
     y: b.y,
     minWidth: 720,
     minHeight: 480,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     icon: path.join(__dirname, 'assets', 'icon.png'),
-    backgroundColor: '#0a0a0c', // DuoDesk's Aurora look is dark only
+    backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
@@ -1251,10 +1251,10 @@ function createTray() {
     img.addRepresentation({ scaleFactor: 2, buffer: nativeImage.createFromPath(path.join(__dirname, 'assets', 'tray@2x.png')).toPNG() });
     tray = new Tray(img);
   } catch (e) {
-    console.error('[tray]', e.message); // no tray on this desktop: start TwinDesk again to show the window
+    console.error('[tray]', e.message); // no tray on this desktop: start DenaDesk again to show the window
     return;
   }
-  tray.setToolTip('DuoDesk');
+  tray.setToolTip('DenaDesk');
   tray.on('click', showMain);
   updateTray(buildState());
 }
@@ -1264,7 +1264,7 @@ function createTray() {
 let trayKey = '';
 function updateTray(s) {
   if (!tray) return;
-  tray.setToolTip('DuoDesk: ' + statusLine(s));
+  tray.setToolTip('DenaDesk: ' + statusLine(s));
   const connected = s.link.state === 'connected';
   const name = connected && s.peer ? s.peer.name : '';
   const k = settings.kvm;
@@ -1316,7 +1316,7 @@ function updateTray(s) {
     lookAgain: () => discovery.probe(),
     again: again ? { label: (s.link.busy ? 'Take Over ' : 'Connect to ') + host, click: () => link.connect(true) } : null,
     disconnect: connected ? { label: 'Disconnect ' + name, click: () => link.disconnect() } : null,
-    update: s.updates && s.updates.available ? { label: 'Download DuoDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
+    update: s.updates && s.updates.available ? { label: 'Download DenaDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
     rezume: rezumeItems(),
     open: showMain,
     log: () => require('../shared/applog.js').open(),

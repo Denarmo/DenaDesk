@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// Drive a DuoDesk window over Chrome DevTools (the app started with --remote-debugging-port,
+// Drive a DenaDesk window over Chrome DevTools (the app started with --remote-debugging-port,
 // as scripts/vm-test.sh does), for testing:
 //   node cdp.js PORT list
 //   node cdp.js PORT eval "expr" [page]      page: part of the URL (app.html), #n for the n-th, #* for all

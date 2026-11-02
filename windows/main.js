@@ -60,7 +60,7 @@ const { normalize, apply: applySettings } = require('./settings');
 
 // Packaged: electron-builder's appId is the shortcut's AppUserModelID. In development Windows
 // only shows toasts for an id it knows, and electron.exe's path works.
-const AUMID = app.isPackaged ? 'org.macshare.windows' : process.execPath;
+const AUMID = app.isPackaged ? 'org.denarmo.denadesk' : process.execPath;
 
 app.commandLine.appendSwitch('disable-features', 'WebRtcHideLocalIpsWithMdns');
 // Every sent video frame says "show me now" (RTP playout delay 0/0), the lowest latency
@@ -68,9 +68,9 @@ app.commandLine.appendSwitch('disable-features', 'WebRtcHideLocalIpsWithMdns');
 // (jitterBufferTarget). FlexFEC repairs lost packets without a resend round trip; it costs bandwidth
 // only while packets are lost. The Mac sets the same trials.
 app.commandLine.appendSwitch('force-fieldtrials', 'WebRTC-ForceSendPlayoutDelay/min_ms:0,max_ms:0/WebRTC-FlexFEC-03/Enabled/WebRTC-FlexFEC-03-Advertised/Enabled/');
-// Renamed MacShare → TwinDesk: settings, pairing and keys stay in the folder they've always been
+// Renamed MacShare → DenaDesk: settings, pairing and keys stay in the folder they've always been
 // in (Electron would follow the new product name). A dev copy's --user-data-dir still wins.
-if (!app.commandLine.hasSwitch('user-data-dir')) app.setPath('userData', path.join(app.getPath('appData'), 'MacShare'));
+if (!app.commandLine.hasSwitch('user-data-dir')) app.setPath('userData', path.join(app.getPath('appData'), 'DenaDesk'));
 require('../shared/applog.js').start(app); // console.* and crashes into the log folder, both apps
 // Multi-device switched on (multi.js, docs/multi-device.md): mesh/main.js runs instead of everything below.
 console.log('[app] mode: ' + (require('./multi').on() ? 'Multi-device (mesh/main.js)' : 'one-to-one (main.js)'));
@@ -80,10 +80,10 @@ if (!app.requestSingleInstanceLock()) {
 } else {
   Menu.setApplicationMenu(null); // its accelerators would steal keys meant for the Mac
   app.setAppUserModelId(AUMID); // toasts need it; the installer's shortcut carries the same id
-  // A pinned Mac app starts "DuoDesk.exe --mac-app=<id>": open it, else show the window.
-  // twindesk: links (a toast's Copy, Explorer's TwinDesk menu) come to this copy of TwinDesk.
-  if (app.isPackaged) app.setAsDefaultProtocolClient('twindesk');
-  else app.setAsDefaultProtocolClient('twindesk', process.execPath, [path.resolve(process.argv[1] || '.')]);
+  // A pinned Mac app starts "DenaDesk.exe --mac-app=<id>": open it, else show the window.
+  // denadesk: links (a toast's Copy, Explorer's DenaDesk menu) come to this copy of DenaDesk.
+  if (app.isPackaged) app.setAsDefaultProtocolClient('denadesk');
+  else app.setAsDefaultProtocolClient('denadesk', process.execPath, [path.resolve(process.argv[1] || '.')]);
   app.on('second-instance', (_e, argv) => {
     if (openLink(argv)) return;
     if (sendTo && sendTo.handle(argv)) return; // Explorer › Send to
@@ -95,11 +95,11 @@ if (!app.requestSingleInstanceLock()) {
   });
 }
 
-// twindesk:copy?code=… (a one-time code's Copy on a toast), twindesk:open?app=… (the toast itself:
-// the app on the phone), twindesk:go?tab=… (a page). True: it was one of them.
+// denadesk:copy?code=… (a one-time code's Copy on a toast), denadesk:open?app=… (the toast itself:
+// the app on the phone), denadesk:go?tab=… (a page). True: it was one of them.
 function openLink(argv) {
-  if (explorer && explorer.handle(argv)) return true; // Explorer's TwinDesk › Import / Capture from phone
-  const a = (argv || []).find((x) => /^twindesk:/i.test(String(x)));
+  if (explorer && explorer.handle(argv)) return true; // Explorer's DenaDesk › Import / Capture from phone
+  const a = (argv || []).find((x) => /^denadesk:/i.test(String(x)));
   if (!a) return false;
   let u;
   try { u = new URL(a); } catch (_) { return true; }
@@ -153,7 +153,7 @@ let sendTo = null;
 let pairSync = null;
 let fileRecv = null;
 let notifs = null;
-let explorer = null; // Explorer's right-click › TwinDesk (explorer.js)
+let explorer = null; // Explorer's right-click › DenaDesk (explorer.js)
 let devctl = null; // Overview's controls of the other device, and this PC's for it (shared/devctl.js)
 let chats = null; // Messages' chat apps from a phone, kept per phone (shared/chats.js)
 let fileClip = null;
@@ -295,7 +295,7 @@ function start() {
 
   vdd = new Vdd({ helper, onChange: pushState });
   // Notifications both ways, Send files, copy/paste files with shortcuts
-  notifs = new Notifs({ link, helper, settings, save: saveSettings, selfIds: [AUMID, 'org.macshare.windows'], peerName, onChange: pushState });
+  notifs = new Notifs({ link, helper, settings, save: saveSettings, selfIds: [AUMID, 'org.denarmo.denadesk'], peerName, onChange: pushState });
   fileClip = new FileClip({ link, helper, fileDrop, fileRecv, dragRecv, settings, peerName, popup: (kind, text) => hud.show(kind, text), onChange: pushState });
   // A paste Windows copies itself (dragrecv.js) — its files skip filerecv.js.
   fileRecv.claims = (m) => dragRecv._pasteOf(m);
@@ -468,7 +468,7 @@ function startPhone(server, pairing) {
   phoneViews.on('change', pushState);
   // Remote off: its page hears so; on, PhoneRemote answers instead.
   pl.on(`t:${P.T.REMOTE_HELLO}`, () => !phoneRemote && pl.current && pl.current.os === P.OS.ANDROID
-    && pl.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DuoDesk’s Remote page there' }));
+    && pl.sendToClient({ t: P.T.REMOTE_STATE, allowed: false, off: true, why: 'Remote is off on this computer: turn it on in DenaDesk’s Remote page there' }));
   loadRemote();
   viaWifi(phoneViews, 'openScreen', 'phone');
   viaWifi(phoneViews, 'openApp', 'phone');
@@ -609,7 +609,7 @@ function loadReZume() {
   });
   rezume.on('change', pushState);
   rezume.on('opened', (o) => hud && hud.show('home', (o.how === 'sent' ? 'Sent to {name}: ' : 'From {name}: ') + o.title));
-  rezumeShelf = new ReZumeShelf({ rezume, cfg: () => settings.rezume, peerName, appIcon: path.join(__dirname, 'assets', 'icon.png'), appId: 'org.macshare.windows.rezume' });
+  rezumeShelf = new ReZumeShelf({ rezume, cfg: () => settings.rezume, peerName, appIcon: path.join(__dirname, 'assets', 'icon.png'), appId: 'org.denarmo.denadesk.rezume' });
   rezume.apply();
   return rezume;
 }
@@ -889,7 +889,7 @@ function openMacAppArg(argv) {
   return true;
 }
 
-// A pinned phone app starts "DuoDesk.exe --phone-app=<package>": open it once the phone's
+// A pinned phone app starts "DenaDesk.exe --phone-app=<package>": open it once the phone's
 // wireless debugging is ready (connecting a paired phone nearby first, if none is connected).
 let pendingPhoneApp = null; // {pkg, until}
 let pendingView = null; // a phone window waiting for wireless debugging (phoneViews.onNoAdb)
@@ -906,7 +906,7 @@ function openPhoneApp(pkg) {
   const first = !pendingPhoneApp;
   pendingPhoneApp = { pkg, until: (pendingPhoneApp && pendingPhoneApp.until) || Date.now() + 2 * 60 * 1000 };
   if (first && hud) hud.show('home', 'Opening it when the phone is ready…');
-  // Until then, every 2 s: the phone may not be up (TwinDesk just started) or nearby yet.
+  // Until then, every 2 s: the phone may not be up (DenaDesk just started) or nearby yet.
   clearTimeout(openPhoneApp.timer);
   if (Date.now() > pendingPhoneApp.until) return (pendingPhoneApp = null);
   if (phone && !phone.connected && !phone.connecting) {
@@ -1067,7 +1067,7 @@ function qrPairView() {
   const addrs = ownAddresses().filter((a) => isIPv4(a)).slice(0, 4);
   if (!port || !addrs.length) return { url: '', why: !addrs.length ? 'No network' : 'Starting…' };
   const q = new URLSearchParams({ id: device.id, n: device.name, a: addrs.join(','), p: String(port), k: qrPair.nonce });
-  return { url: 'twindesk://pair?' + q.toString(), until: qrPair.until };
+  return { url: 'denadesk://pair?' + q.toString(), until: qrPair.until };
 }
 // Connection › Wireless debugging › Pair with a QR code (shared/adbqr.js): on while shown.
 let adbQr = null;
@@ -1169,9 +1169,9 @@ function createMainWindow(tab) {
     y: b.y,
     minWidth: 720,
     minHeight: 480,
-    title: 'DuoDesk',
+    title: 'DenaDesk',
     icon: path.join(__dirname, 'assets', 'icon.png'),
-    backgroundColor: '#0a0a0c', // DuoDesk's Aurora look is dark only
+    backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload-app.js'),
@@ -1240,7 +1240,7 @@ function checkTaskbar() {
 
 function createTray() {
   tray = new Tray(trayIcon());
-  tray.setToolTip('DuoDesk');
+  tray.setToolTip('DenaDesk');
   tray.on('click', showMain);
   checkTaskbar();
   updateTray();
@@ -1255,7 +1255,7 @@ function updateTray(s = buildState()) {
   const sharing = s.pcScreen.mode !== 'off';
   const found = s.found.filter((d) => !s.peer || d.id !== s.peer.id);
   const rtt = connected && s.link.rtt != null ? ' · ' + s.link.rtt + ' ms' : '';
-  tray.setToolTip('DuoDesk: ' + statusLine(s));
+  tray.setToolTip('DenaDesk: ' + statusLine(s));
   // Rebuild only when something in the menu changed (state pushes are frequent).
   const watching = screen.sentAccept === true;
   const host = s.paired && s.paired.macName;
@@ -1301,7 +1301,7 @@ function updateTray(s = buildState()) {
     lookAgain: () => discovery.probe(),
     again: again ? { label: (s.link.busy ? 'Take Over ' : 'Connect to ') + host, click: () => link.connect(true) } : null,
     disconnect: connected ? { label: 'Disconnect ' + name, click: () => link.disconnect() } : null,
-    update: s.updates && s.updates.available ? { label: 'Download DuoDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
+    update: s.updates && s.updates.available ? { label: 'Download DenaDesk ' + s.updates.latest + '…', click: showUpdateWindow } : null,
     rezume: rezumeItems(),
     open: showMain,
     log: () => require('../shared/applog.js').open(),

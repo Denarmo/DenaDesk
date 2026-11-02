@@ -1,4 +1,4 @@
-/* DuoDesk site: showcase pieces (class prefix sc-). Loaded after styles.css; uses its tokens (--max, --gutter,
+/* DenaDesk site: showcase pieces (class prefix sc-). Loaded after styles.css; uses its tokens (--max, --gutter,
    --ui, --mono, --ease, colours) with fallbacks. CSP-safe: no inline styles; JS only sets custom properties
    through CSSOM and toggles classes. */
 

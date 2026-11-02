@@ -11,8 +11,8 @@ if (-not $env:DUODESK_CALLS_CERT_SHA1) {
 }
 if ($env:DUODESK_CALLS_CERT_SHA1 -notmatch '^[0-9a-fA-F]{40}$') { throw 'Invalid calls certificate thumbprint' }
 $cert = Get-Item -LiteralPath ('Cert:\CurrentUser\My\' + $env:DUODESK_CALLS_CERT_SHA1)
-if (-not $cert.HasPrivateKey -or $cert.NotAfter -le (Get-Date) -or $cert.Subject -ne 'CN=TwinDesk') {
-  throw 'Calls signing needs a valid existing certificate matching the package publisher CN=TwinDesk'
+if (-not $cert.HasPrivateKey -or $cert.NotAfter -le (Get-Date) -or $cert.Subject -ne 'CN=DenaDesk') {
+  throw 'Calls signing needs a valid existing certificate matching the package publisher CN=DenaDesk'
 }
 $chain = New-Object Security.Cryptography.X509Certificates.X509Chain
 try { if (-not $chain.Build($cert)) { throw 'Calls signing certificate is not already trusted' } } finally { $chain.Dispose() }

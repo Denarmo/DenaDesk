@@ -153,7 +153,7 @@ final class DragIn: NSObject, NSDraggingSource, NSFilePromiseProviderDelegate {
   /// Main wrote (or failed to write) the promised item.
   func written(drag: String, index: Int, error: String?) {
     guard let done = writes.removeValue(forKey: "\(drag)#\(index)") else { return }
-    done(error.map { NSError(domain: "DuoDesk", code: 1, userInfo: [NSLocalizedDescriptionKey: $0]) })
+    done(error.map { NSError(domain: "DenaDesk", code: 1, userInfo: [NSLocalizedDescriptionKey: $0]) })
   }
 
   private func finish(_ result: String) {
@@ -251,7 +251,7 @@ final class DragIn: NSObject, NSDraggingSource, NSFilePromiseProviderDelegate {
   }
 
   func filePromiseProvider(_ p: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler: @escaping (Error?) -> Void) {
-    guard let (d, i) = info(p) else { return completionHandler(NSError(domain: "DuoDesk", code: 2)) }
+    guard let (d, i) = info(p) else { return completionHandler(NSError(domain: "DenaDesk", code: 2)) }
     DispatchQueue.main.async { [self] in
       writes["\(d)#\(i)"] = completionHandler
       emit(["event": "dragWrite", "drag": d, "index": i, "path": url.path])

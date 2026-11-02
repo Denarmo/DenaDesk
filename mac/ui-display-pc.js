@@ -70,7 +70,7 @@ UI.tab({
       rMode.set(rs ? (rs.on ? rs.mode : 'off') : '');
       rMode.disable(!s.client || !rs || !rs.remote);
       rRow.setHint(!s.client ? 'Connect to choose from here'
-        : !rs ? 'Update DuoDesk on the other computer to choose from here'
+        : !rs ? 'Update DenaDesk on the other computer to choose from here'
           : !rs.remote ? 'The other computer doesn’t allow choosing from here'
             : rs.on ? (rs.mode === 'extend' ? 'An extra screen for it, shown here' : 'Its main screen, shown here') : 'Pick Mirror or Extend — or just press Open');
       inputSw.set(r.input);
@@ -79,7 +79,7 @@ UI.tab({
       showBtn.textContent = r.open ? 'Show' : 'Open';
       const canStart = r.remote && r.remote.remote;
       winRow.setHint(!s.client ? `Waiting for ${pc}`
-        : r.session ? `Showing ${pc}` : canStart ? `Open starts it on ${pc}` : `Choose what to share in DuoDesk on ${pc}`);
+        : r.session ? `Showing ${pc}` : canStart ? `Open starts it on ${pc}` : `Choose what to share in DenaDesk on ${pc}`);
       const st = r.stats;
       const isLive = r.status === 'live' && st;
       vals.status.textContent = UI.fill(STATUS[r.status] || r.status);

@@ -2,14 +2,14 @@
 // The calls' sound on this Mac over Bluetooth: this Mac as the phone's hands-free (a headset, as
 // a car is), through IOBluetooth, which plays the call through the Mac's speakers and microphone
 // itself. A process of its own, run by mac/callaudio.js only while Calls and its Bluetooth option
-// are on with a phone connected: DuoDesk's helper never loads IOBluetooth for it.
+// are on with a phone connected: DenaDesk's helper never loads IOBluetooth for it.
 //
 // JSON lines. In:  {"cmd": "info"} | {"cmd": "connect", "id"} | {"cmd": "disconnect"}
 //                  | {"cmd": "here"} | {"cmd": "phone"} | {"cmd": "mute", "on"}
 // Out: {"ev": "info", "address", "power", "devices": [{id, name}]}
 //      {"ev": "state", "state": "connecting"|"connected"|"disconnected", "error"?}
 //      {"ev": "sco", "open"}   {"ev": "ring", "number"}
-// stdin closed (DuoDesk gone): the phone gets its calls back and this exits.
+// stdin closed (DenaDesk gone): the phone gets its calls back and this exits.
 import Foundation
 import IOBluetooth
 
@@ -105,7 +105,7 @@ Thread.detachNewThread {
         guard let data = line.data(using: .utf8), let o = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { continue }
         DispatchQueue.main.async { calls.handle(o) }
     }
-    // DuoDesk is gone: let the phone go (its calls go back to it), then exit.
+    // DenaDesk is gone: let the phone go (its calls go back to it), then exit.
     DispatchQueue.main.async {
         calls.disconnect()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { exit(0) }

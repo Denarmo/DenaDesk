@@ -16,7 +16,7 @@ UI.adbQr = () => {
   const note = el('div', { class: 'hint' });
   const box = el('div', { class: 'qr-box' }, [img, el('div', { class: 'qr-text' }, [
     el('strong', { text: 'Scan with the phone' }),
-    el('ol', {}, ['Settings › Developer options › Wireless debugging.', 'Tap Pair device with QR code.', 'Scan this code. DuoDesk connects by itself.'].map((t) => el('li', { text: t }))),
+    el('ol', {}, ['Settings › Developer options › Wireless debugging.', 'Tap Pair device with QR code.', 'Scan this code. DenaDesk connects by itself.'].map((t) => el('li', { text: t }))),
     note,
   ])]);
   box.hidden = true;

@@ -1,8 +1,14 @@
+# DenaDesk
+
+A personal fork maintained by Denarmo, based on [DuoDesk](https://github.com/0xCodez/DuoDesk) and [TwinDesk](https://github.com/InukaAsith/TwinDesk). Original copyright and GPL-3.0 licensing are retained.
+
+DenaDesk uses the Dena.emu brand colors: gold `#F1C40F`, dark anthracite `#202024`, pale text and dark text on gold controls. It has a separate Windows app identity and Android package `com.denarmo.denadesk`. See [SECURITY.md](SECURITY.md) for the security hardening and remaining limitations.
+
 <p align="center">
-  <img src=".github/assets/icon.png" width="112" alt="DuoDesk icon">
+  <img src=".github/assets/icon.png" width="112" alt="DenaDesk icon">
 </p>
 
-<h1 align="center"><a href="https://getduodesk.vercel.app">DuoDesk</a></h1>
+<h1 align="center"><a href="https://getduodesk.vercel.app">DenaDesk</a></h1>
 
 <p align="center">
   <b>All your computers and your phone, working as one desk.</b><br>
@@ -30,16 +36,16 @@
 </p>
 
 <p align="center">
-  <img src=".github/assets/hero.jpg" alt="The DuoDesk Overview window, 'What should your desks do?', with cards for Workstation, Studio-Mac and Pixel 8, between a Windows PC on the left and a MacBook and a phone on the right, on one glowing desk line" width="100%">
+  <img src=".github/assets/hero.jpg" alt="The DenaDesk Overview window, 'What should your desks do?', with cards for Workstation, Studio-Mac and Pixel 8, between a Windows PC on the left and a MacBook and a phone on the right, on one glowing desk line" width="100%">
 </p>
 
-Your devices are good at their own jobs and bad at working together. DuoDesk fixes that.
+Your devices are good at their own jobs and bad at working together. DenaDesk fixes that.
 Put a **Mac and a Windows PC** side by side and use them with one mouse and keyboard. Open the
 PC's apps on the Mac. Turn an old laptop or your **Android tablet** into a second screen. Answer
 your **phone's calls and texts** from the computer, use its **camera in a video call**, and paste
 on one device what you copied on another.
 
-- **Any combination.** Mac ↔ Windows, Mac ↔ Mac, PC ↔ PC, Linux ↔ anything, and Android ↔ any computer. Or, with [DuoDesk Mesh](#-duodesk-mesh-every-device-at-once), all of them at once.
+- **Any combination.** Mac ↔ Windows, Mac ↔ Mac, PC ↔ PC, Linux ↔ anything, and Android ↔ any computer. Or, with [DenaDesk Mesh](#-duodesk-mesh-every-device-at-once), all of them at once.
 - **Anywhere.** Same Wi-Fi, a USB cable, or no shared network at all: Bluetooth and a direct Wi-Fi link of their own.
 - **No account, no cloud.** Devices talk only to each other, on an encrypted link.
 - **Only what you turn on.** Every feature starts off and isn't even loaded until you switch it on.
@@ -135,21 +141,21 @@ X11 and Wayland · shared folders through Samba · the phone app page by page ·
 <details>
 <summary><b>⚠️ First launch: the apps aren't code-signed</b> <sub>how to allow them on macOS, Windows and Android</sub></summary>
 
-DuoDesk is free and has no paid Apple Developer ID or Windows code-signing certificate, so
+DenaDesk is free and has no paid Apple Developer ID or Windows code-signing certificate, so
 macOS and Windows don't know who made it and ask once before opening it. The source is all here.
 
 **🍎 macOS**
 
-1. Drag DuoDesk into Applications and open it. macOS says it can't verify DuoDesk: click **Done**
+1. Drag DenaDesk into Applications and open it. macOS says it can't verify DenaDesk: click **Done**
    (not Move to Bin).
 2. Open **System Settings › Privacy & Security**, scroll down to Security and click **Open Anyway**
-   next to "DuoDesk was blocked". Enter your password, then click **Open Anyway** again.
+   next to "DenaDesk was blocked". Enter your password, then click **Open Anyway** again.
 
-You do this once; updates open normally. If macOS says DuoDesk **is damaged and can't be
+You do this once; updates open normally. If macOS says DenaDesk **is damaged and can't be
 opened**, it isn't: run this in Terminal, then open it again:
 
 ```sh
-xattr -dr com.apple.quarantine /Applications/DuoDesk.app
+xattr -dr com.apple.quarantine /Applications/DenaDesk.app
 ```
 
 **🪟 Windows**
@@ -173,7 +179,7 @@ The **full app** (notifications, texts and Accessibility) is easiest installed b
 [wireless debugging](#wireless-debugging) (Phone page › Notifications from the phone): Android then
 lets you turn those on. Installed by hand, Play Protect may block it, and Android 13 and later grey
 out notification access and Accessibility as a **restricted setting**: open **Settings › Apps ›
-DuoDesk**, tap **⋮ › Allow restricted settings**, then turn them on.
+DenaDesk**, tap **⋮ › Allow restricted settings**, then turn them on.
 
 </details>
 
@@ -184,7 +190,7 @@ DuoDesk**, tap **⋮ › Allow restricted settings**, then turn them on.
 # ✨ New in 2.3
 
 <p align="center">
-  <img src=".github/assets/v23-whats-new.jpg" alt="DuoDesk 2.3: your phone is now a camera, a remote and a gamepad. The Camera page, with one phone showing the Remote touchpad and keys and another turned sideways showing the gamepad" width="100%">
+  <img src=".github/assets/v23-whats-new.jpg" alt="DenaDesk 2.3: your phone is now a camera, a remote and a gamepad. The Camera page, with one phone showing the Remote touchpad and keys and another turned sideways showing the gamepad" width="100%">
 </p>
 
 Your phone is now **a camera, a remote and a gamepad**. Use its camera in any video call, drive your
@@ -217,7 +223,7 @@ screen, and lock the pointer to one computer with a key.
 
 Thanks to everyone who sent pull requests for this release: see [Thanks](#thanks).
 
-<sub>Older releases: 2.2 brought [DuoDesk Mesh](#-duodesk-mesh-every-device-at-once), 2.1 brought
+<sub>Older releases: 2.2 brought [DenaDesk Mesh](#-duodesk-mesh-every-device-at-once), 2.1 brought
 [Bluetooth and Wi-Fi Direct](#-connections) and the phone's [calls, texts, photos and files](#-calls-and-messages).
 Every release's notes are on the [releases page](https://github.com/0xCodez/DuoDesk/releases).</sub>
 
@@ -226,7 +232,7 @@ Every release's notes are on the [releases page](https://github.com/0xCodez/DuoD
 # 💻 Computer to computer
 
 <p align="center">
-  <img src=".github/assets/mac-windows.jpg" alt="DuoDesk on a Mac (Studio-Mac) connected to a Windows PC (Workstation): the Mac's Apps page lists the PC's apps, and behind it the PC's Overview shows Studio-Mac connected at 9 ms" width="100%">
+  <img src=".github/assets/mac-windows.jpg" alt="DenaDesk on a Mac (Studio-Mac) connected to a Windows PC (Workstation): the Mac's Apps page lists the PC's apps, and behind it the PC's Overview shows Studio-Mac connected at 9 ms" width="100%">
 </p>
 
 The same app on every platform, so a Mac and a PC pair just like two Macs.
@@ -264,13 +270,13 @@ your own.
 ## 📷 Camera sharing
 
 Show the other computer's camera in a window, or send it to **a webcam every app can pick**:
-**DuoDesk Camera** in Zoom, Teams, Meet or the browser. A computer shares its camera only when you
+**DenaDesk Camera** in Zoom, Teams, Meet or the browser. A computer shares its camera only when you
 turn on *Let … see this camera* on it, and a popup there says who is watching. The same works with
 a [phone's camera](#-phone-camera).
 
 The virtual camera installs the first time you turn it on: a Windows 11 camera (one administrator
 prompt), v4l2loopback on Linux (one password prompt), and on the Mac it goes into **OBS Virtual
-Camera** (or DuoDesk's own camera extension, in builds signed for it).
+Camera** (or DenaDesk's own camera extension, in builds signed for it).
 
 ## 📁 Files, shared folders and terminal
 
@@ -307,7 +313,7 @@ Pair as many computers and phones as you like. **Switch** moves the session to a
 device nearby, **Take over** claims one that's busy with someone else, and **Disconnect** lets go.
 All from the Overview, the menu bar or the tray.
 
-## 🕸 DuoDesk Mesh: every device at once
+## 🕸 DenaDesk Mesh: every device at once
 
 <p align="center">
   <img src=".github/assets/v22-mesh-desk.jpg" alt="One mouse, every screen: the pointer's path across a Windows PC, a MacBook, a Linux laptop and a phone, with the Multi-device layout map of Workstation, Studio-Mac, ThinkPad and Pixel 8 below" width="100%">
@@ -330,7 +336,7 @@ time; the phone connects to one computer at a time, and Linux joins over the sam
 
 # 📱 Phone and tablet
 
-Most phone links stop at notifications and a file drop. In DuoDesk your Android phone or tablet is
+Most phone links stop at notifications and a file drop. In DenaDesk your Android phone or tablet is
 a **full peer**: it pairs like a computer and gets the same features, plus its calls, texts, photos,
 files and camera.
 
@@ -345,7 +351,7 @@ Read and reply to your texts on **Messages**: every conversation, pictures inclu
 the sidebar.
 
 <p align="center">
-  <img src=".github/assets/v21-calls-messages.jpg" alt="DuoDesk with Pixel 8 connected: the Calls page with an incoming call from Alex and the recent calls, and the Messages page with a conversation" width="100%">
+  <img src=".github/assets/v21-calls-messages.jpg" alt="DenaDesk with Pixel 8 connected: the Calls page with an incoming call from Alex and the recent calls, and the Messages page with a conversation" width="100%">
 </p>
 
 ## 🖼 Photos and phone files
@@ -362,7 +368,7 @@ Files app.
 
 ## 📷 Phone camera
 
-The phone's **back or front camera**, in a window on the computer or as the **DuoDesk Camera**
+The phone's **back or front camera**, in a window on the computer or as the **DenaDesk Camera**
 webcam in any video call. Switch cameras and rotate the picture from the Camera tab, or start it
 from the phone's own Camera page.
 
@@ -379,7 +385,7 @@ The phone's **Remote** page turns it into the computer's remote, for the couch o
 - **Gamepad,** laid out like an Xbox controller. Its buttons press the keys you choose, or turn on
   **Real gamepad** and the computer sees an actual controller: an Xbox 360 controller on Windows,
   a gamepad on Linux.
-- **A Bluetooth gamepad for any computer**, the Mac included, with no DuoDesk and no driver there:
+- **A Bluetooth gamepad for any computer**, the Mac included, with no DenaDesk and no driver there:
   pair the phone in the computer's Bluetooth settings once.
 
 Turn on **Remote** on the computer to let the phone drive it.
@@ -429,7 +435,7 @@ The Android app adapts to the device: tabs at the bottom on a phone, a full side
 Every page names the computer you're connected to and shows what's shared in each direction.
 
 <p align="center">
-  <img src=".github/assets/android-phone.jpg" alt="DuoDesk on the computer with Pixel 8 connected (its battery and what it shares), and the Android app's Remote page on the phone" width="100%">
+  <img src=".github/assets/android-phone.jpg" alt="DenaDesk on the computer with Pixel 8 connected (its battery and what it shares), and the Android app's Remote page on the phone" width="100%">
 </p>
 
 ---
@@ -440,13 +446,13 @@ Every page names the computer you're connected to and shows what's shared in eac
   <img src=".github/assets/v21-connections.jpg" alt="Five ways to link: same Wi-Fi, Bluetooth LE, Wi-Fi Direct, phone hotspot and USB cable, next to the Connection page with a Bluetooth link at 38 ms" width="100%">
 </p>
 
-You never have to choose. DuoDesk uses the same network when there is one, moves a phone onto
+You never have to choose. DenaDesk uses the same network when there is one, moves a phone onto
 the **USB cable** when you plug it in, and falls back to **Bluetooth** when the Wi-Fi goes: on a
 train, or in a café whose guest Wi-Fi blocks devices. The link and its latency are always shown at
 the top of the app (*38 ms · Bluetooth*).
 
 Bluetooth is great for the session but too slow for a screen or a big file. So when you start one,
-DuoDesk **brings up a direct Wi-Fi link** between the two devices for as long as it's needed, then
+DenaDesk **brings up a direct Wi-Fi link** between the two devices for as long as it's needed, then
 goes back to Bluetooth. Press **Connect with Wi-Fi Direct** to keep it, or let the computer join the
 phone's **hotspot**.
 
@@ -466,15 +472,15 @@ computers** (off until you want it), on the Overview and in General.
 # 🚀 Get started
 
 <p align="center">
-  <img src=".github/assets/tour.gif" alt="A tour of the DuoDesk window: Overview, Mouse, Clipboard, Share screen, Camera and File Sharing" width="820">
+  <img src=".github/assets/tour.gif" alt="A tour of the DenaDesk window: Overview, Mouse, Clipboard, Share screen, Camera and File Sharing" width="820">
 </p>
 
-1. **Download** DuoDesk for each computer and your phone ([above](#download), or from the [releases](https://github.com/0xCodez/DuoDesk/releases)).
+1. **Download** DenaDesk for each computer and your phone ([above](#download), or from the [releases](https://github.com/0xCodez/DuoDesk/releases)).
 2. **Open it on both.** They find each other on the same network, over Bluetooth, or over a USB cable for a phone.
 3. **Pair once** by comparing a code (on a USB cable, just click Allow). From then on they connect by themselves.
 4. **Turn on what you want.** Each feature has a tab with a switch, and shows what it does until you turn it on.
 
-For the phone's screen, apps and camera in windows, DuoDesk walks you through turning on Android's
+For the phone's screen, apps and camera in windows, DenaDesk walks you through turning on Android's
 wireless debugging once ([details](#wireless-debugging)). Files, clipboard, calls and photos work
 without it. The phone's notifications, texts, media controls and mouse and keyboard through
 Accessibility come with the full app, which the computer installs once over wireless debugging.
@@ -484,7 +490,7 @@ Accessibility come with the full app, which the computer installs once over wire
 | Mac ↔ Windows PC, Mac ↔ Mac, PC ↔ PC | Every computer feature |
 | Linux ↔ Mac, PC or Linux | Every computer feature ([a few differences](#linux)) |
 | Android ↔ Mac, Windows or Linux | Every phone and tablet feature (Real gamepad on Windows and Linux) |
-| All of them at once | [DuoDesk Mesh](#-duodesk-mesh-every-device-at-once) |
+| All of them at once | [DenaDesk Mesh](#-duodesk-mesh-every-device-at-once) |
 
 ## Privacy
 
@@ -503,13 +509,13 @@ This fork's security defaults and build limitations are documented in [SECURITY.
 ---
 
 
-Everything below is for the curious and for people building DuoDesk themselves.
+Everything below is for the curious and for people building DenaDesk themselves.
 
 <a name="linux"></a>
 <details>
 <summary><h2>🐧 Linux</h2> <sub>X11 and Wayland, shared folders, Extend, virtual camera and gamepad</sub></summary>
 
-On Linux, DuoDesk runs on both X11 and Wayland. On Wayland, the mouse and keyboard go through
+On Linux, DenaDesk runs on both X11 and Wayland. On Wayland, the mouse and keyboard go through
 evdev and uinput (the Setup screen grants access once), and screens are captured through the
 desktop portal. A few things work a little differently:
 
@@ -526,11 +532,11 @@ desktop portal. A few things work a little differently:
 - **Extend.** On GNOME (Wayland) it uses Mutter's own virtual monitor; pick "Virtual remote
   monitor" when the desktop asks which screen to share. On X11 it switches on a spare output of
   the graphics driver (not available on NVIDIA's driver). That needs a small helper, which the
-  .deb installs; with the AppImage, Share screen › *TwinDesk virtual display* › Install puts it in
+  .deb installs; with the AppImage, Share screen › *DenaDesk virtual display* › Install puts it in
   once, with your password.
 - **Apps.** Opening this computer's apps on the other side needs an Xorg session.
-- **Virtual camera and gamepad.** DuoDesk Camera is a v4l2loopback device, and Real gamepad a
-  uinput controller ("TwinDesk Gamepad"); each asks for your password once, the first time it's
+- **Virtual camera and gamepad.** DenaDesk Camera is a v4l2loopback device, and Real gamepad a
+  uinput controller ("DenaDesk Gamepad"); each asks for your password once, the first time it's
   turned on.
 - **Bluetooth and Wi-Fi Direct.** Bluetooth LE goes through BlueZ, and direct Wi-Fi links through
   NetworkManager, hosted beside the computer's own Wi-Fi where the adapter allows (2.4 GHz groups
@@ -546,7 +552,7 @@ desktop portal. A few things work a little differently:
 <details>
 <summary><h2>🤖 Android in detail</h2> <sub>the phone app page by page, and wireless debugging</sub></summary>
 
-Install DuoDesk on the phone, open it next to DuoDesk on the computer and pair from Overview › Nearby. The phone needs Android 10, and Android 11 for everything that goes through wireless debugging.
+Install DenaDesk on the phone, open it next to DenaDesk on the computer and pair from Overview › Nearby. The phone needs Android 10, and Android 11 for everything that goes through wireless debugging.
 
 ### The phone app
 
@@ -565,7 +571,7 @@ every page names the computer it's connected to:
 | **Notifications** | The phone's notifications on the computer, with the text hidden if you like, and the computer's on the phone |
 | **Files** | Send files, copy them to paste on the computer, and see where the computer's files land |
 | **Sound** | The phone's sound on the computer, and the computer's sound on the phone |
-| **General** | The phone's name, background running, and the permissions DuoDesk uses, each with its switch |
+| **General** | The phone's name, background running, and the permissions DenaDesk uses, each with its switch |
 | **About** | Source code, releases, the license, and what goes over wireless debugging and the network |
 
 And outside the app:
@@ -586,7 +592,7 @@ And outside the app:
 
 Files, the clipboard and notifications work right away. The phone's screen, its apps in windows,
 touch, your mouse and keyboard on the phone and its sound go through **wireless debugging**, which
-DuoDesk pairs with once:
+DenaDesk pairs with once:
 
 <p align="center">
   <img src=".github/assets/ui-phone-pair.jpg" alt="Connection page: the wireless debugging card under the connected computers, with the 6-digit pairing code" width="820">
@@ -595,18 +601,18 @@ DuoDesk pairs with once:
 - Until it's paired, a card under the connected computers on Connection (on the computer and on the
   phone) walks you through it. Open *Developer options › Wireless debugging › Pair device with
   pairing code* on the phone and type the 6-digit code on the computer, or on the phone in
-  DuoDesk's notification (Settings' dialog stays open). The phone sends the code to whichever
+  DenaDesk's notification (Settings' dialog stays open). The phone sends the code to whichever
   computer it's connected to: Mac, PC or Linux.
-- After that DuoDesk switches wireless debugging on by itself when it needs it, follows it to its
+- After that DenaDesk switches wireless debugging on by itself when it needs it, follows it to its
   new port every time it restarts, and keeps the pairing from expiring (Android otherwise forgets
   a computer after 7 days unused). Phones that switch it off on every Wi-Fi change or screen lock
   (MIUI, HyperOS) get it switched back on as soon as they're unlocked, or a prompt if they refuse.
-  Wireless debugging only runs while **USB debugging** is on too, so DuoDesk turns both on.
+  Wireless debugging only runs while **USB debugging** is on too, so DenaDesk turns both on.
 - **Xiaomi, Redmi and POCO** also need *Developer options › USB debugging (Security settings)* for
   touch, mouse and keyboard (it asks for a Mi account). Without it the screen shows but input is
   refused; the computer's Phone page says "Touch blocked" until it's on.
 - **On a Mac, the phone in Finder.** Turn it on in the Mount tab and click Mount: the phone shows
-  under Locations like any server. Until then DuoDesk never looks at the phone's files. It goes
+  under Locations like any server. Until then DenaDesk never looks at the phone's files. It goes
   through the cable when USB debugging is allowed, else over wireless debugging. Finder's `.DS_Store` and `._` files never land on the phone.
 
 </details>
@@ -635,15 +641,15 @@ capturing and injecting input, virtual displays, gestures, window capture and na
 | `shared/` | Used by every app: the wire protocol, the Bluetooth pipe and Wi-Fi Direct links, the phone hub (Calls, Messages, Photos, Phone Files), shared folders, frame generation and icons |
 
 The link between two devices is one TLS session wherever it runs: on the local network, through
-a phone's USB cable (adb), or through **Bluetooth LE** (a GATT pipe of DuoDesk's own,
+a phone's USB cable (adb), or through **Bluetooth LE** (a GATT pipe of DenaDesk's own,
 `shared/blepipe.js`). When a session on Bluetooth needs bandwidth, `shared/netlink.js` brings up a
 **Wi-Fi Direct** group or joins a phone's hotspot, moves the session onto it, and takes it down
 again once nothing needs it. Calls, Messages, Photos and Phone Files are `shared/phonehub.js` on
-the computers, answered by DuoDesk on the phone.
+the computers, answered by DenaDesk on the phone.
 
 Files between two computers on the network or a cable stream over HTTPS on the same port, beside the
 control link and up to four at a time (`shared/fastfile.js`), so mouse and keyboard never wait
-behind a big file. Through Bluetooth, Wi-Fi Direct, a hotspot, or with an older TwinDesk on the
+behind a big file. Through Bluetooth, Wi-Fi Direct, a hotspot, or with an older DenaDesk on the
 other side, they go as before: in pieces on the control link.
 
 Ports: TCP **47800** (control link and files) and UDP **47801** (discovery) on the local network.
@@ -664,11 +670,11 @@ cd mac
 npm install
 npm run build:helper
 npm start                       # run from source
-npm run dist && npm run dmg     # build DuoDesk.app and DuoDesk-<version>-<arch>.dmg in mac/dist/
+npm run dist && npm run dmg     # build DenaDesk.app and DenaDesk-<version>-<arch>.dmg in mac/dist/
 ```
 
-The disk image is named after the app inside it: `DuoDesk-2.4.0-arm64.dmg` for Apple Silicon,
-`DuoDesk-2.4.0-x64.dmg` for Intel. Keep those names on a release: the in-app updater picks the
+The disk image is named after the app inside it: `DenaDesk-2.4.0-arm64.dmg` for Apple Silicon,
+`DenaDesk-2.4.0-x64.dmg` for Intel. Keep those names on a release: the in-app updater picks the
 one for each Mac by them.
 
 By default, `npm run dist` targets the Mac's current architecture. To build an Intel
@@ -679,19 +685,19 @@ npm run dist:x64 && npm run dmg
 ```
 
 To build the Intel app and its image in one step, run `npm run dmg:intel`; it writes
-`mac/dist/DuoDesk-<version>-x64.dmg`.
+`mac/dist/DenaDesk-<version>-x64.dmg`.
 
 Use `npm run dist:arm64 && npm run dmg` for Apple Silicon explicitly. The x64 build
 cross-compiles the Swift helpers and packages the x64 Electron runtime, so it does
 not require an Intel Mac.
 
-On first launch, DuoDesk asks for **Screen Recording**, **Accessibility** and **Input
+On first launch, DenaDesk asks for **Screen Recording**, **Accessibility** and **Input
 Monitoring** (once; after that the General tab shows each permission's status).
 
 `npm run dist` signs the app with a certificate of its own, made the first time in
 `~/.twindesk-signing` (keep a backup). macOS keeps permissions per signature, so with the same
 certificate they carry over when an update is dragged into Applications. An app built without it is
-signed ad-hoc, and macOS treats every update as a new app; DuoDesk then clears the stale entries so
+signed ad-hoc, and macOS treats every update as a new app; DenaDesk then clears the stale entries so
 Allow works again.
 
 ### Windows 10 / 11
@@ -733,7 +739,7 @@ GNOME Wayland uses Python 3 with GObject and GStreamer's PipeWire plugin (`pytho
 
 #### NixOS & Nix Flakes
 
-DuoDesk includes a `flake.nix` with package, dev shell, and NixOS module support:
+DenaDesk includes a `flake.nix` with package, dev shell, and NixOS module support:
 
 ```sh
 # Run directly with flakes
@@ -761,7 +767,7 @@ See [docs/nixos.md](docs/nixos.md) for full options (firewall, Wi-Fi Direct capa
 
 `linux/scripts/vm-test.sh` runs it in a [Parallels Desktop](https://www.parallels.com) Linux VM
 (Ubuntu with the packages above and Node.js): it copies this checkout into the VM, builds the
-helper, starts DuoDesk in the VM's desktop session and drives it from the Mac.
+helper, starts DenaDesk in the VM's desktop session and drives it from the Mac.
 
 ```sh
 linux/scripts/vm-test.sh start            # sync, build and (re)start it in the VM
@@ -770,7 +776,7 @@ linux/scripts/vm-test.sh eval "UI.go('cursor')"
 linux/scripts/vm-test.sh log
 ```
 
-On the VM's shared network it finds the Mac's DuoDesk and pairs like any Linux computer.
+On the VM's shared network it finds the Mac's DenaDesk and pairs like any Linux computer.
 
 ### Android
 
@@ -806,7 +812,7 @@ guarantee that antivirus products will stop flagging a file.
 
 ## Thanks
 
-DuoDesk builds on TwinDesk, which is better for everyone who sent it a pull request (links go to the TwinDesk repository):
+DenaDesk builds on DenaDesk, which is better for everyone who sent it a pull request (links go to the DenaDesk repository):
 
 - [@DevPsycho-07](https://github.com/DevPsycho-07): the phone as a remote ([#44](https://github.com/InukaAsith/TwinDesk/pull/44)), screenshots across the clipboard ([#45](https://github.com/InukaAsith/TwinDesk/pull/45)), phone window controls ([#46](https://github.com/InukaAsith/TwinDesk/pull/46)) and phone fixes ([#43](https://github.com/InukaAsith/TwinDesk/pull/43))
 - [@benzntech](https://github.com/benzntech): the phone's camera ([#48](https://github.com/InukaAsith/TwinDesk/pull/48)), Developer ID signing and notarization ([#40](https://github.com/InukaAsith/TwinDesk/pull/40)) and the Mac's downloads ([#39](https://github.com/InukaAsith/TwinDesk/pull/39))
@@ -814,20 +820,20 @@ DuoDesk builds on TwinDesk, which is better for everyone who sent it a pull requ
 - [@philopaterwaheed](https://github.com/philopaterwaheed): Cursor lock ([#49](https://github.com/InukaAsith/TwinDesk/pull/49))
 - [@ghustanov](https://github.com/ghustanov): wireless debugging's auto-off ([#31](https://github.com/InukaAsith/TwinDesk/pull/31)) and the Mac helpers' Info.plist ([#30](https://github.com/InukaAsith/TwinDesk/pull/30))
 - [@m-uvex](https://github.com/m-uvex): the Nix flake and NixOS module ([#37](https://github.com/InukaAsith/TwinDesk/pull/37))
-- Erdoğan Yeşil ([@erdodo](https://github.com/erdodo)): the mesh DuoDesk Mesh is built on ([#29](https://github.com/InukaAsith/TwinDesk/pull/29)), and [#8](https://github.com/InukaAsith/TwinDesk/pull/8) and [#9](https://github.com/InukaAsith/TwinDesk/pull/9)
+- Erdoğan Yeşil ([@erdodo](https://github.com/erdodo)): the mesh DenaDesk Mesh is built on ([#29](https://github.com/InukaAsith/TwinDesk/pull/29)), and [#8](https://github.com/InukaAsith/TwinDesk/pull/8) and [#9](https://github.com/InukaAsith/TwinDesk/pull/9)
 - [@Jay-Prajapati01](https://github.com/Jay-Prajapati01): signed Windows installers ([#13](https://github.com/InukaAsith/TwinDesk/pull/13))
 
 And thanks to everyone who reports problems and shares ideas in the [issues](https://github.com/0xCodez/DuoDesk/issues).
 
 ## Credits
 
-DuoDesk is made by [0xCodez](https://github.com/0xCodez) ([source](https://github.com/0xCodez/DuoDesk), [website](https://getduodesk.vercel.app)).
-It is a fork of [TwinDesk](https://github.com/InukaAsith/TwinDesk) by [Inuka Asith](https://github.com/InukaAsith),
-released under the GNU GPL v3.0; DuoDesk keeps that licence and every original copyright notice.
+DenaDesk is made by [0xCodez](https://github.com/0xCodez) ([source](https://github.com/0xCodez/DuoDesk), [website](https://getduodesk.vercel.app)).
+It is a fork of [DenaDesk](https://github.com/InukaAsith/TwinDesk) by [Inuka Asith](https://github.com/InukaAsith),
+released under the GNU GPL v3.0; DenaDesk keeps that licence and every original copyright notice.
 
 ## License
 
-DuoDesk is free software, licensed under the [GNU General Public License v3.0](LICENSE).
+DenaDesk is free software, licensed under the [GNU General Public License v3.0](LICENSE).
 Copyright © 2026 0xCodez; based on TwinDesk, Copyright © 2026 inukaasith.
 
 Parts are adapted from [DeskPad](https://github.com/Stengo/DeskPad) (MIT). See [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES)

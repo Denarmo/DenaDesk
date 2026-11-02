@@ -30,7 +30,7 @@ UI.tab({
     // How the mouse and keyboard reach the phone (settings.phone.input; the phone's own toggle too).
     const via = UI.segmented([
       { value: 'adb', label: 'ADB', title: 'Wireless debugging: full control' },
-      { value: 'phone', label: 'Accessibility', title: 'DuoDesk on the phone taps and types itself, over Wi-Fi, Wi-Fi Direct or Bluetooth. No developer options' },
+      { value: 'phone', label: 'Accessibility', title: 'DenaDesk on the phone taps and types itself, over Wi-Fi, Wi-Fi Direct or Bluetooth. No developer options' },
     ], (v) => api.setPhone({ input: v, inputPicked: true })); // picked: no longer automatic
     // What plays on the phone, on the card's right, while it plays (shared/ui-nowplaying.js).
     const media = UI.nowPlaying();
@@ -51,7 +51,7 @@ UI.tab({
     const where = el('input', { type: 'text', placeholder: 'Address:port (optional)', autocomplete: 'off', spellcheck: false, attrs: { 'aria-label': 'Pairing address' } });
     const pairBtn = UI.button('Pair', () => api.phonePair({ code: code.value, where: where.value }), 'small primary');
     code.onkeydown = where.onkeydown = (e) => { if (e.key === 'Enter') pairBtn.click(); };
-    const pairRow = UI.row('Pairing code', 'Or type it on the phone, in DuoDesk’s notification', [code, where, pairBtn]);
+    const pairRow = UI.row('Pairing code', 'Or type it on the phone, in DenaDesk’s notification', [code, where, pairBtn]);
     const steps = UI.note('info', '');
     // Wireless debugging off: one line, the steps behind Show me how.
     let howOpen = false;
@@ -61,8 +61,8 @@ UI.tab({
       'On the phone: Settings › About phone › Software information › tap Build number 7 times. Developer options appear.',
       'Settings › Developer options: turn on USB debugging.',
       'On the same page, turn on Wireless debugging. The phone has to be on a Wi-Fi network (a direct Wi-Fi link alone isn’t enough).',
-      'Tap Wireless debugging › Pair device with pairing code, and type the code here, or in DuoDesk’s notification on the phone.',
-      'That’s all: after pairing once, DuoDesk turns wireless debugging on by itself.',
+      'Tap Wireless debugging › Pair device with pairing code, and type the code here, or in DenaDesk’s notification on the phone.',
+      'That’s all: after pairing once, DenaDesk turns wireless debugging on by itself.',
     ].map((t) => el('li', { text: t })));
     // The phone runs the standard build (no notification access): install the full one over it.
     const fullBtn = UI.button('Install', () => api.phoneInstallFull(), 'small primary');
@@ -98,7 +98,7 @@ UI.tab({
       UI.row('Window controls', 'Title bar: Back, Home, Recents and the main ones up top. Side panel: those, volume, rotate, screenshot and more down the right of each phone window. Bottom bar: Back, Home and Recents under the picture', [controls]),
       UI.row('Enter sends messages', 'In WhatsApp, Instagram and Telegram, in a phone window or with this keyboard on the phone. Shift+Enter: a new line', [enterSends]),
       UI.row('Arrow keys swipe', 'In a phone window: up and down through feeds, Reels and Shorts, left and right through pages. Off: they move the cursor', [arrowSwipe]),
-      UI.row('Show the phone’s wallpaper here', 'Lets DuoDesk on the phone read it (set up over wireless debugging)', [wall]),
+      UI.row('Show the phone’s wallpaper here', 'Lets DenaDesk on the phone read it (set up over wireless debugging)', [wall]),
       UI.row('Mouse and keyboard', 'Push the pointer off the edge of the screen to use the phone. Double-tap the hotkey to come back.', [UI.button('Cursor Settings', () => UI.go('cursor'), 'small')]),
     ]);
 
@@ -122,7 +122,7 @@ UI.tab({
       const info = ph.info || {};
       const br = ph.bridge || { state: 'off' };
       for (const x of [hero, viaCard, adbCard, appsCard, winCard, optsCard]) x.hidden = !c;
-      notConnected.set(c ? '' : ph.nearby && ph.nearby.length ? 'Click the phone above Overview to connect it.' : 'No phone connected. Open DuoDesk on the phone and pair it from Overview › Nearby.');
+      notConnected.set(c ? '' : ph.nearby && ph.nearby.length ? 'Click the phone above Overview to connect it.' : 'No phone connected. Open DenaDesk on the phone and pair it from Overview › Nearby.');
       if (!c) return;
 
       h1.textContent = c.name;
@@ -150,7 +150,7 @@ UI.tab({
       adbRow.setHint(off ? (/direct Wi-Fi/.test(br.message) ? br.message : 'Wireless debugging is off on the phone. The screen and ADB control need it; Accessibility doesn’t.') : ready && br.inputBlocked ? 'The screen works, but Xiaomi refuses touch, mouse and keyboard from here. On the phone: Settings › Developer options › USB debugging (Security settings): on (it asks for a Mi account).'
         : ready ? 'The phone’s screen, touch, mouse and keyboard, and its clipboard in the background' : br.message);
       pairRow.hidden = br.state !== 'needsPair' && !br.canPair;
-      steps.set(br.state === 'needsPair' ? 'DuoDesk pairs with the phone’s wireless debugging once. After that the phone’s screen, apps, mouse and keyboard work without this step.' : '');
+      steps.set(br.state === 'needsPair' ? 'DenaDesk pairs with the phone’s wireless debugging once. After that the phone’s screen, apps, mouse and keyboard work without this step.' : '');
       if (UI.adbBle(s, adbCard, adbRow, adbPill)) { pairRow.hidden = how.hidden = howBtn.hidden = true; steps.set(''); }
 
       // The standard build can't read notifications (Play Protect blocks downloaded apps that do).
@@ -160,8 +160,8 @@ UI.tab({
       fullBtn.hidden = full;
       fullBtn.disabled = !ready || !br.fullApk || (inst && inst.state === 'installing');
       fullRow.setHint(inst && inst.state !== 'failed' && inst.message ? inst.message
-        : !br.fullApk ? 'This build of DuoDesk doesn’t carry the Android app.'
-          : `${inst && inst.state === 'failed' ? `${inst.message} ` : ''}The DuoDesk you downloaded can’t read the phone’s notifications (Play Protect blocks downloaded apps that can). Install the full app over it: its settings and pairing stay.${ready ? '' : ' Needs wireless debugging.'}`);
+        : !br.fullApk ? 'This build of DenaDesk doesn’t carry the Android app.'
+          : `${inst && inst.state === 'failed' ? `${inst.message} ` : ''}The DenaDesk you downloaded can’t read the phone’s notifications (Play Protect blocks downloaded apps that can). Install the full app over it: its settings and pairing stay.${ready ? '' : ' Needs wireless debugging.'}`);
 
       const settings = ph.settings || {};
       sound.set(!!settings.sound);
@@ -172,7 +172,7 @@ UI.tab({
       controls.set(settings.controls || 'top');
       via.set(br.input || (settings.input === 'phone' ? 'phone' : 'adb'));
       viaRow.setHint(br.inputMode === 'auto' ? (br.state === 'ready' ? 'Automatic: ADB, wireless debugging is ready' : 'Automatic: Accessibility until wireless debugging is ready')
-        : br.input === 'phone' ? 'DuoDesk on the phone taps and types itself. The phone asks once to allow it in Accessibility' : 'Wireless debugging: full control');
+        : br.input === 'phone' ? 'DenaDesk on the phone taps and types itself. The phone asks once to allow it in Accessibility' : 'Wireless debugging: full control');
 
       // apps (icons come with UI.phoneAssets)
       const apps = (UI.phoneAssets && UI.phoneAssets.apps) || [];

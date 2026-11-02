@@ -1,17 +1,17 @@
 {
-  "name": "macshare-mac",
-  "productName": "DuoDesk",
-  "version": "2.5.1-security.1",
-  "description": "DuoDesk \u00e2\u20ac\u201d the Mac side: pairing, secure link, screen sharing and shared mouse/keyboard with a Windows PC.",
+  "name": "denadesk-mac",
+  "productName": "DenaDesk",
+  "version": "2.6.0",
+  "description": "DenaDesk â€” the Mac side: pairing, secure link, screen sharing and shared mouse/keyboard with a Windows PC.",
   "license": "GPL-3.0",
   "author": "0xCodez (https://github.com/0xCodez)",
-  "homepage": "https://github.com/0xCodez/DuoDesk",
+  "homepage": "https://github.com/Denarmo/DuoDesk",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/0xCodez/DuoDesk.git"
+    "url": "git+https://github.com/Denarmo/DuoDesk.git"
   },
   "bugs": {
-    "url": "https://github.com/0xCodez/DuoDesk/issues"
+    "url": "https://github.com/Denarmo/DuoDesk/issues"
   },
   "main": "main.js",
   "private": true,
@@ -31,5 +31,8 @@
   "devDependencies": {
     "@electron/packager": "20.3.0",
     "electron": "45.2.1"
-  }
+  },
+  "contributors": [
+    "Denarmo (DenaDesk branding and security hardening)"
+  ]
 }

@@ -103,7 +103,7 @@ function memory([cmd, key, ...a]) {
 }
 
 // One key per installer on the release page. The site sends these with each download click and
-// api/dashboard.js maps GitHub's file names (DuoDesk-Setup-2.5.0.exe, DuoDesk-2.5.0-arm64.dmg…) to the same keys.
+// api/dashboard.js maps GitHub's file names (DenaDesk-Setup-2.5.0.exe, DenaDesk-2.5.0-arm64.dmg…) to the same keys.
 export const ASSETS = ['windows-x64', 'windows-arm64', 'mac-arm64', 'mac-x64', 'linux-appimage', 'linux-deb', 'android', 'android-full'];
 
 export const day = (d = new Date()) => d.toISOString().slice(0, 10);

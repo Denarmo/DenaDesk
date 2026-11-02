@@ -84,7 +84,7 @@ class CamShare {
   async setShare(on, askFirst) {
     this.shareError = '';
     if (on && askFirst && !(await askFirst())) {
-      this.shareError = 'The camera isn’t allowed for DuoDesk: allow it in System Settings › Privacy & Security › Camera';
+      this.shareError = 'The camera isn’t allowed for DenaDesk: allow it in System Settings › Privacy & Security › Camera';
       return this.onChange();
     }
     this.cfg().share = !!on;

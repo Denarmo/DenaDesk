@@ -1,16 +1,16 @@
 #!/bin/sh
 # TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-# Creates dist/DuoDesk-<version>-<arch>.dmg from dist/DuoDesk.app (npm run dmg), named after
-# the app inside it like the other platforms' downloads: DuoDesk-2.3.0-arm64.dmg (Apple silicon)
-# or DuoDesk-2.3.0-x64.dmg (Intel), the words the updater tells them apart by (shared/updates.js
-# pickAsset, which takes only DuoDesk-named files). A name as the argument instead: ./build-dmg.sh Other.dmg.
-# Its volume is "DuoDesk <version>", so an older one still mounted isn't the one that opens.
+# Creates dist/DenaDesk-<version>-<arch>.dmg from dist/DenaDesk.app (npm run dmg), named after
+# the app inside it like the other platforms' downloads: DenaDesk-2.3.0-arm64.dmg (Apple silicon)
+# or DenaDesk-2.3.0-x64.dmg (Intel), the words the updater tells them apart by (shared/updates.js
+# pickAsset, which takes only DenaDesk-named files). A name as the argument instead: ./build-dmg.sh Other.dmg.
+# Its volume is "DenaDesk <version>", so an older one still mounted isn't the one that opens.
 # The app and an Applications link over the hand-drawn background in dmg/ (dmg/make-background.sh
 # renders it); the window layout is written by dmgbuild, installed once into dist/.dmgbuild (needs python3).
 set -e
 cd "$(dirname "$0")"
 
-APP="dist/DuoDesk.app"
+APP="dist/DenaDesk.app"
 if [ ! -d "$APP" ]; then
   echo "Error: $APP not found. Run ./build-app.sh first." >&2
   exit 1
@@ -19,18 +19,18 @@ fi
 # The version and architecture of the app that was built (build-app.sh x64 / arm64).
 VER="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist" 2>/dev/null \
   || node -p "require('./package.json').version")"
-ARCH="$(lipo -archs "$APP/Contents/MacOS/DuoDesk")"
+ARCH="$(lipo -archs "$APP/Contents/MacOS/DenaDesk")"
 case "$ARCH" in
   x86_64) ARCH=x64 ;;
   arm64) ;;
   *) echo "Error: $APP is '$ARCH', not one architecture (build-app.sh x64 or arm64)." >&2; exit 2 ;;
 esac
-DMG_NAME=${1:-DuoDesk-$VER-$ARCH.dmg}
+DMG_NAME=${1:-DenaDesk-$VER-$ARCH.dmg}
 case "$DMG_NAME" in
   */*) DMG="$DMG_NAME" ;;
   *) DMG="dist/$DMG_NAME" ;;
 esac
-VOLNAME="DuoDesk $VER"
+VOLNAME="DenaDesk $VER"
 VENV="dist/.dmgbuild"
 
 if [ ! -x "$VENV/bin/dmgbuild" ]; then
@@ -42,7 +42,7 @@ fi
 echo "Creating disk image $DMG..."
 rm -f "$DMG"
 "$VENV/bin/dmgbuild" -s dmg/settings.py \
-  -D app="$APP" -D icon=dist/DuoDesk.icns -D background=dmg/background.tiff \
+  -D app="$APP" -D icon=dist/DenaDesk.icns -D background=dmg/background.tiff \
   "$VOLNAME" "$DMG"
 
 echo "DMG created successfully: $DMG"

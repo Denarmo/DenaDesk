@@ -5,7 +5,7 @@
 // and microphone once asked to (each call is moved here as it starts), and not at all while a
 // Bluetooth headset is connected to the PC (whatever the default devices: its hands-free link and the
 // phone's can't both be up). Windows lets only an app with a package identity do that (PhoneLineTransportDevice),
-// so first its sparse package is registered for this user, pointing at where TwinDesk is (the
+// so first its sparse package is registered for this user, pointing at where DenaDesk is (the
 // installer trusts its certificate). The phone has to be paired with this PC over Bluetooth once, in
 // Windows' own Bluetooth settings (the Calls page's setup). stop() ends it: the process lets the
 // phone line go and exits.
@@ -24,8 +24,8 @@ const ROOT = path.join(__dirname, '..'); // the package's external location: its
 const BIN = path.join(ROOT, 'windows-helper', 'bin');
 const EXE = path.join(BIN, 'macshare-calls.exe');
 const MSIX = path.join(BIN, 'twindesk-calls.msix');
-const PKG = 'TwinDesk.Calls';
-const PKG_VERSION = '1.0.2.0'; // as windows-helper/calls/AppxManifest.xml (1.0.2.0: shown as DuoDesk, not TwinDesk)
+const PKG = 'DenaDesk.Calls';
+const PKG_VERSION = '1.0.2.0'; // as windows-helper/calls/AppxManifest.xml (1.0.2.0: shown as DenaDesk, not DenaDesk)
 const RETRY_MS = [5000, 15000, 30000, 60000, 120000];
 const SYSTEM_ONLY = 'Windows keeps calls over Bluetooth for Phone Link on this PC. Calls still ring, answer and dial here; their sound stays on the phone';
 let refused = ''; // Windows said no: not asked again until the app restarts
@@ -37,8 +37,8 @@ function addError(e) {
   if (/0x800B0109|0x800B010A|trust|certificate/i.test(e)) {
     return 'Windows does not trust this calls package. Use a package signed by an already trusted publisher; do not import a self-signed certificate.';
   }
-  if (/0x80073CFF|sideload|developer/i.test(e)) return 'Windows won’t add DuoDesk’s calls package: allow apps from any source in Settings › System › For developers';
-  return `DuoDesk’s calls package: ${String(e).slice(0, 140)}`;
+  if (/0x80073CFF|sideload|developer/i.test(e)) return 'Windows won’t add DenaDesk’s calls package: allow apps from any source in Settings › System › For developers';
+  return `DenaDesk’s calls package: ${String(e).slice(0, 140)}`;
 }
 
 class CallAudio extends EventEmitter {
@@ -175,11 +175,11 @@ class CallAudio extends EventEmitter {
     let m;
     try { m = JSON.parse(line); } catch { return; }
     if (m.ev === 'info') {
-      // Started without the package's identity (registered for TwinDesk somewhere else, say a dev
+      // Started without the package's identity (registered for DenaDesk somewhere else, say a dev
       // copy): registered again here, once.
       if (m.identity === false) {
         this._end();
-        if (this.forced) { this.error = 'Windows didn’t give macshare-calls DuoDesk’s package identity'; return this._set('unavailable'); }
+        if (this.forced) { this.error = 'Windows didn’t give macshare-calls DenaDesk’s package identity'; return this._set('unavailable'); }
         this.forced = true;
         return this._launch(this.gen, true);
       }
@@ -210,12 +210,12 @@ class CallAudio extends EventEmitter {
       if (m.state === 'connecting') return this._set('connecting');
       if (m.access === 'DeniedByUser') {
         this.denied = true;
-        this.error = 'Windows’ privacy settings keep calls from DuoDesk: allow it in Settings › Privacy & security › Phone calls, then Connect';
+        this.error = 'Windows’ privacy settings keep calls from DenaDesk: allow it in Settings › Privacy & security › Phone calls, then Connect';
         this.tries = RETRY_MS.length + 1;
         return this._set('failed');
       }
       // Windows gave this phone's line to another app (one registered for it before, Phone Link
-      // say): it's TwinDesk's once the phone is paired again.
+      // say): it's DenaDesk's once the phone is paired again.
       if (m.error === 'unregistered') {
         this.denied = true;
         this.error = `Windows keeps ${this.phoneName || 'the phone'}’s calls for another app: Forget it below and pair it again`;

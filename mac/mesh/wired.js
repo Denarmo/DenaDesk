@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
 // A phone on a USB cable: the whole session goes through it, no Wi-Fi needed, and pairing too.
-//   - adb sees a phone over USB (USB debugging allowed for this computer) with TwinDesk on it:
+//   - adb sees a phone over USB (USB debugging allowed for this computer) with DenaDesk on it:
 //     `adb reverse` makes the phone's 127.0.0.1:<port> this server, and 127.0.0.1:<TURN_PORT> the
 //     relay (shared/turn.js), or other ports where the phone's own connections hold those; a
 //     broadcast only adb's shell may send (WiredReceiver) tells the app to connect there. Its pinned certificate and token work as over Wi-Fi.
@@ -23,10 +23,10 @@ const { TurnThread } = require('../../shared/turn.js');
 const P = require('../../shared/protocol.js');
 const usbadb = require('../../shared/usbadb.js');
 
-const APP_ID = 'com.twindesk.android';
+const APP_ID = 'com.denarmo.denadesk';
 const TURN_PORT = 47802;
 const POLL_MS = 2000;
-const RETRY_MS = 15000; // a phone without DuoDesk (or not answering yet) is looked at again after this
+const RETRY_MS = 15000; // a phone without DenaDesk (or not answering yet) is looked at again after this
 const TCPIP_PORT = 5555; // adb's TCP mode, where phone-bridge.js reaches the phone on a direct Wi-Fi link
 
 const isUsb = (serial) => !/[:]/.test(serial) && !serial.startsWith('emulator-') && !serial.includes('._adb-tls');
@@ -193,7 +193,7 @@ class Wired extends EventEmitter {
   async _invite(serial) {
     const has = await this.adb.shell(serial, `pm path ${APP_ID}`, { timeout: 5000 });
     if (!/package:/.test(has.out)) {
-      console.log(`[wired] ${serial}: DuoDesk is not installed on it (pm path said: ${(has.out || has.err || 'nothing').trim().slice(0, 120)}): nothing to connect`);
+      console.log(`[wired] ${serial}: DenaDesk is not installed on it (pm path said: ${(has.out || has.err || 'nothing').trim().slice(0, 120)}): nothing to connect`);
       return;
     }
 

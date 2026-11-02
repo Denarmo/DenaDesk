@@ -1,11 +1,11 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// The virtual camera on Linux (shared/vcam.js's driver): "DuoDesk Camera", a v4l2loopback device
+// The virtual camera on Linux (shared/vcam.js's driver): "DenaDesk Camera", a v4l2loopback device
 // every app can pick. Installed once (one password prompt, pkexec): the v4l2loopback module from
 // the distribution's packages when it isn't there (DKMS: it needs the kernel's headers, and with
 // Secure Boot the module has to be signed), loaded with our device now and at every start
 // (modules-load.d, modprobe.d). linux-helper/bin/twindesk-vcam writes the frames to it (YUYV),
 // all the while the switch is on: with exclusive_caps, apps list it only while something writes.
-// Before 2.5 the device was "TwinDesk Camera" (the same module and files): with Virtual camera on,
+// Before 2.5 the device was "DenaDesk Camera" (the same module and files): with Virtual camera on,
 // the next start finds only that one (legacy), installs again (one password prompt), and the old
 // device goes before the new one is added. Declined or failed, the old one is fed as it was until
 // the next start tries again.
@@ -13,8 +13,8 @@ const { execFile, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const NAME = 'DuoDesk Camera';
-const LEGACY = 'TwinDesk Camera'; // its name before 2.5
+const NAME = 'DenaDesk Camera';
+const LEGACY = 'DenaDesk Camera'; // its name before 2.5
 let migrating = false; // this start tried to rename it (LEGACY → NAME)
 const WRITER = path.join(__dirname, '..', 'linux-helper', 'bin', 'twindesk-vcam');
 const SYS = '/sys/class/video4linux';
@@ -80,9 +80,9 @@ const driver = {
   always: true,
 
   async check() {
-    if (!fs.existsSync(WRITER)) return { supported: false, message: 'Not in this build of DuoDesk' };
+    if (!fs.existsSync(WRITER)) return { supported: false, message: 'Not in this build of DenaDesk' };
     if (device()) return { supported: true, installed: true };
-    // Only the old "TwinDesk Camera": installed again (renamed) once per start; until then it works as it is.
+    // Only the old "DenaDesk Camera": installed again (renamed) once per start; until then it works as it is.
     if (device(LEGACY)) return migrating ? { supported: true, installed: true, message: `Still named “${LEGACY}” here: it’s renamed at the next start` } : { supported: true, installed: false };
     return { supported: true, installed: false };
   },

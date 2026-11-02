@@ -1,8 +1,8 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Log files, for all three apps (one-to-one and Multi-device): what's printed with console.* (the
-// helpers' stderr too: helper.js prints it) also goes to DuoDesk.log in the system's log folder
-// (app.getPath('logs'): ~/Library/Logs/DuoDesk on the Mac; on Windows and Linux logs in the settings
-// folder, %APPDATA%\MacShare\logs, ~/.config/MacShare/logs), kept to 5 MB × 3 (DuoDesk.log, .1.log,
+// helpers' stderr too: helper.js prints it) also goes to DenaDesk.log in the system's log folder
+// (app.getPath('logs'): ~/Library/Logs/DenaDesk on the Mac; on Windows and Linux logs in the settings
+// folder, %APPDATA%\MacShare\logs, ~/.config/MacShare/logs), kept to 5 MB × 3 (DenaDesk.log, .1.log,
 // .2.log). Crashes
 // (an uncaught exception or rejection here, a window's renderer or another Electron process gone)
 // go to crash.log as well, and the app goes on as before. While connected, once every 30 s, one
@@ -17,7 +17,7 @@ const path = require('path');
 const util = require('util');
 
 let maxBytes = 5 * 1024 * 1024;
-const KEEP = 3; // DuoDesk.log and two older ones
+const KEEP = 3; // DenaDesk.log and two older ones
 const LEVELS = ['log', 'info', 'warn', 'error', 'debug'];
 const STATS_MS = 30000;
 
@@ -31,7 +31,7 @@ function dir() {
   return folder;
 }
 
-const file = (i) => path.join(folder, i ? `DuoDesk.${i}.log` : 'DuoDesk.log');
+const file = (i) => path.join(folder, i ? `DenaDesk.${i}.log` : 'DenaDesk.log');
 const stamp = () => new Date().toISOString();
 
 function openStream() {
@@ -45,7 +45,7 @@ function openStream() {
   stream.on('error', () => { stream = null; }); // a full or read-only disk: console only
 }
 
-// DuoDesk.log -> .1.log -> .2.log; the oldest goes.
+// DenaDesk.log -> .1.log -> .2.log; the oldest goes.
 function rotate() {
   if (stream) stream.end(); // what it still has goes to the renamed file
   for (let i = KEEP - 1; i > 0; i--) {
@@ -67,7 +67,7 @@ function write(line) {
   stream.write(line);
 }
 
-// What went wrong, at once and whatever happens next (crash.log and DuoDesk.log).
+// What went wrong, at once and whatever happens next (crash.log and DenaDesk.log).
 function crash(kind, detail) {
   const text = detail instanceof Error ? detail.stack || String(detail) : typeof detail === 'string' ? detail : util.inspect(detail);
   const line = `${stamp()} [crash] ${kind}: ${text}\n`;
@@ -100,7 +100,7 @@ function start(app, opts = {}) {
       try { write(`${stamp()} ${level === 'log' || level === 'info' ? '' : level.toUpperCase() + ' '}${util.format(...args)}\n`); } catch (_) { /* best effort */ }
     };
   }
-  write(`${stamp()} ---- DuoDesk ${app.getVersion()} started (${process.platform} ${process.arch}, Electron ${process.versions.electron || ''}) ----\n`);
+  write(`${stamp()} ---- DenaDesk ${app.getVersion()} started (${process.platform} ${process.arch}, Electron ${process.versions.electron || ''}) ----\n`);
   // Handled here, the app goes on (as Electron's own dialog let it), and it's in the log.
   process.on('uncaughtException', (e) => crash('uncaughtException', e));
   process.on('unhandledRejection', (e) => crash('unhandledRejection', e));

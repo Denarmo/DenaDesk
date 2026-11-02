@@ -7,7 +7,7 @@
 //   twindesk-wifiap del <dev>    removes it
 //   twindesk-wifiap bletimeout   every Bluetooth adapter: an LE link we open survives 5 s of silence
 //                                (the kernel's default is 420 ms: a phone or a Mac busy with Wi-Fi for
-//                                half a second dropped DuoDesk's link; Android and macOS use ~5 s)
+//                                half a second dropped DenaDesk's link; Android and macOS use ~5 s)
 //   twindesk-wifiap version      WIFIAP_VERSION (linux/wifi.js installs it again when it differs)
 // It's created as twdap0 with an address of its own (<dev>'s, locally administered), and found by
 // that address after: udev may rename it (wlx<address> on USB adapters).

@@ -27,18 +27,18 @@ const read = (f) => { try { return fs.readFileSync(path.join(dir, f), 'utf8'); }
     console.log('hello %s', 'world');
     console.warn('[helper] something');
     await wait(50);
-    let log = read('DuoDesk.log');
-    assert.ok(/DuoDesk 9\.9\.9 started/.test(log), 'the start line');
+    let log = read('DenaDesk.log');
+    assert.ok(/DenaDesk 9\.9\.9 started/.test(log), 'the start line');
     assert.ok(/Z hello world\n/.test(log), 'console.log, formatted');
     assert.ok(/WARN \[helper\] something/.test(log), 'warn says so');
 
-    // Past the size: DuoDesk.log -> .1 -> .2, never a fourth.
+    // Past the size: DenaDesk.log -> .1 -> .2, never a fourth.
     for (let i = 0; i < 400; i++) console.log('line %d %s', i, 'x'.repeat(40));
     await wait(100);
-    const files = fs.readdirSync(dir).filter((f) => /^DuoDesk/.test(f)).sort();
-    assert.deepStrictEqual(files, ['DuoDesk.1.log', 'DuoDesk.2.log', 'DuoDesk.log'], files.join());
+    const files = fs.readdirSync(dir).filter((f) => /^DenaDesk/.test(f)).sort();
+    assert.deepStrictEqual(files, ['DenaDesk.1.log', 'DenaDesk.2.log', 'DenaDesk.log'], files.join());
     for (const f of files) assert.ok(fs.statSync(path.join(dir, f)).size <= 4200, `${f} kept small`);
-    assert.ok(/line 399 /.test(read('DuoDesk.log')), 'the newest in DuoDesk.log');
+    assert.ok(/line 399 /.test(read('DenaDesk.log')), 'the newest in DenaDesk.log');
 
     // Crashes: in crash.log at once, and the process goes on.
     process.emit('uncaughtException', new Error('boom'));
@@ -57,7 +57,7 @@ const read = (f) => { try { return fs.readFileSync(path.join(dir, f), 'utf8'); }
     const stop = applog.linkStats(() => (connected ? { rtt: (rtt = (rtt % 10) + 1), queued: rtt * 100 } : null), 200, 10);
     const moves = new KvmMoves({ send: () => {} });
     for (let i = 0; i < 100; i++) moves.add(1, 0);
-    const linkLines = () => read('DuoDesk.log').split('\n').filter((l) => l.includes('[link]'));
+    const linkLines = () => read('DenaDesk.log').split('\n').filter((l) => l.includes('[link]'));
     await wait(230);
     connected = false;
     await wait(250); // the window it went in

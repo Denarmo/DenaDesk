@@ -44,7 +44,7 @@ UI.tab({
       switchSw.disable(!!s.kvm.mouse);
       switchRow.setHint(s.kvm.mouse ? 'Only when Cursor is off' : 'Double-tap to type on ' + p.the + ' and back');
       otherHotkey.label.textContent = 'Hotkey on ' + p.the;
-      otherHotkey.setHint('Set in DuoDesk on ' + p.the);
+      otherHotkey.setHint('Set in DenaDesk on ' + p.the);
       // Ctrl/Cmd swapping only between a Mac and a PC.
       swapRow.hidden = p.os !== 'mac';
       shortcutsRow.hidden = p.os !== 'mac';

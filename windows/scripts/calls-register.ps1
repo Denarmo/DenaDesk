@@ -1,6 +1,6 @@
 # TwinDesk - Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 # callaudio.js: the calls' sparse package registered for this user, its external location where
-# TwinDesk is (again when its version differs, or with -Force). Prints {ok} or {error}.
+# DenaDesk is (again when its version differs, or with -Force). Prints {ok} or {error}.
 param(
   [Parameter(Mandatory = $true)][string]$Name,
   [Parameter(Mandatory = $true)][string]$Version,

@@ -32,7 +32,7 @@ button, input, select { font: inherit; color: inherit; -webkit-app-region: no-dr
 /* ---------- sidebar ---------- */
 #sidebar { width: 220px; flex: none; padding: 46px 10px 12px; overflow-y: auto; -webkit-app-region: drag; }
 .identity { display: flex; align-items: center; gap: 14px; padding: 6px 8px 20px 4px; }
-.app-mark { /* the DuoDesk icon (shared/icon/teindesk-dark), as on Windows */
+.app-mark { /* the DenaDesk icon (shared/icon/teindesk-dark), as on Windows */
   width: 60px; height: 60px; flex: none;
   background: image-set(url(assets/sidebar-icon@1x.png) 1x, url(assets/sidebar-icon@2x.png) 2x,
     url(assets/sidebar-icon@3x.png) 3x, url(assets/sidebar-icon@4x.png) 4x) center / contain no-repeat;

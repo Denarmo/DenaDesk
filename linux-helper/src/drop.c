@@ -46,7 +46,7 @@ static void make(void) {
   XChangeProperty(dpy_in, strip, A_AWARE, XA_ATOM, 32, PropModeReplace, (unsigned char *)&version, 1);
   Atom type = atom("_NET_WM_WINDOW_TYPE_DND"); // no shadow from compositors
   XChangeProperty(dpy_in, strip, atom("_NET_WM_WINDOW_TYPE"), XA_ATOM, 32, PropModeReplace, (unsigned char *)&type, 1);
-  XStoreName(dpy_in, strip, "DuoDesk drop edge");
+  XStoreName(dpy_in, strip, "DenaDesk drop edge");
 }
 
 static void hide(void) {

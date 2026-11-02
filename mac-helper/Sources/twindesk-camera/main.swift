@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // The virtual camera's Camera Extension (macOS 12.3+, a system extension in
-// DuoDesk.app/Contents/Library/SystemExtensions, installed by twindesk-vcam activate): one device,
-// "DuoDesk Camera", with two streams. Apps read the source stream; DuoDesk writes its frames
+// DenaDesk.app/Contents/Library/SystemExtensions, installed by twindesk-vcam activate): one device,
+// "DenaDesk Camera", with two streams. Apps read the source stream; DenaDesk writes its frames
 // into the sink stream (twindesk-vcam feed). The source sends the newest frame 30 times a second,
 // or black while none has come for a while. NV12 1280×720, BT.601 (shared/vcam-feed.js).
 import CoreMediaIO
@@ -13,7 +13,7 @@ import IOKit.audio
 let width: Int32 = 1280
 let height: Int32 = 720
 let fps: Int32 = 30
-let cameraName = "DuoDesk Camera" // "TwinDesk Camera" before 2.5: twindesk-vcam status says legacy, activate replaces it
+let cameraName = "DenaDesk Camera" // "DenaDesk Camera" before 2.5: twindesk-vcam status says legacy, activate replaces it
 let staleNanos: UInt64 = 1_500_000_000
 
 func nanos() -> UInt64 { clock_gettime_nsec_np(CLOCK_UPTIME_RAW) }
@@ -101,7 +101,7 @@ class DeviceSource: NSObject, CMIOExtensionDeviceSource {
     let duration = CMTime(value: 1, timescale: fps)
     let format = CMIOExtensionStreamFormat(formatDescription: formatDescription, maxFrameDuration: duration, minFrameDuration: duration, validFrameDurations: nil)
     source = StreamSource(name: name, id: UUID(uuidString: "FCEBBA03-9D13-4C13-9940-CC84FCD132D1")!, format: format, sink: false, owner: self)
-    sink = StreamSource(name: name + " (from DuoDesk)", id: UUID(uuidString: "2B6C4D5E-7F80-4A91-B2C3-D4E5F6071829")!, format: format, sink: true, owner: self)
+    sink = StreamSource(name: name + " (from DenaDesk)", id: UUID(uuidString: "2B6C4D5E-7F80-4A91-B2C3-D4E5F6071829")!, format: format, sink: true, owner: self)
     try? device.addStream(source.stream)
     try? device.addStream(sink.stream)
   }
@@ -167,7 +167,7 @@ class DeviceSource: NSObject, CMIOExtensionDeviceSource {
     source.stream.send(s, discontinuity: [], hostTimeInNanoseconds: now)
   }
 
-  // ---- DuoDesk writing ----
+  // ---- DenaDesk writing ----
 
   func startSink() {
     queue.async {
@@ -220,7 +220,7 @@ class ProviderSource: NSObject, CMIOExtensionProviderSource {
 
   func providerProperties(forProperties properties: Set<CMIOExtensionProperty>) throws -> CMIOExtensionProviderProperties {
     let p = CMIOExtensionProviderProperties(dictionary: [:])
-    if properties.contains(.providerManufacturer) { p.manufacturer = "DuoDesk" }
+    if properties.contains(.providerManufacturer) { p.manufacturer = "DenaDesk" }
     return p
   }
 

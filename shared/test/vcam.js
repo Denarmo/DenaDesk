@@ -17,7 +17,7 @@ const { VirtualCam, FRAME } = require('../vcam.js');
 
 function fakeDriver({ installed = false, fail = '' } = {}) {
   const d = {
-    name: 'DuoDesk Camera',
+    name: 'DenaDesk Camera',
     installs: 0,
     written: 0,
     feeds: 0,
@@ -112,12 +112,12 @@ function fakeDriver({ installed = false, fail = '' } = {}) {
     ipcMain.removeAllListeners('vcam:frame');
   }
 
-  // Targets (the Mac: DuoDesk Camera or OBS Virtual Camera): each checked, removed and fed as itself.
+  // Targets (the Mac: DenaDesk Camera or OBS Virtual Camera): each checked, removed and fed as itself.
   {
     const seen = [];
     const driver = Object.assign(fakeDriver(), {
-      targets: [{ value: 'twindesk', label: 'DuoDesk Camera' }, { value: 'obs', label: 'OBS Virtual Camera' }],
-      nameOf: (t) => (t === 'obs' ? 'OBS Virtual Camera' : 'DuoDesk Camera'),
+      targets: [{ value: 'denadesk', label: 'DenaDesk Camera' }, { value: 'obs', label: 'OBS Virtual Camera' }],
+      nameOf: (t) => (t === 'obs' ? 'OBS Virtual Camera' : 'DenaDesk Camera'),
       removable: (t) => t !== 'obs',
       async check(t) { seen.push(t); return t === 'obs' ? { supported: true, installed: true } : { supported: false, message: 'Not in this build' }; },
     });
@@ -126,7 +126,7 @@ function fakeDriver({ installed = false, fail = '' } = {}) {
     const cfg = { virtual: true, target: 'nope' };
     const v = new VirtualCam({ driver, cfg: () => cfg, save: () => {}, onChange: () => {} });
     await v.check();
-    assert.strictEqual(v.target, 'twindesk');
+    assert.strictEqual(v.target, 'denadesk');
     assert.strictEqual(v.view().supported, false);
     assert.strictEqual(v.view().ready, false);
     await v.setTarget('obs');
@@ -135,7 +135,7 @@ function fakeDriver({ installed = false, fail = '' } = {}) {
     assert.strictEqual(v.view().removable, false);
     assert.strictEqual(v.view().ready, true);
     ipcMain.emit('vcam:frame', {}, new ArrayBuffer(FRAME));
-    assert.deepStrictEqual(seen, ['twindesk', 'obs', 'feed:obs']);
+    assert.deepStrictEqual(seen, ['denadesk', 'obs', 'feed:obs']);
     await v.setTarget('elsewhere'); // not one of them: unchanged
     assert.strictEqual(cfg.target, 'obs');
     v.stop();

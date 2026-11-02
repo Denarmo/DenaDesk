@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Bluetooth LE (shared/protocol.js P.BLE) through BlueZ on D-Bus, for a device that isn't on this
 // computer's network; the same commands and events as windows-helper's Ble.cs:
-//   host:   a GATT application that advertises the DuoDesk service. A guest reads INFO, says
+//   host:   a GATT application that advertises the DenaDesk service. A guest reads INFO, says
 //           hello on CTRL, opens a pipe and writes UP; we notify DOWN. Commands bleStart {info},
 //           bleStop, bleCtrl {dev, msg}, bleSend {dev, data}; events ble.state, ble.guest,
 //           ble.open, ble.data, ble.close, ble.gone, ble.invite, ble.sent.
@@ -181,7 +181,7 @@ static GVariant *bytes_v(const void *data, gsize n) {
 // When we connect (guest, phones, reading INFO), the link is ours: an L2CAP socket on the ATT
 // channel, LE only, and GATT spoken here. BlueZ's Device1.Connect would pick classic Bluetooth for
 // a device it also knows that way (a Mac), connect its profiles (Hands-Free) and make it ask to
-// pair; an ATT socket can't. No pairing either way: the DuoDesk characteristics are plain.
+// pair; an ATT socket can't. No pairing either way: the DenaDesk characteristics are plain.
 
 #define AF_BT 31
 #define BTPROTO_L2CAP_ 0
@@ -379,7 +379,7 @@ static const char *att_discover(Att *a, const char *svc, guint16 val[C_N], guint
     g_bytes_unref(r);
     at = last && last < 0xFFFF ? (guint16)(last + 1) : 0;
   }
-  if (!s0) return "no DuoDesk service";
+  if (!s0) return "no DenaDesk service";
   guint16 decl[C_N + 1] = { 0 };
   for (guint16 at = s0; at && at <= s1;) { // characteristics (Read By Type, 0x2803)
     guint8 q[7] = { 0x08 };

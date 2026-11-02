@@ -10,7 +10,7 @@
 //   right the clipboard's recent items, the most used apps and a drop zone that sends files. A column
 //   with nothing in it gives the other the whole width; with nothing on at all, none of it shows.
 //   The switches themselves are on each feature's page.
-// What the other side doesn't report (an older TwinDesk) is left out, not shown as off.
+// What the other side doesn't report (an older DenaDesk) is left out, not shown as off.
 'use strict';
 
 (function () {
@@ -213,7 +213,7 @@
         if (!on) return;
         const p = UI.peer(s);
         const info = ph.info || {};
-        const ctl = (phone ? ph.ctl : s.peerCtl) || null; // what the other side can do (deviceDo), null: an older TwinDesk
+        const ctl = (phone ? ph.ctl : s.peerCtl) || null; // what the other side can do (deviceDo), null: an older DenaDesk
 
         // hero
         const devName = phone && c ? c.name : (s.peer && s.peer.name) || (s.client && s.client.name) || p.name;

@@ -50,7 +50,7 @@ async function start(deviceId) {
     devices(); // with the camera allowed, its names are known now
   } catch (e) {
     if (!alive()) return;
-    const why = e.name === 'NotAllowedError' ? 'the camera isn’t allowed for DuoDesk'
+    const why = e.name === 'NotAllowedError' ? 'the camera isn’t allowed for DenaDesk'
       : e.name === 'NotFoundError' ? 'this computer has no camera'
         : e.name === 'NotReadableError' ? 'another app is using the camera' : e.message;
     status('failed', why);

@@ -40,7 +40,7 @@ class Terminal {
     // Older versions wrote a `macshare` command; `ssh duodesk` replaces it.
     try {
       const old = path.join(os.homedir(), '.local', 'bin', 'macshare');
-      if (fs.existsSync(old) && fs.readFileSync(old, 'utf8').includes('written by the TwinDesk app')) fs.rmSync(old);
+      if (fs.existsSync(old) && fs.readFileSync(old, 'utf8').includes('written by the DenaDesk app')) fs.rmSync(old);
     } catch (_) { /* leave it */ }
 
     this.link.on('welcome', () => this.apply());

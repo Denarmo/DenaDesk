@@ -1,5 +1,5 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// twindesk-pad: Remote › Real gamepad on Linux (linux/gamepad.js). A uinput gamepad, "DuoDesk
+// twindesk-pad: Remote › Real gamepad on Linux (linux/gamepad.js). A uinput gamepad, "DenaDesk
 // Gamepad", with an Xbox 360 controller's ids and layout (the kernel's xpad driver's), so games and
 // SDL map it as one. Pad states come on stdin, 12 bytes each, little-endian: u16 buttons (A B X Y
 // LB RB Back Start L3 R3 Up Down Left Right, bits 0..13), i16 lx ly rx ry (y down), u8 lt rt. The
@@ -67,7 +67,7 @@ int main(void) {
   setup.id.vendor = 0x045e; // Microsoft
   setup.id.product = 0x028e; // Xbox 360 Controller
   setup.id.version = 0x0110;
-  snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "DuoDesk Gamepad");
+  snprintf(setup.name, UINPUT_MAX_NAME_SIZE, "DenaDesk Gamepad");
   if (ioctl(fd, UI_DEV_SETUP, &setup) || ioctl(fd, UI_DEV_CREATE)) {
     fprintf(stderr, "twindesk-pad: uinput: %s\n", strerror(errno));
     return 2;

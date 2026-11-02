@@ -65,7 +65,7 @@ UI.tab({
         ]);
         b.onclick = () => api.launchApp(x.id);
         if (a.peerPc) return b; // apps of another PC: no Start shortcut yet
-        // Pin to Start (a shortcut in Start › DuoDesk Apps), on hover or right-click.
+        // Pin to Start (a shortcut in Start › DenaDesk Apps), on hover or right-click.
         const pin = el('span', { class: 'app-pin', title: 'Pin to Start', attrs: { role: 'button', tabindex: '0', 'aria-label': 'Pin ' + x.name + ' to Start' } }, [UI.icon('pin')]);
         pin.onclick = (e) => { e.stopPropagation(); api.pinApp(x.id); };
         pin.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); api.pinApp(x.id); } };

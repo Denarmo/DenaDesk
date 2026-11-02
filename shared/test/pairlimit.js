@@ -13,8 +13,8 @@ assert.ok(L.limitMessage('connecting', 'Desk PC', 'ble:ab').includes('over Bluet
 assert.ok(L.limitMessage('waiting', 'Desk PC', '1.2.3.4').startsWith('Desk PC didn’t answer'));
 
 // Version mismatch: which side to update, from the host's "speaks protocol vN".
-assert.strictEqual(L.versionMessage({ message: `speaks protocol v${P.PROTOCOL_VERSION + 1}` }, 'Mac'), 'This DuoDesk is older than the one on Mac. Update it here.');
-if (P.PROTOCOL_VERSION > 1) assert.strictEqual(L.versionMessage({ message: `speaks protocol v${P.PROTOCOL_VERSION - 1}` }, 'Mac'), 'Mac runs an older DuoDesk. Update it there.');
+assert.strictEqual(L.versionMessage({ message: `speaks protocol v${P.PROTOCOL_VERSION + 1}` }, 'Mac'), 'This DenaDesk is older than the one on Mac. Update it here.');
+if (P.PROTOCOL_VERSION > 1) assert.strictEqual(L.versionMessage({ message: `speaks protocol v${P.PROTOCOL_VERSION - 1}` }, 'Mac'), 'Mac runs an older DenaDesk. Update it there.');
 assert.strictEqual(L.versionMessage({ message: 'no version here' }, 'Mac'), null);
 assert.strictEqual(L.versionMessage(null, 'Mac'), null);
 

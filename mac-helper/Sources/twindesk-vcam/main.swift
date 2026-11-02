@@ -1,12 +1,12 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// twindesk-vcam (DuoDesk.app/Contents/MacOS, beside the app: the system extension it installs
-// must be in its main bundle): the virtual camera's side in DuoDesk (mac/vcam.js).
+// twindesk-vcam (DenaDesk.app/Contents/MacOS, beside the app: the system extension it installs
+// must be in its main bundle): the virtual camera's side in DenaDesk (mac/vcam.js).
 //   activate    installs the Camera Extension (org.macshare.mac.camera); the first time macOS asks
 //               the person to allow it in System Settings: {"approval":true} is printed meanwhile,
 //               and it waits (up to 5 minutes) for the answer
 //   deactivate  removes it
-//   status      {"camera":true|false, "legacy":true|false}: is "DuoDesk Camera" among this Mac's cameras
-//               (legacy: the extension from before 2.5 still runs, its camera "TwinDesk Camera")
+//   status      {"camera":true|false, "legacy":true|false}: is "DenaDesk Camera" among this Mac's cameras
+//               (legacy: the extension from before 2.5 still runs, its camera "DenaDesk Camera")
 //   feed        frames on stdin, each 1280×720 NV12 (shared/vcam-feed.js), into the camera's sink stream
 // status and feed take --name <camera>: another camera with a sink stream, "OBS Virtual Camera"
 // (OBS Studio's Camera Extension, written into the way OBS does), in the format its sink takes.
@@ -23,9 +23,9 @@ let named: String? = {
   if let i = args.firstIndex(of: "--name"), i + 1 < args.count { return args[i + 1] }
   return nil
 }()
-let cameraName = named ?? "DuoDesk Camera"
+let cameraName = named ?? "DenaDesk Camera"
 // Our camera's name before 2.5 (the same extension id): feed writes into it until activate replaced it.
-let legacyName: String? = named == nil ? "TwinDesk Camera" : nil
+let legacyName: String? = named == nil ? "DenaDesk Camera" : nil
 let width = 1280, height = 720
 let frameBytes = width * height * 3 / 2
 
@@ -98,7 +98,7 @@ func findLegacy() -> CMIOObjectID? {
   return findCamera(n)
 }
 
-// The device's stream DuoDesk writes into: the one going into it (direction 0), else the last.
+// The device's stream DenaDesk writes into: the one going into it (direction 0), else the last.
 func sinkStream(_ device: CMIOObjectID) -> CMIOStreamID? {
   let streams = property(device, kCMIODevicePropertyStreams, CMIOStreamID(0))
   return streams.first { property($0, kCMIOStreamPropertyDirection, UInt32(1)).first == 0 } ?? streams.last

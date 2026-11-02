@@ -40,17 +40,17 @@ body::before {
 .au-sky .au-b { position: absolute; border-radius: 50%; will-change: transform, opacity; }
 .au-sky .au-b1 {
   width: 78vmax; height: 62vmax; left: -24vmax; top: -32vmax;
-  background: radial-gradient(closest-side, rgba(138, 92, 255, 0.3), rgba(138, 92, 255, 0.1) 55%, transparent);
+  background: radial-gradient(closest-side, rgba(241, 196, 15, 0.3), rgba(241, 196, 15, 0.1) 55%, transparent);
   animation: au-drift-1 24s ease-in-out infinite alternate, au-breathe 9s ease-in-out infinite alternate;
 }
 .au-sky .au-b2 {
   width: 70vmax; height: 58vmax; right: -28vmax; top: -20vmax;
-  background: radial-gradient(closest-side, rgba(47, 214, 255, 0.22), rgba(47, 214, 255, 0.07) 55%, transparent);
+  background: radial-gradient(closest-side, rgba(247, 221, 119, 0.22), rgba(247, 221, 119, 0.07) 55%, transparent);
   animation: au-drift-2 29s ease-in-out infinite alternate, au-breathe 11s ease-in-out -4s infinite alternate;
 }
 .au-sky .au-b3 {
   width: 64vmax; height: 52vmax; left: 4vmax; bottom: -36vmax;
-  background: radial-gradient(closest-side, rgba(255, 61, 154, 0.24), rgba(255, 61, 154, 0.075) 55%, transparent);
+  background: radial-gradient(closest-side, rgba(226, 181, 47, 0.24), rgba(226, 181, 47, 0.075) 55%, transparent);
   animation: au-drift-3 26s ease-in-out infinite alternate, au-breathe 8s ease-in-out -2s infinite alternate;
 }
 .au-sky .au-b4 {
@@ -66,7 +66,7 @@ body::before {
 /* Shimmer: a faint diagonal veil of light sliding across (transform only). */
 .au-sky .au-veil {
   position: absolute; left: -50%; top: -20%; width: 200%; height: 140%;
-  background: linear-gradient(115deg, transparent 36%, rgba(169, 139, 255, 0.05) 45%, rgba(47, 214, 255, 0.055) 50%, rgba(255, 61, 154, 0.045) 55%, transparent 64%);
+  background: linear-gradient(115deg, transparent 36%, rgba(241, 196, 15, 0.05) 45%, rgba(247, 221, 119, 0.055) 50%, rgba(226, 181, 47, 0.045) 55%, transparent 64%);
   animation: au-veil 18s ease-in-out infinite alternate; will-change: transform;
 }
 /* Grain: a still field of tiny dots, painted once. */
@@ -133,19 +133,19 @@ html.au-mac .au-scroll { -webkit-app-region: no-drag; }
 .au-col:hover::-webkit-scrollbar-thumb, #content:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); }
 .au-col::-webkit-scrollbar-thumb:hover, #content::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-/* Brand row: the DuoDesk icon (shared/art/duodesk-mark-*.png, shipped with every app) and the name. */
+/* Brand row: the DenaDesk icon (shared/art/duodesk-mark-*.png, shipped with every app) and the name. */
 .identity { align-items: center; gap: 11px; padding: 2px 8px 14px; }
 .app-mark {
   position: relative; isolation: isolate;
   width: 30px; height: 30px; border-radius: 8px; flex: none;
   background: image-set(url("art/duodesk-mark-32.png") 1x, url("art/duodesk-mark-64.png") 2x, url("art/duodesk-mark-128.png") 4x) center / contain no-repeat;
-  filter: none; box-shadow: 0 6px 16px -8px rgba(138, 92, 255, 0.55);
+  filter: none; box-shadow: 0 6px 16px -8px rgba(241, 196, 15, 0.55);
 }
 .app-mark::before { content: none; display: none; }
 /* A soft spectral light under the icon: blurred once (a still filter), only its position sways (transform). */
 .app-mark::after {
   content: ""; position: absolute; left: 3px; right: 3px; bottom: -6px; height: 10px; z-index: -1; border-radius: 50%;
-  background: linear-gradient(90deg, #ff3d9a, #8a5cff, #2fd6ff, #3dffa8, #ffb340); filter: blur(7px); opacity: 0.45;
+  background: linear-gradient(90deg, #e2b52f, #f1c40f, #f7dd77, #3dffa8, #ffb340); filter: blur(7px); opacity: 0.45;
   animation: au-mark 7s ease-in-out infinite alternate; will-change: transform;
 }
 @keyframes au-mark { from { transform: translateX(-4px); } to { transform: translateX(4px); } }
@@ -208,9 +208,9 @@ html.au-mac .au-scroll { -webkit-app-region: no-drag; }
 .nav-item.active {
   color: var(--au-text);
   background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(138, 92, 255, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(241, 196, 15, 0.35);
 }
-.nav-item.active:focus-visible { box-shadow: inset 0 0 0 1px rgba(138, 92, 255, 0.35), var(--au-ring); }
+.nav-item.active:focus-visible { box-shadow: inset 0 0 0 1px rgba(241, 196, 15, 0.35), var(--au-ring); }
 /* The colour tiles go: a plain line icon in the text's colour (the inline tile colour is overridden). */
 .nav-item .tile {
   width: 18px; height: 18px; border-radius: 0; background: none !important; box-shadow: none; isolation: auto;
@@ -236,7 +236,7 @@ html.au-mac .au-scroll { -webkit-app-region: no-drag; }
 }
 .au-me .au-av {
   width: 30px; height: 30px; border-radius: 50%; padding: 2px; flex: none; position: relative;
-  background: conic-gradient(from 0deg, #ff3d9a, #8a5cff, #2fd6ff, #3dffa8, #ffb340, #ff3d9a);
+  background: conic-gradient(from 0deg, #e2b52f, #f1c40f, #f7dd77, #3dffa8, #ffb340, #e2b52f);
   animation: au-spin 8s linear infinite;
 }
 .au-me .au-av span { display: block; width: 100%; height: 100%; border-radius: 50%; background: #18181b; }
@@ -324,7 +324,7 @@ html.au-mac .au-topbar button { -webkit-app-region: no-drag; }
 }
 .au-ring i {
   position: absolute; left: 50%; top: 50%; width: 160%; aspect-ratio: 1; margin-left: -80%; margin-top: -80%;
-  background: conic-gradient(transparent 0 60%, #ff3d9a, #8a5cff, #2fd6ff, #3dffa8, transparent 95%);
+  background: conic-gradient(transparent 0 60%, #e2b52f, #f1c40f, #f7dd77, #3dffa8, transparent 95%);
 }
 .au-dev:hover .au-ring, .au-dev.flash .au-ring { opacity: 1; }
 .au-dev:hover .au-ring i, .au-dev.flash .au-ring i { animation: au-spin 4s linear infinite; }
@@ -356,11 +356,11 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 .au-ft:hover { color: var(--au-text); }
 .au-ft:active { transform: scale(0.94); }
 .au-ft:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--au-line), var(--au-ring); }
-.au-ft.on { color: #fff; background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 0 0 1px var(--au-line-2), 0 6px 18px -6px var(--c, #8a5cff); }
-.au-ft.on::after { content: ""; position: absolute; bottom: 4px; left: 50%; width: 10px; height: 2px; margin-left: -5px; border-radius: 2px; background: var(--c, #8a5cff); box-shadow: 0 0 6px var(--c, #8a5cff); }
+.au-ft.on { color: #fff; background: rgba(255, 255, 255, 0.09); box-shadow: inset 0 0 0 1px var(--au-line-2), 0 6px 18px -6px var(--c, #f1c40f); }
+.au-ft.on::after { content: ""; position: absolute; bottom: 4px; left: 50%; width: 10px; height: 2px; margin-left: -5px; border-radius: 2px; background: var(--c, #f1c40f); box-shadow: 0 0 6px var(--c, #f1c40f); }
 .au-ft.dis { color: #6a6a73; }
 .au-ft.au-lk:not(.dis) { color: var(--au-muted); }
-.au-ft.au-lk:not(.dis):hover { color: #fff; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px var(--au-line-2), 0 6px 18px -8px var(--c, #8a5cff); }
+.au-ft.au-lk:not(.dis):hover { color: #fff; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px var(--au-line-2), 0 6px 18px -8px var(--c, #f1c40f); }
 .au-ft.dis.on { opacity: 0.7; }
 /* Tooltip (no title attribute delay): the feature's name and state. */
 .au-ft[data-tip]:hover::before {
@@ -397,7 +397,7 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 /* A soft floor under the bar: the page fades out well above it, so nothing is cut off behind it. */
 .au-dock::before {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: calc(100% + 36px); pointer-events: none;
-  background: linear-gradient(180deg, rgba(10, 10, 12, 0), rgba(10, 10, 12, 0.82) 28%, rgba(10, 10, 12, 0.96) 55%, #0a0a0c);
+  background: linear-gradient(180deg, rgba(10, 10, 12, 0), rgba(10, 10, 12, 0.82) 28%, rgba(10, 10, 12, 0.96) 55%, #202024);
 }
 /* The glow under the bar: blurred once, it breathes by transform only; its strength follows --au-amp. */
 .au-halo-w {
@@ -413,7 +413,7 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
   --w: 600px; --h: 100px; --r: 26px;
   position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); pointer-events: auto;
   width: min(var(--w), calc(100% - 48px)); height: var(--h); border-radius: var(--r);
-  background: #121215; box-shadow: inset 0 0 0 1px var(--au-line-2), 0 30px 60px -20px #000; overflow: hidden;
+  background: #29292e; box-shadow: inset 0 0 0 1px var(--au-line-2), 0 30px 60px -20px #000; overflow: hidden;
   transition: width 0.7s var(--ease), height 0.7s var(--ease), border-radius 0.7s var(--ease);
 }
 .au-cmd.exp { --r: 30px; }
@@ -425,9 +425,9 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 .au-aur i {
   position: absolute; inset: 0;
   background:
-    radial-gradient(22% 60% at 18% 60%, #ff3d9a, transparent 70%),
-    radial-gradient(22% 60% at 38% 55%, #8a5cff, transparent 70%),
-    radial-gradient(24% 60% at 58% 58%, #2fd6ff, transparent 70%),
+    radial-gradient(22% 60% at 18% 60%, #e2b52f, transparent 70%),
+    radial-gradient(22% 60% at 38% 55%, #f1c40f, transparent 70%),
+    radial-gradient(24% 60% at 58% 58%, #f7dd77, transparent 70%),
     radial-gradient(20% 55% at 76% 60%, #3dffa8, transparent 70%),
     radial-gradient(18% 55% at 92% 62%, #ffb340, transparent 70%);
 }
@@ -439,9 +439,9 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 @keyframes au-busy { from { opacity: 0.7; } to { opacity: 1; } }
 .au-cmd::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, #121215 22%, rgba(18, 18, 21, 0.35) 64%, rgba(18, 18, 21, 0));
+  background: linear-gradient(180deg, #29292e 22%, rgba(18, 18, 21, 0.35) 64%, rgba(18, 18, 21, 0));
 }
-.au-cmd.exp::after { background: linear-gradient(180deg, #121215 40%, rgba(18, 18, 21, 0.55) 78%, rgba(18, 18, 21, 0.05)); }
+.au-cmd.exp::after { background: linear-gradient(180deg, #29292e 40%, rgba(18, 18, 21, 0.55) 78%, rgba(18, 18, 21, 0.05)); }
 @keyframes au-sway { from { transform: translateX(-6%); } to { transform: translateX(6%); } }
 @keyframes au-sway2 { from { transform: scaleX(-1) translateX(-6%); } to { transform: scaleX(-1) translateX(6%); } }
 @keyframes au-spin { to { transform: rotate(360deg); } }
@@ -468,7 +468,7 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 .au-cb:hover:not(:disabled) { background: rgba(255, 255, 255, 0.13); transform: scale(1.06); }
 .au-cb:focus-visible, .au-agent:focus-visible, .au-sug:focus-visible { outline: none; box-shadow: var(--au-ring); }
 .au-cb:disabled { opacity: 0.35; cursor: default; }
-.au-cb.send { background: #f1f1f3; color: #000; box-shadow: 0 6px 16px -8px rgba(138, 92, 255, 0.9); }
+.au-cb.send { background: #f1f1f3; color: #000; box-shadow: 0 6px 16px -8px rgba(241, 196, 15, 0.9); }
 .au-cb.send:hover:not(:disabled) { background: #fff; }
 .au-agent {
   display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 99px; border: 0; cursor: pointer;
@@ -479,7 +479,7 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
 .au-agent svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; flex: none; }
 .au-menu {
   position: absolute; min-width: 210px; padding: 6px; border-radius: 14px; z-index: 6; pointer-events: auto;
-  background: #18181c; box-shadow: inset 0 0 0 1px var(--au-line-2), 0 20px 40px rgba(0, 0, 0, 0.66);
+  background: #303036; box-shadow: inset 0 0 0 1px var(--au-line-2), 0 20px 40px rgba(0, 0, 0, 0.66);
 }
 .au-menu button {
   display: flex; justify-content: space-between; align-items: center; gap: 14px; width: 100%; padding: 8px 10px; border: 0; border-radius: 9px;
@@ -511,7 +511,7 @@ button.au-h:focus-visible { outline: none; box-shadow: var(--au-ring); }
   font-size: 10px; font-weight: 700; line-height: 1; color: #000; background: var(--au-mint); box-shadow: 0 0 10px rgba(61, 255, 168, 0.5);
 }
 .au-res .au-no { background: var(--au-amber); box-shadow: 0 0 10px rgba(255, 179, 64, 0.45); }
-.au-res .au-info { background: #c4b1ff; box-shadow: 0 0 10px rgba(138, 92, 255, 0.5); }
+.au-res .au-info { background: #c4b1ff; box-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
 
 .au-sugs {
   position: absolute; left: 24px; right: 24px; bottom: 140px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;

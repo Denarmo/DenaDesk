@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // `clipFiles`: the files on the clipboard (linux/fclip.js), read as an X client. A Wayland desktop
 // only shows the clipboard to the app in front, but it mirrors it to XWayland, where any client
-// may ask: so this works in both sessions while DuoDesk is in the background. Its own X
+// may ask: so this works in both sessions while DenaDesk is in the background. Its own X
 // connection, opened when first asked (on Wayland that starts XWayland if it isn't running). Asks
 // for GNOME's x-special/gnome-copied-files, then text/uri-list; replies {"text": "…"} (the
 // helper's loop waits for the owner at most half a second per format).

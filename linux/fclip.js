@@ -188,7 +188,7 @@ class FileClip {
     this.pasting = { id: inc.id, files: inc.files };
     const win = await fm.front(this.helper);
     const front = win && win.folder && fs.existsSync(win.folder) ? win.folder : '';
-    // An app in front (not a file manager, the desktop or DuoDesk itself): the files go into it.
+    // An app in front (not a file manager, the desktop or DenaDesk itself): the files go into it.
     const into = !front && win && win.app && !win.fm && !win.desktop && !/duodesk|twindesk/i.test(win.app) ? pastefiles.pasteDir() : '';
     if (into) this.pasting.into = { app: win.app };
     this.fileRecv.expectBatch(inc.id, front || into || receivedDir(this.settings, app.getPath('downloads')), inc.bytes, !front && !into);
@@ -217,7 +217,7 @@ class FileClip {
   }
 }
 
-// The clipboard as Electron sees it (when DuoDesk is in front on Wayland, or on X11).
+// The clipboard as Electron sees it (when DenaDesk is in front on Wayland, or on X11).
 function electronClipboard() {
   try {
     const formats = clipboard.availableFormats();

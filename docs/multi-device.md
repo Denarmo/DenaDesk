@@ -1,11 +1,11 @@
 # Multi-device
 
-DuoDesk is a one-to-one app: one computer with another computer, or with a phone. Multi-device is an
+DenaDesk is a one-to-one app: one computer with another computer, or with a phone. Multi-device is an
 option on top of it, built on the mesh from pull request #29 by Erdoğan Yeşil (@erdodo): many computers
 and phones connected at once, one clipboard and one notification pool for all of them, each screen edge
 leading to a different device, a phone and a computer connected at the same time.
 
-It is off by default, and while it is off DuoDesk runs exactly the code it runs today.
+It is off by default, and while it is off DenaDesk runs exactly the code it runs today.
 
 ## Rules
 
@@ -16,7 +16,7 @@ It is off by default, and while it is off DuoDesk runs exactly the code it runs 
    `main.js`, `multi.js`, and the Multi-device tab.
 2. **One switch, read at start.** Multi-device tab › *Use several devices at once* › Turn on / Turn off.
    It is `on` in `multi.json`; `main.js` reads it once, right after it sets the user data folder, and with
-   it on hands over to `mesh/main.js`. Changing it restarts DuoDesk (as Quit, then start again), so the
+   it on hands over to `mesh/main.js`. Changing it restarts DenaDesk (as Quit, then start again), so the
    two never run side by side; the window comes back on the Multi-device tab.
 3. **Everything for several devices is in the Multi-device tab**: the layout of the screens (which device
    each edge leads to) and *Join every device automatically*. The device list is the sidebar's. The

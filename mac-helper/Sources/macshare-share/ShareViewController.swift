@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// The "DuoDesk" entry in the macOS Share menu (Finder and any app that shares files).
-// It shows no sheet: it collects the shared file URLs and hands them to DuoDesk as
+// The "DenaDesk" entry in the macOS Share menu (Finder and any app that shares files).
+// It shows no sheet: it collects the shared file URLs and hands them to DenaDesk as
 // macshare://send?p=<path>&p=…, which sends them to the connected computer (Send files flow).
 import AppKit
 

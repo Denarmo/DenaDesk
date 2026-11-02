@@ -1,6 +1,6 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Bluetooth LE (shared/protocol.js P.BLE), for a device that isn't on this PC's network.
-//   BleHost:  this PC hosts the session: a GATT server that advertises the DuoDesk service. A
+//   BleHost:  this PC hosts the session: a GATT server that advertises the DenaDesk service. A
 //             guest reads INFO, says hello on CTRL, opens a pipe and writes UP; we notify DOWN.
 //   BleGuest: this PC connects to a host: scan for the service, read INFO, open the pipe.
 // main joins the pipe to the session's socket (shared/blepipe.js). Every device is keyed by a
@@ -533,7 +533,7 @@ namespace MacShare
                 session.MaintainConnection = true;
                 fast = Fast(device);
                 GattDeviceServicesResult sr = await device.GetGattServicesForUuidAsync(service, BluetoothCacheMode.Uncached);
-                if (sr.Status != GattCommunicationStatus.Success || sr.Services.Count == 0) throw new Exception("no DuoDesk service (" + sr.Status + ")");
+                if (sr.Status != GattCommunicationStatus.Success || sr.Services.Count == 0) throw new Exception("no DenaDesk service (" + sr.Status + ")");
                 svc = sr.Services[0];
                 ctrl = await Chr(BleIds.Ctrl);
                 up = await Chr(BleIds.Up);

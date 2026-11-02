@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
   <key>CFBundleIdentifier</key><string>org.macshare.mac.calls</string>
-  <key>CFBundleName</key><string>DuoDesk Calls</string>
-  <key>NSBluetoothAlwaysUsageDescription</key><string>DuoDesk plays your phone's calls through your Mac over Bluetooth.</string>
-  <key>NSBluetoothPeripheralUsageDescription</key><string>DuoDesk plays your phone's calls through your Mac over Bluetooth.</string>
-  <key>NSMicrophoneUsageDescription</key><string>DuoDesk sends your voice to the phone during a call.</string>
+  <key>CFBundleName</key><string>DenaDesk Calls</string>
+  <key>NSBluetoothAlwaysUsageDescription</key><string>DenaDesk plays your phone's calls through your Mac over Bluetooth.</string>
+  <key>NSBluetoothPeripheralUsageDescription</key><string>DenaDesk plays your phone's calls through your Mac over Bluetooth.</string>
+  <key>NSMicrophoneUsageDescription</key><string>DenaDesk sends your voice to the phone during a call.</string>
 </dict></plist>

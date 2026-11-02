@@ -1,7 +1,7 @@
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
-// twindesk-vcam.exe: the virtual camera's side in DuoDesk (windows/vcam.js).
-//   status          {"camera":true|false, "legacy":true|false}: is "DuoDesk Camera" among this PC's
-//                   cameras (legacy: the same camera under its old name, "TwinDesk Camera")
+// twindesk-vcam.exe: the virtual camera's side in DenaDesk (windows/vcam.js).
+//   status          {"camera":true|false, "legacy":true|false}: is "DenaDesk Camera" among this PC's
+//                   cameras (legacy: the same camera under its old name, "DenaDesk Camera")
 //   add             makes it (MFCreateVirtualCamera, for this user, kept until removed); needs
 //                   twindesk-vcam.dll registered first (elevated, scripts/vcam-install.ps1). A camera
 //                   under the old name goes first
@@ -55,12 +55,12 @@ static bool FindCamera(ComPtr<IMFActivate>* out = nullptr, const wchar_t* camNam
 
 static HRESULT Camera(ComPtr<IMFVirtualCamera>& vc, const wchar_t* camName = VCAM_NAME) {
   wchar_t clsid[64];
-  StringFromGUID2(CLSID_TwinDeskVcam, clsid, 64);
+  StringFromGUID2(CLSID_DenaDeskVcam, clsid, 64);
   return MFCreateVirtualCamera(MFVirtualCameraType_SoftwareCameraSource, MFVirtualCameraLifetime_System,
     MFVirtualCameraAccess_CurrentUser, camName, clsid, nullptr, 0, &vc);
 }
 
-// The camera under its old name ("TwinDesk Camera"), if this PC has it: removed.
+// The camera under its old name ("DenaDesk Camera"), if this PC has it: removed.
 static void RemoveLegacy() {
   if (!FindCamera(nullptr, VCAM_LEGACY_NAME)) return;
   ComPtr<IMFVirtualCamera> vc;
@@ -143,7 +143,7 @@ static int SelfTest(const wchar_t* dll, int count) {
   ComPtr<IMFActivate> act;
   HRESULT hr;
   if (!wcscmp(dll, L"camera")) {
-    if (!FindCamera(&act)) return Fail("no DuoDesk Camera", E_FAIL);
+    if (!FindCamera(&act)) return Fail("no DenaDesk Camera", E_FAIL);
   } else {
     HMODULE m = LoadLibraryW(dll);
     if (!m) return Fail("LoadLibrary", HRESULT_FROM_WIN32(GetLastError()));
@@ -151,7 +151,7 @@ static int SelfTest(const wchar_t* dll, int count) {
     GetClass get = (GetClass)GetProcAddress(m, "DllGetClassObject");
     if (!get) return Fail("DllGetClassObject", E_NOINTERFACE);
     ComPtr<IClassFactory> f;
-    hr = get(CLSID_TwinDeskVcam, IID_PPV_ARGS(&f));
+    hr = get(CLSID_DenaDeskVcam, IID_PPV_ARGS(&f));
     if (FAILED(hr)) return Fail("class", hr);
     hr = f->CreateInstance(nullptr, IID_PPV_ARGS(&act));
     if (FAILED(hr)) return Fail("CreateInstance", hr);

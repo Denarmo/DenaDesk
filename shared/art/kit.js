@@ -86,8 +86,8 @@
 (function () {
   'use strict';
 
-  const C = { pink: '#ff3d9a', violet: '#8a5cff', cyan: '#2fd6ff', mint: '#3dffa8', amber: '#ffb340', red: '#ff5c7a',
-    ink: '#f1f1f3', muted: '#8c8c95', dim: '#55555d', bg: '#040405', glass: '#0f0f12', line: '#ffffff' };
+  const C = { pink: '#e2b52f', violet: '#f1c40f', cyan: '#f7dd77', mint: '#3dffa8', amber: '#ffb340', red: '#ff5c7a',
+    ink: '#f1f1f3', muted: '#b7b7c2', dim: '#a0a0aa', bg: '#202024', glass: '#0f0f12', line: '#ffffff' };
   const SPEC = [[0, C.pink], [0.3, C.violet], [0.55, C.cyan], [0.75, C.mint], [1, C.amber]];
   const HUES = ['pink', 'violet', 'cyan', 'mint', 'amber'];
   const UI_FONT = 'Geist, system-ui, Segoe UI, sans-serif';

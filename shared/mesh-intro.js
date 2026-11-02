@@ -50,7 +50,7 @@
       title,
       el('p', '', 'Mesh mode links three or more computers and phones at once: every device to every other.'),
       el('p', '', 'If you connect only two devices, keep it off.'),
-      el('div', 'hint', 'DuoDesk restarts when you turn it on or off.'),
+      el('div', 'hint', 'DenaDesk restarts when you turn it on or off.'),
     );
     const cancel = el('button', 'btn', 'Cancel');
     const ok = el('button', 'btn primary', 'Turn on');
