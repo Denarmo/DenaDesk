@@ -34,6 +34,8 @@ function page(name) {
     TD: { send: (json) => sent.push(JSON.parse(json)), ready() {}, haptic() {}, tick() {}, playing() {} },
     setTimeout(fn) { timers.set(++id, fn); return id; }, clearTimeout(id) { timers.delete(id); }, requestAnimationFrame(fn) { frames.push(fn); return frames.length; } };
   window.TD = context.TD;
+  window.requestAnimationFrame = context.requestAnimationFrame;
+  window.cancelAnimationFrame = () => {};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, name), 'utf8'), context);
   return { get, window, document, sent, timers, frames, opts };
 }
@@ -54,6 +56,15 @@ test('recognizer distinguishes steady two-finger scrolling from spread/contract 
   assert.equal(z.mode, 'zoom'); assert(zoom[0] > 0 && zoom[1] < 0); assert.equal(scroll.length, 1);
 });
 for (const name of ['viewer', 'remote']) {
+  test(`Android ${name}: separate pointer reports for a sideways two-finger scroll never zoom`, () => {
+    const t = page(source(name)), target = name === 'viewer' ? t.window : t.get('pad');
+    target.emit('pointerdown', finger(1, 100, 200)); target.emit('pointerdown', finger(2, 200, 200));
+    target.emit('pointermove', finger(1, 130, 200)); target.emit('pointermove', finger(2, 230, 200));
+    target.emit('pointerup', finger(1, 130, 200)); target.emit('pointerup', finger(2, 230, 200));
+    for (const fn of t.frames) fn();
+    assert(t.sent.some((v) => v.t.endsWith('.wh') && v.dx < 0));
+    assert(!t.sent.some((v) => v.code === 'ControlLeft'));
+  });
   test(`Android ${name}: actual pointer handlers emit Ctrl+wheel zoom without accidental click/scroll`, () => {
     const t = page(source(name)); const target = name === 'viewer' ? t.window : t.get('pad');
     pinch(target);

@@ -173,7 +173,7 @@
     send({ t: 'in.wh', dx: 0, dy: -steps * 40 });
     if (!ctrl) send({ t: 'in.ku', code: 'ControlLeft' });
   }
-  const twoFingers = (a, b) => new TwoFinger(a, b, (dx, dy) => send({ t: 'in.wh', dx, dy }), zoom);
+  const twoFingers = (a, b) => new TwoFinger(a, b, (dx, dy) => send({ t: 'in.wh', dx, dy }), zoom, window);
 
   // Touch: one finger is the Mac's pointer; two fingers scroll.
   const touches = new Map(); // pointerId -> {x, y}
@@ -213,7 +213,7 @@
     touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (two && touches.size >= 2) {
       const [a, b] = [...touches.values()];
-      two.update(a, b);
+      two.queue(a, b);
       return;
     }
     if (!one) return;
@@ -233,6 +233,7 @@
   }
 
   function fingerUp(e, cancelled = false) {
+    if (two) two.finish(cancelled);
     touches.delete(e.pointerId);
     if (touches.size === 0) two = null;
     if (!one) return;
@@ -321,6 +322,7 @@
         if (one.dragging) send({ t: 'in.mu', x: one.p.x, y: one.p.y, b: B.LEFT });
       }
       one = null;
+      if (two) two.finish(true);
       two = null;
       touches.clear();
     }
@@ -412,6 +414,7 @@
       clearTimeout(one.timer);
       if (one.dragging) send({ t: 'in.mu', ...one.p, b: B.LEFT });
     }
+    if (two) two.finish(true);
     one = two = null; touches.clear();
     for (const b of held) send({ t: 'in.mu', ...cur, b });
     held.clear();

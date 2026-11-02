@@ -47,6 +47,7 @@
     dropMods();
     padRelease();
     if (one) clearTimeout(one.timer);
+    if (two) two.finish(true);
     one = two = null; fingers.clear();
     mx = my = wx = wy = 0;
   }
@@ -187,7 +188,7 @@
     } else if (fingers.size === 2) {
       if (one) { clearTimeout(one.timer); one = null; }
       const [a, b] = [...fingers.values()];
-      two = new TwoFinger(a, b, scroll, zoom);
+      two = new TwoFinger(a, b, scroll, zoom, window);
       two.t0 = performance.now();
     }
   });
@@ -200,7 +201,7 @@
     if (two) {
       if (fingers.size < 2) return;
       const [a, b] = [...fingers.values()];
-      two.update(a, b);
+      two.queue(a, b);
       return;
     }
     if (!one || e.pointerId !== one.id) return;
@@ -219,6 +220,7 @@
   });
 
   function lift(e, cancelled = false) {
+    if (two) two.finish(cancelled);
     if (!fingers.delete(e.pointerId)) return;
     if (two) {
       if (cancelled) two.moved = true;
