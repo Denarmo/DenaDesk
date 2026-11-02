@@ -6,7 +6,7 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 contextBridge.exposeInMainWorld('phoneview', {
   on: (ch, fn) => {
-    if (['size', 'video', 'audio', 'netaudio', 'status', 'opts'].includes(ch)) ipcRenderer.on(`phoneview:${ch}`, (_e, m) => fn(m));
+    if (['size', 'video', 'audio', 'netaudio', 'status', 'opts', 'shotResult'].includes(ch)) ipcRenderer.on(`phoneview:${ch}`, (_e, m) => fn(m));
   },
   send: (m) => ipcRenderer.send('phoneview:in', m),
   // files: an array of File (a FileList reaches this side of the bridge as a plain object, which can't be iterated)

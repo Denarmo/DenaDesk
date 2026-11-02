@@ -2,6 +2,7 @@
 'use strict';
 const path = require('path');
 const fs = require('fs');
+const { writeClipImage } = require('../shared/clipimage');
 function preview(r) {
   if (!r || typeof r.data !== 'string' || r.data.length > 12000000) return null;
   const m = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/]+={0,2})$/.exec(r.data);
@@ -20,10 +21,10 @@ function register(ipcMain) {
       let task = Promise.resolve({});
       const choose = (action) => { task = Promise.resolve().then(action).catch((error) => ({ error: error.message })); };
       Menu.buildFromTemplate([
-        { label: 'Copy image', click: () => choose(() => {
+        { label: 'Copy image', click: () => choose(async () => {
           const image = nativeImage.createFromBuffer(p.bytes);
           if (image.isEmpty()) return { error: 'This image cannot be copied.' };
-          clipboard.writeImage(image); return { action: 'copied' };
+          await writeClipImage(clipboard, image, image.toPNG()); return { action: 'copied' };
         }) },
         { label: 'Save image as…', click: () => choose(async () => {
           const name = p.name.replace(/\.[^.]*$/, '') + '.' + p.extension;
@@ -34,7 +35,7 @@ function register(ipcMain) {
         }) },
         { label: 'Save original to Downloads', click: () => choose(() => ({ action: 'original' })) },
         { type: 'separator' },
-        { label: 'Copy filename', click: () => choose(() => { clipboard.writeText(p.name); return { action: 'filename' }; }) },
+        { label: 'Copy filename', click: () => choose(async () => { await clipboard.writeText(p.name); return { action: 'filename' }; }) },
       ]).popup({ window: win, callback: () => task.then(resolve) });
     });
   });

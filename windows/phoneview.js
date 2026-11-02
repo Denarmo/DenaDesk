@@ -21,6 +21,7 @@ const P = require('../shared/protocol.js');
 const { Session, ACTION, TYPE } = require('./scrcpy');
 const { KeyState, ANDROID } = require('./android-keys');
 const chat = require('../shared/phonechat.js');
+const { writeClipImage, isPng } = require('../shared/clipimage.js');
 
 const T = P.T;
 const NOTIFIED_MS = 60000; // how long a clicked notification waits for the unlock and wireless debugging
@@ -413,14 +414,22 @@ class PhoneViews extends EventEmitter {
 
   // The side panel's screenshot button: the window's picture (a PNG from phoneview-renderer.js)
   // onto this PC's clipboard.
-  _shot(v, png) {
-    if (!(png instanceof Uint8Array) || png.length < 64 || png.length > 64 * 1024 * 1024) return;
-    const buf = Buffer.from(png);
-    if (buf.readUInt32BE(0) !== 0x89504e47) return; // not a PNG
-    const img = nativeImage.createFromBuffer(buf);
-    if (img.isEmpty()) return;
-    clipboard.writeImage(img);
-    this.bridge.emit('popup', 'away', 'Screenshot copied: paste it with Ctrl+V');
+  async _shot(v, png) {
+    if (v.copyingShot) return;
+    v.copyingShot = true;
+    try {
+      if (!(png instanceof Uint8Array) || png.length < 64 || png.length > 64 * 1024 * 1024) throw new Error('Invalid phone frame');
+      const buf = Buffer.from(png);
+      if (!isPng(buf)) throw new Error('Invalid phone frame');
+      const img = nativeImage.createFromBuffer(buf);
+      if (img.isEmpty()) throw new Error('Invalid phone frame');
+      await writeClipImage(clipboard, img, buf);
+      this._send(v, 'phoneview:shotResult', { ok: true });
+      this.bridge.emit('popup', 'away', 'Phone screenshot copied: paste it with Ctrl+V');
+    } catch {
+      this._send(v, 'phoneview:shotResult', { ok: false, error: 'The phone screenshot could not be copied. Try again.' });
+      this.bridge.emit('popup', 'away', 'Phone screenshot could not be copied. Try again.');
+    } finally { v.copyingShot = false; }
   }
 
   _send(v, ch, m) {

@@ -26,6 +26,8 @@
   let decoder = null;
   let config = null; // SPS/PPS, sent in front of the next key frame
   let waitingKey = true;
+  let hasFrame = false, shotPending = false, shotTimer;
+  let screenshotButton = null;
   // Skip to the next keyframe, and ask the phone for one now (it sends one only every ~10 s):
   // the frames in between build on each other, so drawing them on a gap smears the picture.
   let askedKey = 0;
@@ -65,6 +67,8 @@
           fit();
         }
         ctx.drawImage(frame, 0, 0);
+        hasFrame = true;
+        if (screenshotButton && !shotPending) screenshotButton.disabled = false;
         if (vcam) vcam.push(frame, frame.displayWidth, frame.displayHeight);
         frame.close();
         if (!status.hidden) setStatus('');
@@ -398,7 +402,7 @@
     { k: 'flip', title: 'Front or back camera', in: ['camera'] },
     { k: 'zoomIn', title: 'Zoom in', in: ['camera'] },
     { k: 'zoomOut', title: 'Zoom out', in: ['camera'] },
-    { k: 'shot', title: 'Screenshot (copies it: paste with Ctrl+V)', in: ['screen', 'app', 'camera'] },
+    { k: 'shot', title: 'Copy phone screenshot (paste with Ctrl+V)', in: ['screen', 'app', 'camera'] },
     { k: 'notifications', title: 'Notifications', in: ['screen'] },
     { k: 'settings', title: 'Quick settings', in: ['screen'] },
     { k: 'power', title: 'Power (lock or wake the phone)', in: ['screen'] },
@@ -418,6 +422,7 @@
     c.el.className = 'ctl';
     c.el.title = c.title;
     c.el.setAttribute('aria-label', c.title);
+    if (c.k === 'shot') { screenshotButton = c.el; c.el.disabled = !hasFrame; }
     c.el.innerHTML = `<svg viewBox="0 0 20 20">${ICONS[c.k]}</svg>`;
     c.el.onclick = () => {
       if (c.k === 'shot') return shot();
@@ -457,9 +462,24 @@
 
   // The picture as it is now, as a PNG (phoneview.js puts it on the clipboard).
   function shot() {
-    if (!canvas.width || !canvas.height) return;
-    canvas.toBlob((blob) => { if (blob) blob.arrayBuffer().then((b) => api.send({ t: 'shot', png: new Uint8Array(b) })); }, 'image/png');
+    if (!hasFrame || shotPending) return;
+    shotPending = true; screenshotButton.disabled = true;
+    const failed = () => shotResult({ ok: false, error: 'The phone frame could not be copied. Wait for the picture and try again.' });
+    clearTimeout(shotTimer);
+    shotTimer = setTimeout(failed, 15000);
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) return failed();
+        blob.arrayBuffer().then((b) => api.send({ t: 'shot', png: new Uint8Array(b) })).catch(failed);
+      }, 'image/png');
+    } catch { failed(); }
   }
+  function shotResult(result) {
+    clearTimeout(shotTimer); shotPending = false;
+    if (screenshotButton) screenshotButton.disabled = !hasFrame;
+    if (!result?.ok) setStatus(result?.error || 'The phone screenshot could not be copied. Try again.');
+  }
+  api.on('shotResult', shotResult);
 
   canvas.focus();
 })();
