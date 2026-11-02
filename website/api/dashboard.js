@@ -4,7 +4,7 @@ import { pipeline, connected, day, sendJson, ASSETS } from './_redis.js';
 
 const HASHES = ['pages', 'src', 'cty', 'dev', 'os', 'dl', 'dlw', 'clicks'];
 const LIVE_WINDOW = 5 * 60 * 1000;
-const REPO = '0xCodez/DuoDesk';
+const REPO = 'Denarmo/DuoDesk';
 const RELEASES_URL = `https://api.github.com/repos/${REPO}/releases?per_page=30`;
 const RELEASES_TTL = 10 * 60 * 1000;
 

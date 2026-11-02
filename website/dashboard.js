@@ -40,8 +40,8 @@
   };
   const FAQ = ['Is it free', 'Which devices', 'Same Wi-Fi', 'Cloud', 'Security warning', 'DenaDesk'];
   const GH_NOTES = {
-    private: 'The repository is private, so GitHub hides its download counts. Add GITHUB_TOKEN (read-only Contents access to 0xCodez/DuoDesk) in Vercel and redeploy.',
-    'token-rejected': 'GitHub rejected GITHUB_TOKEN. Check that it can read 0xCodez/DuoDesk and hasn’t expired.',
+    private: 'The repository is private, so GitHub hides its download counts. Add GITHUB_TOKEN (read-only Contents access to Denarmo/DuoDesk) in Vercel and redeploy.',
+    'token-rejected': 'GitHub rejected GITHUB_TOKEN. Check that it can read Denarmo/DuoDesk and hasn’t expired.',
     'rate-limited': 'GitHub’s rate limit is used up for now. Counts come back within the hour.',
     unreachable: 'GitHub didn’t answer. Counts come back on the next refresh.',
     stale: 'GitHub didn’t answer just now, so these are the last counts it gave.',

@@ -2,7 +2,7 @@
 // Sends the visitor straight to the matching file of the latest DenaDesk release on GitHub, so a
 // Download button starts the download instead of opening the release page. File names carry the
 // version, so they are looked up from the GitHub API (cached per function instance for 10 min).
-const REPO = '0xCodez/DuoDesk';
+const REPO = 'Denarmo/DuoDesk';
 const PAGE = `https://github.com/${REPO}/releases/latest`;
 const TTL = 10 * 60 * 1000;
 
