@@ -1,3 +1,4 @@
+const { chrome, keepInTray } = require('./window-shell');
 // TwinDesk — Copyright (C) 2026 inukaasith. GPL-3.0, see LICENSE.
 // Main process: lifecycle, windows, tray, IPC and the state pushed to the main window.
 const { app, BrowserWindow, Tray, Menu, nativeImage, nativeTheme, Notification, shell, globalShortcut } = require('electron');
@@ -373,7 +374,10 @@ function start() {
     },
   });
   updates.start();
-  const ipc = setupIpc({ devctl: () => devctl, chats: () => chats, explorer: () => explorer, qrPair: qrPairView, adbQr: adbQrDo, link, discovery, screen, clip, kvm, sshd, fileDrop, smb, apps, sound, pcScreen, pcApps, peerApps, vdd, notifs, fileClip, wake, updates, settings, save: saveSettings, push: pushState, buildState,
+  const ipc = setupIpc({ getResourceUsage, phoneAction: (r) => require('./phone-actions').phoneAction((id) => {
+      const c = phone && phone.view.connected;
+      return c && { id: c.id, connected: link.peerOs === P.OS.ANDROID && !!phone.connected, ctl: devctl, views: phoneViews, bridge: phone.bridge };
+    }, r), devctl: () => devctl, chats: () => chats, explorer: () => explorer, qrPair: qrPairView, adbQr: adbQrDo, link, discovery, screen, clip, kvm, sshd, fileDrop, smb, apps, sound, pcScreen, pcApps, peerApps, vdd, notifs, fileClip, wake, updates, settings, save: saveSettings, push: pushState, buildState,
     get rezume() { return rezume; }, loadReZume,
     get phone() { return phone; }, get phoneViews() { return phoneViews; }, get camShare() { return camShare; }, get vcam() { return vcam; }, get phoneRemote() { return phoneRemote; }, get nowPlaying() { return nowPlaying; }, get btAudio() { return btAudio; }, get phoneDrive() { return phoneDrive; }, get terminal() { return terminal; }, loadRemote, setCamera, loadNowPlaying, loadBtAudio, loadTerminal, connectPhoneDev, cancelPhoneInvite, hub: loadHub,
     get net() { return net; }, applyNet, joinHotspot,
@@ -929,10 +933,20 @@ function openMacApp(id) {
 // ---- state ----
 
 let pushQueued = false;
+let resourceSampler = null;
+function getResourceUsage() {
+  if (!resourceSampler) resourceSampler = require('./resource-usage').create({ app, helper: () => helper, nativePids: () => [
+    helper && helper.proc && helper.proc.pid, vcam && vcam.proc && vcam.proc.pid,
+    hub && hub.audio && hub.audio.proc && hub.audio.proc.pid,
+    ...(phoneViews ? [...phoneViews.views.values()].map((v) => v.session && v.session.proc && v.session.proc.pid) : [])
+  ] });
+  return resourceSampler();
+}
+
 function pushState() {
   if (pushQueued) return;
   pushQueued = true;
-  setImmediate(() => {
+  setTimeout(() => {
     pushQueued = false;
     const s = buildState();
     s.inviting = phoneInviteView(s);
@@ -948,9 +962,9 @@ function pushState() {
     const phase = s.pairing ? s.pairing.phase : null;
     if (phase === 'code' && lastPairPhase !== 'code') showMain();
     lastPairPhase = phase;
-    if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('state', s);
+    if (mainWin && !mainWin.isDestroyed() && mainWin.isVisible()) mainWin.webContents.send('state', s);
     updateTray(s);
-  });
+  }, 100);
 }
 
 // Device names everywhere: fill {me} (this PC's name),
@@ -1041,7 +1055,7 @@ function buildState() {
     apps: link.peerOs !== P.OS.MAC ? peerApps.view() : apps.view(), // A PC's (or Linux computer's) apps come through peerapps.js
     startup: getStartup(),
     setup: { missing: miss, show: setupShows(miss) },
-    phone: phone ? { ...phone.view, settings: settings.phone, ...phoneCtl() } : null,
+    phone: phone ? { ...phone.view, settings: settings.phone, ...phoneCtl(), quick: phone.view.connected ? [{ id: phone.view.connected.id, name: phone.view.connected.name, usb: !!phone.view.connected.usb, ctl: devctl && devctl.view, adb: !!phone.bridge.serial }] : [] } : null,
     adbQr: adbQrState, // wireless debugging's pairing QR code (shared/ui-adbqr.js)
     peerCtl: link.peerOs !== P.OS.ANDROID && devctl ? devctl.view : null, // a computer's controls on Overview
     mount: { ...(phoneDrive ? phoneDrive.view : {}), on: settings.mount.on },
@@ -1158,8 +1172,7 @@ function statusLine(s) {
 
 // ---- windows and tray ----
 
-// The main window exists only while it's open: closing it (to the tray) frees its page, about
-// 50-100 MB; opening it again makes it anew (showMain).
+// Keep the UI and active transports alive while the window resides in the tray.
 function createMainWindow(tab) {
   const b = settings.windows.main || {};
   mainWin = new BrowserWindow({
@@ -1171,6 +1184,7 @@ function createMainWindow(tab) {
     minHeight: 480,
     title: 'DenaDesk',
     icon: path.join(__dirname, 'assets', 'icon.png'),
+    ...chrome,
     backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
@@ -1178,6 +1192,7 @@ function createMainWindow(tab) {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      backgroundThrottling: false,
     },
   });
   mainWin.loadFile(path.join(__dirname, 'app.html'));
@@ -1187,7 +1202,8 @@ function createMainWindow(tab) {
     win.show();
     win.focus();
   });
-  win.on('close', () => saveBounds());
+  mainWin.on('show', pushState);
+  keepInTray(win, { quitting: () => quitting, saveBounds });
   win.on('closed', () => { if (mainWin === win) mainWin = null; });
 }
 

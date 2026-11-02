@@ -493,7 +493,7 @@ class Kvm {
     if (this.mode === 'driving') return; // already capturing: a late edge is not ours to act on
     const side = E.SIDES.includes(msg.side) ? msg.side : this.crossingSide; // an older helper: the selected side
     const id = side ? this.edges[side] : null;
-    if (this.mode !== 'home' || this.locked || !id || !this._canDriveTo(id) || !this.cfg.mouse || !this.hub.select(id)) {
+    if (this.mode !== 'home' || this.locked || this.blockEdge() || !id || !this._canDriveTo(id) || !this.cfg.mouse || !this.hub.select(id)) {
       console.log('[kvm] edge ' + side + ' not taken: mode=' + this.mode + ' device=' + (id || 'none') + ' canDrive=' + (id ? this._canDriveTo(id) : false) + ' mouse=' + this.cfg.mouse);
       this.helper.send('capture', { on: false });
       return;
@@ -863,9 +863,10 @@ class Kvm {
     clearInterval(this.silence);
     this.silence = null;
     if (mode !== 'home') {
+      const entered = Date.now(); // a formerly idle peer gets one full active heartbeat window
       this.silence = setInterval(() => {
         const limit = this._transportOf(this.partner) === 'ble' ? P.KVM_SILENCE_BLE_MS : P.KVM_SILENCE_MS;
-        if (Date.now() - this._lastRx() > limit) this._linkLost('{Name} stopped answering');
+        if (Date.now() - Math.max(entered, this._lastRx()) > limit) this._linkLost('{Name} stopped answering');
       }, 250);
     }
     this.onChange();

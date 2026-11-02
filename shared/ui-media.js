@@ -45,7 +45,13 @@ UI.tab({
       el('div', { class: 'hub-viewer-stage' }, [prev, bigImg, next]),
       el('div', { class: 'hub-viewer-bar' }, [el('div', { class: 'hub-grow' }, [bigName, bigSub]), bigSave, closeBtn]),
     ]);
-    body.append(top.el, wrap, viewer);
+    body.append(top.el, wrap);
+    document.body.append(viewer); // outside page transforms, sticky headers and the phone dock
+    viewer.setAttribute('role', 'dialog');
+    viewer.setAttribute('aria-modal', 'true');
+    viewer.setAttribute('aria-label', 'Phone photo viewer');
+    prev.setAttribute('aria-label', 'Previous photo');
+    next.setAttribute('aria-label', 'Next photo');
 
     let items = []; // {id, video, at, w, h, size, name, dur, album}
     let nextKey = '';
@@ -56,6 +62,7 @@ UI.tab({
     const thumbs = new Map(); // id -> data: URL ('' asked)
     const tiles = new Map(); // id -> tile element
     let viewing = null;
+    let bigData = '', menuWanted = '', focusBefore = null;
 
     function tile(it) {
       const img = el('img', { alt: '', draggable: false });
@@ -68,6 +75,12 @@ UI.tab({
         if (!selecting) return view(it);
         if (chosen.has(it.id)) chosen.delete(it.id); else chosen.add(it.id);
         paint();
+      };
+      t.oncontextmenu = (e) => {
+        if (!UI.api.photoMenu) return;
+        e.preventDefault();
+        menuWanted = it.id;
+        view(it);
       };
       tiles.set(it.id, t);
       seen.observe(t);
@@ -119,6 +132,7 @@ UI.tab({
       nextKey = '';
       more = false;
       chosen.clear();
+      thumbs.clear();
       for (const t of tiles.values()) seen.unobserve(t);
       tiles.clear();
       visible.clear();
@@ -136,9 +150,19 @@ UI.tab({
     }
 
     function view(it) {
+      if (!viewing && it) focusBefore = document.activeElement;
+      if (it && menuWanted !== it.id) menuWanted = '';
       viewing = it;
+      bigData = '';
       viewer.hidden = !it;
-      if (!it) return;
+      document.body.classList.toggle('au-viewing-media', !!it);
+      if (!it) {
+        menuWanted = '';
+        bigImg.removeAttribute('src');
+        if (focusBefore && focusBefore.isConnected) focusBefore.focus();
+        return;
+      }
+      closeBtn.focus();
       if (thumbs.get(it.id)) bigImg.src = thumbs.get(it.id); else bigImg.removeAttribute('src');
       bigName.textContent = it.name;
       bigSub.textContent = [new Date(it.at).toLocaleString(), it.w && it.h ? `${it.w} × ${it.h}` : '', UI.bytes(it.size || 0), it.album].filter(Boolean).join(' · ');
@@ -157,9 +181,15 @@ UI.tab({
 
     document.addEventListener('keydown', (e) => {
       if (viewer.hidden || page.hidden) return;
-      if (e.key === 'Escape') view(null);
-      else if (e.key === 'ArrowLeft') step(-1);
-      else if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'Escape') { e.preventDefault(); view(null); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+      else if (e.key === 'Tab') {
+        const buttons = [...viewer.querySelectorAll('button')].filter((b) => !b.disabled);
+        const first = buttons[0], last = buttons[buttons.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
 
     UI.hubOn('media.list', (m) => {
@@ -175,15 +205,42 @@ UI.tab({
     });
     UI.hubOn('media.thumb', (m) => {
       if (!m.data) return;
+      thumbs.delete(m.id);
       thumbs.set(m.id, m.data);
+      if (thumbs.size > 240) for (const id of thumbs.keys()) {
+        if (thumbs.size <= 240) break;
+        if (visible.has(id)) continue;
+        thumbs.delete(id);
+        const old = tiles.get(id);
+        if (old) old.querySelector('img').removeAttribute('src');
+      }
       const t = tiles.get(m.id);
       if (t) t.querySelector('img').src = m.data;
       if (viewing && viewing.id === m.id && !bigImg.getAttribute('src')) bigImg.src = m.data;
     });
     UI.hubOn('media.view', (m) => {
       if (!viewing || viewing.id !== m.id || !m.data) return;
+      bigData = m.data;
       bigImg.src = m.data;
+      if (menuWanted === m.id) { menuWanted = ''; showMenu(); }
     });
+
+    async function showMenu() {
+      if (!viewing || !UI.api.photoMenu) return;
+      if (!bigData) { menuWanted = viewing.id; return; }
+      const id = viewing.id;
+      const phoneId = UI.state.phone && UI.state.phone.connected && UI.state.phone.connected.id;
+      let r;
+      try { r = await UI.api.photoMenu({ data: bigData, name: viewing.name }); } catch (e) { bigSub.textContent = e.message; return; }
+      if (!r || !viewing || viewing.id !== id || phoneId !== (UI.state.phone && UI.state.phone.connected && UI.state.phone.connected.id)) return;
+      if (r.action === 'original') save([id]);
+      else if (r.error) bigSub.textContent = r.error;
+      else if (r.action === 'copied' || r.action === 'saved') bigSub.textContent = 'Image preview ' + (r.action === 'copied' ? 'copied.' : 'saved.') + ' Use Save original for full resolution.';
+    }
+    bigImg.oncontextmenu = (e) => {
+      if (!UI.api.photoMenu) return;
+      e.preventDefault(); showMenu();
+    };
 
     let loaded = false;
     UI.onShown(page, (shown) => {
@@ -199,7 +256,8 @@ UI.tab({
 
     return (s) => {
       top.render(s);
-      bigSave.textContent = `Save to ${UI.fill('{me}')}`;
+      bigSave.textContent = 'Save original';
+      bigSave.title = 'Save the original file to ' + UI.receivedName(s);
       const ready = UI.hubReady(s, 'media') && !UI.onBle(s); // over Bluetooth: the Wi-Fi Direct note only
       wrap.hidden = !ready;
       if (!ready) { loaded = false; view(null); return; }

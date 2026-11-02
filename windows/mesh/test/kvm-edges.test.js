@@ -420,4 +420,20 @@ test('a helper edge with no device behind it, and a device that is not connected
   }
 });
 
+test('late edge events cannot take input while a phone window has focus', async () => {
+  const N = await world(['A', 'B'], [['A', 'B']]);
+  try {
+    const { A, B } = N;
+    record(B);
+    const kvm = kvmOn(A);
+    lay(A, { right: B });
+    kvm.blockEdge = () => true;
+    A.helper.emit('event', 'edge', { side: 'right', offset: 0.4 });
+    await sleep(80);
+    assert.strictEqual(kvm.mode, 'home');
+    assert.strictEqual(got(B, T.KVM_TAKE).length, 0);
+    assert.deepStrictEqual(A.helper.last('capture'), { on: false });
+  } finally { closeAll(N); }
+});
+
 runTests(tests);

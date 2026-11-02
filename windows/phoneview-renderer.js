@@ -327,6 +327,8 @@
   // Keys go to the phone; Alt+F4 closes the window like any other. Enter in a chat app and the
   // arrows that swipe are worked out in phoneview.js (shared/phonechat.js).
   const onKey = (e) => {
+    if (e.target && e.target.closest && e.target.closest('button, select, input')) return;
+    if (e.code === 'F11') return;
     if (e.altKey && e.code === 'F4') return;
     e.preventDefault();
     api.send({ t: 'key', code: e.code, down: e.type === 'keydown', repeat: e.repeat });
@@ -410,7 +412,6 @@
   ].filter((c) => (c.in || PHONE).includes(kind));
   // The title bar layouts carry what the title bar always had: Back, Home, Recents, Notifications,
   // Rotate; the screen-off and Enter switches, and a camera's own, too.
-  const TOP = ['notifications', 'rotate', 'screenOff', 'enterSends', ...CAMERA];
   const OPT = { pin: 'pinned', screenOff: 'screenOff', enterSends: 'enterSends', arrowSwipe: 'arrowSwipe', torch: 'torch' };
   for (const c of CONTROLS) {
     c.el = document.createElement('button');
@@ -436,23 +437,15 @@
   window.addEventListener('keydown', (e) => { if (e.key === 'F11') { e.preventDefault(); e.stopPropagation(); api.send({ t: 'full' }); } }, true);
   panelBtn.onclick = () => { api.send({ t: 'panel' }); canvas.focus(); };
   function layout(mode) {
-    mode = ['side', 'top', 'bottom', 'none'].includes(mode) ? mode : 'top';
+    mode = mode === 'none' ? 'none' : 'bottom';
     panelBtn.classList.toggle('on', mode !== 'none');
+    panelBtn.setAttribute('aria-pressed', String(mode !== 'none'));
     document.body.dataset.controls = mode;
     const panel = document.getElementById('panel');
     const navbar = document.getElementById('navbar');
-    const tools = document.querySelector('#bar .tools');
-    for (const box of [panel, navbar, tools]) box.replaceChildren();
-    const nav = els(CONTROLS.filter((c) => c.nav));
-    if (mode === 'none') return; // only the title: a clean window
-    if (mode === 'side') {
-      const gap = document.createElement('div');
-      gap.className = 'gap';
-      panel.append(...els(CONTROLS.filter((c) => !c.nav)), gap, ...nav);
-    } else {
-      const top = els(TOP.map((k) => CONTROLS.find((c) => c.k === k)).filter(Boolean));
-      if (mode === 'bottom') { tools.append(...top); navbar.append(...nav); } else tools.append(...nav, ...top);
-    }
+    panel.replaceChildren(...els(CONTROLS.filter((c) => !c.nav)));
+    navbar.replaceChildren(...els(CONTROLS.filter((c) => c.nav)));
+    fit();
   }
   layout(q.get('controls'));
   api.on('opts', (m) => {

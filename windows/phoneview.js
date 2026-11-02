@@ -25,7 +25,7 @@ const chat = require('../shared/phonechat.js');
 const T = P.T;
 const NOTIFIED_MS = 60000; // how long a clicked notification waits for the unlock and wireless debugging
 // The window's own bars around the picture (phoneview.css): the title bar, the side panel, the bottom bar.
-const TITLE_H = 32, PANEL_W = 44, NAVBAR_H = 40;
+const TITLE_H = 32, QUICK_H = 44, NAVBAR_H = 44;
 const HIDDEN = ['sound', 'netsound']; // windows that only play the phone's sound: no picture, no bars
 let nextId = 1;
 let quitting = false; // a camera's window hides on close, but not on quit
@@ -146,7 +146,7 @@ class PhoneViews extends EventEmitter {
     }
     const facing = want || 'back';
     const name = ((this.server.current && this.server.current.name) || 'Phone') + ' Camera';
-    const c = this._chrome();
+    const c = this._chrome(this._controls(), 'camera');
     const v = this._open({ kind: 'camera', title: name, width: 854 + c.w, height: 480 + c.h, opts: this._cameraOpts(facing, opts.size), hidden: !opts.show });
     if (!v) return;
     v.facing = facing;
@@ -271,13 +271,13 @@ class PhoneViews extends EventEmitter {
     const id = nextId++;
     const win = new BrowserWindow({
       width, height, minWidth: 220, minHeight: 300, title, show: false,
-      titleBarStyle: 'hidden', titleBarOverlay: { color: '#101013', symbolColor: '#f1f1f3', height: 32 }, backgroundColor: '#000000',
+      titleBarStyle: 'hidden', titleBarOverlay: { color: '#202024', symbolColor: '#f1c40f', height: 32 }, backgroundColor: '#000000',
       icon: path.join(__dirname, 'assets', 'icon.png'), autoHideMenuBar: true,
       // autoplayPolicy: the phone's sound plays without a click (its sound window is hidden, so a
       // click never comes: without this its AudioContext stays suspended and silent).
       webPreferences: { preload: path.join(__dirname, 'preload-phoneview.js'), contextIsolation: true, nodeIntegration: false, backgroundThrottling: false, autoplayPolicy: 'no-user-gesture-required' },
     });
-    const v = { id, kind, app, title, win, session: null, keys: new KeyState(), size: null, ready: false, queue: [], chrome: this._chrome(), screenOff: false, torch: false, eaten: new Set() };
+    const v = { id, kind, app, title, win, session: null, keys: new KeyState(), size: null, ready: false, queue: [], chrome: this._chrome(this._controls(), kind), screenOff: false, torch: false, eaten: new Set() };
     this.views.set(id, v);
     this._send(v, 'phoneview:opts', this._opts(v));
     win.loadFile(path.join(__dirname, 'phoneview.html'), { query: { kind, title, controls: this._controls() } });
@@ -319,19 +319,14 @@ class PhoneViews extends EventEmitter {
     return v;
   }
 
-  // Where the window's controls sit (Phone page › Settings › Window controls): 'top' (the title
-  // bar, the default), 'side' (a panel down the right) or 'bottom' (Back, Home and Recents in a
-  // bar under the picture, the rest in the title bar).
-  // 'none': the panel button in the title bar hid them (settings.phone.panel, kept for every window).
+  // Quick settings are below the picture; phone navigation stays visible even with tools hidden.
   _controls() {
     const ph = this.getSettings().phone;
-    if (ph && ph.panel === false) return 'none';
-    return ph && ['side', 'top', 'bottom'].includes(ph.controls) ? ph.controls : 'top';
+    return ph && ph.panel === false ? 'none' : 'bottom';
   }
 
-  // The size of a window's bars around the picture.
-  _chrome(controls = this._controls()) {
-    return { w: controls === 'side' ? PANEL_W : 0, h: TITLE_H + (controls === 'bottom' ? NAVBAR_H : 0) };
+  _chrome(controls = this._controls(), kind = 'screen') {
+    return { w: 0, h: TITLE_H + (controls === 'none' ? 0 : QUICK_H) + (kind === 'camera' ? 0 : NAVBAR_H) };
   }
 
   // The window's switches as they are now (its controls light up).
@@ -376,9 +371,9 @@ class PhoneViews extends EventEmitter {
   // the picture keeps its size.
   applyControls() {
     const controls = this._controls();
-    const c = this._chrome(controls);
     for (const v of this.views.values()) {
       if (HIDDEN.includes(v.kind) || !v.win || v.win.isDestroyed()) continue;
+      const c = this._chrome(controls, v.kind);
       this._send(v, 'phoneview:opts', { controls, ...this._opts(v) });
       const b = v.win.getBounds();
       v.win.setBounds({ x: b.x, y: b.y, width: b.width + c.w - v.chrome.w, height: b.height + c.h - v.chrome.h });

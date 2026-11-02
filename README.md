@@ -14,8 +14,8 @@ DenaDesk keeps its own pairing profile, so pair devices again after installing.
 
 ## Reviewed builds
 
-The local Windows x64 installer is `DenaDesk-Setup-2.6.0.exe`. Android packages
-are `DenaDesk-2.6.0.apk` (standard) and `DenaDesk-2.6.0-full.apk` (optional
+The local Windows x64 installer is `DenaDesk-Setup-2.7.0.exe`. Android packages
+are `DenaDesk-2.7.0.apk` (standard) and `DenaDesk-2.7.0-full.apk` (optional
 notification, SMS and Accessibility services). Both Android variants use the
 same private release key, and Android asks the owner to grant sensitive access.
 Android 10 or later is required; wireless debugging requires Android 11 or later.
@@ -42,6 +42,27 @@ under the owner's control.
 The [historical upstream manual](docs/upstream-manual.md) explains the original
 feature set. Its older permission and download instructions do not override
 this fork's security policy.
+
+## Windows 2.7 behavior
+
+Minimize and Close keep DenaDesk in the notification area; use Quit in its tray
+menu to stop it. Mesh/input timers keep running while UI redraws pause. Shift
+held before crossing an edge is carried to the destination. The Home/Overview
+resource widget samples every three seconds only while visible. It includes
+Electron and known active native helpers; shared ADB server memory is excluded.
+
+Phone windows keep navigation centered below the picture, including fullscreen.
+The dashboard phone shortcuts target their named phone independently of the
+selected PC. Photo viewing hides those shortcuts. The photo context menu copies
+or saves the displayed preview; Save original transfers the full file to Downloads.
+Thumbnail cache size is bounded. Mesh notification history keeps the last 100
+received items for this running session; Clear removes it. Android resends active
+notifications after connection and notification access must be enabled by the owner.
+
+Cellular call audio using the PC microphone/speakers over USB or Wi-Fi remains
+unsupported on stock Android: capture requires system privileges. Google linking
+and Internet access are **design only** in [the remote access design](docs/remote-access-design.md).
+No cloud service is deployed and no Google account is connected by this release.
 
 ## License
 

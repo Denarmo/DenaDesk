@@ -311,7 +311,7 @@
   });
 
   // Relative times ("2 min ago") age without a state push.
-  setInterval(() => UI.state && current && renderPage(current, UI.state), 15000);
+  setInterval(() => !document.hidden && UI.state && current && renderPage(current, UI.state), 15000);
 
   api.onState(render);
   api.getState().then((s) => {

@@ -32,6 +32,7 @@ namespace MacShare
 
         // capture state
         bool capturing, capMouse, capKeys;
+        readonly ShiftCapture shifts = new ShiftCapture();
         Point saved, parked;
         // When the pointer was parked (Begin). A capture begun outside the mouse hook (a file drag
         // crossing, DropEdge.cs) can still get moves measured from where the pointer was: half a
@@ -205,6 +206,7 @@ namespace MacShare
             capturing = true; capMouse = mouse; capKeys = keys;
             heldVks.Clear(); heldButtons.Clear();
             hkPending = 0; hkRemote.Clear();
+            shifts.Begin(vk => (Native.GetAsyncKeyState((int)vk) & 0x8000) != 0);
             Touch();
             if (mouse)
             {
@@ -231,7 +233,8 @@ namespace MacShare
             if (!capturing) return;
             capturing = false;
             // Rule 5: whatever is still held was pressed remotely; its release stays swallowed here.
-            foreach (uint vk in heldVks) swallowVks.Add(vk);
+            foreach (uint vk in heldVks) if (!shifts.ReleaseLocally(vk)) swallowVks.Add(vk);
+            shifts.End();
             foreach (int b in heldButtons) swallowButtons.Add(b);
             heldVks.Clear(); heldButtons.Clear();
             hkPending = 0; hkRemote.Clear(); // a sent hotkey's release is in swallowVks (heldVks) now
@@ -468,11 +471,19 @@ namespace MacShare
                     if (hotkey) FireHotkey();
                     return r == IntPtr.Zero ? Native.CallNextHookEx(keyHook, nCode, wParam, lParam) : r;
                 }
+                bool shiftKey = code == "ShiftLeft" || code == "ShiftRight";
+                bool localShiftUp = shiftKey && shifts.Observe(k.vkCode, down);
+                if (down && !shiftKey) shifts.Sync(vk => (Native.GetAsyncKeyState((int)vk) & 0x8000) != 0, (vk, on) => {
+                    if (on) heldVks.Add(vk); else heldVks.Remove(vk);
+                    Dictionary<string, object> mod = K(on ? "k.kd" : "k.ku");
+                    mod["code"] = vk == 0xA0 ? "ShiftLeft" : "ShiftRight";
+                    Forward(mod);
+                });
                 if (down) FlushHotkey();
                 if (down) heldVks.Add(k.vkCode); else heldVks.Remove(k.vkCode);
                 if (code != null) { Dictionary<string, object> e = K(down ? "k.kd" : "k.ku"); e["code"] = code; Forward(e); }
                 if (hotkey) FireHotkey();
-                return (IntPtr)1;
+                return localShiftUp ? Native.CallNextHookEx(keyHook, nCode, wParam, lParam) : (IntPtr)1;
             }
             if (isHk) { if (down) hkLocal.Add(k.vkCode); else hkLocal.Remove(k.vkCode); }
             if (hotkey) FireHotkey();

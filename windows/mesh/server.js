@@ -19,6 +19,7 @@
 //   'listening' / 'listenError' (err)
 //   'phoneFree'           — a phone's hold on the session ended (kept for phone.js)
 'use strict';
+const { lastLive } = require('../../shared/link-liveness');
 
 const https = require('https');
 const { EventEmitter } = require('events');
@@ -219,7 +220,7 @@ class Server extends EventEmitter {
           const timeout = busy ? (ble ? P.BLE_TIMEOUT_MS : P.TIMEOUT_MS) : (ble ? P.BLE_TIMEOUT_MS : P.IDLE_TIMEOUT_MS);
           const every = busy ? P.PING_MS : P.IDLE_PING_MS;
           const tx = primary ? ctx.lastTx || 0 : ws.lastTx || 0;
-          if (now - rx > timeout) {
+          if (now - lastLive(ws, busy, rx, now) > timeout) {
             console.log(`[server] ${ctx.name || ctx.address} silent for ${timeout} ms on ${ble ? 'Bluetooth' : ws.address}, closing`);
             ws.terminate();
           } else if (ws.readyState === ws.OPEN && (busy ? now - (ws.lastPing || 0) >= every : now - tx >= every)) {

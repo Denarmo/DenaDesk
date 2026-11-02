@@ -20,6 +20,8 @@ function setupIpc(ctx) {
     ctx.push();
   };
 
+  require('../photo-menu').register(ipcMain);
+  handle('getResourceUsage', () => ctx.getResourceUsage());
   handle('getState', () => ctx.buildState());
   require('../../shared/support.js').ipc(ipcMain); // Tip and Feedback pages: support:info / profile / tip / feedback / preview
   // Calls, Messages and Photos (shared/phonehub.js, loaded the first time it's used).
@@ -51,9 +53,16 @@ function setupIpc(ctx) {
     if (port >= 1 && port <= 65535) link.startPairing({ address: m[1], port, macName: m[1] });
   });
   handle('refreshFound', () => discovery.refresh());
+  handle('phoneAction', (r) => ctx.phoneAction(r));
   handle('deviceDo', (c) => c && typeof c === 'object' && ctx.devctl() && ctx.devctl().do(c)); // Overview: ring, lock, quick settings… (shared/devctl.js)
   // A chat's answer (Messages' chat apps: shared/chats.js) or a notification's.
-  handle('notifReply', (r) => r && typeof r === 'object' && (r.chat ? !!(ctx.chats && ctx.chats() && ctx.chats().reply(String(r.chat), r.text)) : ctx.notifs && ctx.notifs.reply && ctx.notifs.reply(String(r.id || ''), r.text))); // a phone chat's Reply, typed here
+  handle('clearNotifHistory', () => notifs.clearHistory());
+  handle('openNotifiedApp', (r) => {
+    if (!r || typeof r.originId !== 'string' || typeof r.app !== 'string') return;
+    const u = ctx.phone && ctx.phone.unit(r.originId);
+    if (u && u.link.current) u.views.openNotified(r.app.slice(0, 200), String(r.appName || '').slice(0, 100));
+  });
+  handle('notifReply', (r) => r && typeof r === 'object' && (r.chat ? !!(ctx.chats && ctx.chats() && ctx.chats().reply(String(r.chat), r.text)) : ctx.notifs && ctx.notifs.reply && ctx.notifs.reply(String(r.id || ''), r.text, String(r.originId || '')))); // a phone chat's Reply, typed here
   handle('copyText', (text) => typeof text === 'string' && text.length < 1000 && clipboard.writeText(text));
   handle('confirmCode', () => link.confirmCode());
   handle('cancelPair', () => { ctx.cancelPhoneInvite(); link.cancelPair(); });

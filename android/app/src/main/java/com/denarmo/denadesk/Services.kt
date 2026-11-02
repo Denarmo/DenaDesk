@@ -76,6 +76,7 @@ class NotifListener : NotificationListenerService() {
     override fun onListenerConnected() {
         running = this
         runCatching { Core.get(this).nowPlaying.retry() }
+        runCatching { Core.get(this).notifs.sendActive() }
     }
 }
 

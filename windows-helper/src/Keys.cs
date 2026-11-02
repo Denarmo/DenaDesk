@@ -102,6 +102,9 @@ namespace MacShare
         // Hook data → DOM code, or null. Scan codes above 0xFF are synthetic (AltGr's fake Ctrl).
         public static string Code(uint vk, uint scan, bool extended)
         {
+            if (vk == 0xA0) return "ShiftLeft";
+            if (vk == 0xA1) return "ShiftRight";
+            if (vk == 0x10) return scan == 0x36 ? "ShiftRight" : "ShiftLeft";
             if (scan == 0) scan = Native.MapVirtualKey(vk, 4) & 0xFF; // MAPVK_VK_TO_VSC_EX
             if (scan == 0 || scan > 0xFF) return null;
             int key = (int)scan | (extended ? 0xE000 : 0);

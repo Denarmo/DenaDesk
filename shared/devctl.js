@@ -66,7 +66,7 @@ class DevCtl extends EventEmitter {
     link.on('closed', () => {
       this.sessionUp = false;
       this.remote = null;
-      this.local.stop();
+      if (this.local) this.local.stop();
       this.emit('change');
     });
     link.on(T.STATE, (m) => {

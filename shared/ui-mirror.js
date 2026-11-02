@@ -44,15 +44,7 @@
         UI.row('Play phone sound here', 'Android 11 or later', [sound]),
         UI.row('Picture quality', 'For the phone screen and app windows', [quality]),
       ];
-      // Windows: where the buttons sit (settings.phone.controls); the panel itself opens and closes
-      // from each window's title bar and stays as it was left (settings.phone.panel).
-      let controls = null;
-      if (!mac && !linux) {
-        controls = UI.select([
-          { value: 'top', label: 'Title bar' }, { value: 'side', label: 'Side panel' }, { value: 'bottom', label: 'Bottom bar' },
-        ], (v) => api.setPhone({ controls: v }));
-        rows.push(UI.row('Phone controls', 'Where Back, Home, Recents and the other buttons sit. The panel button in each window’s title bar shows or hides them.', [controls]));
-      }
+      if (!mac && !linux) rows.push(UI.row('Phone controls', 'Quick controls sit below the picture. Back, Home and Recent apps stay centered at the bottom, including fullscreen.', []));
       let enterSends = null, arrowSwipe = null;
       if (!linux) {
         enterSends = UI.switch((v) => api.setPhone({ enterSends: v }), { label: (mac ? 'Return' : 'Enter') + ' sends messages' });
@@ -74,7 +66,6 @@
         const st = ph.settings || {};
         sound.set(!!st.sound);
         quality.set(String(st.bitrateMbps || 8));
-        if (controls) controls.set(st.controls || 'top');
         if (enterSends) enterSends.set(st.enterSends !== false);
         if (arrowSwipe) arrowSwipe.set(st.arrowSwipe === true);
         const wins = br.windows || [];

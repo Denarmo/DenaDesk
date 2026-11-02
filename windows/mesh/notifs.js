@@ -57,6 +57,8 @@ class Notifs {
     this.apps = new Map(); // app → {app, appName, at} seen here
     this.sent = 0;
     this.shown = 0;
+    this.history = [];
+    this.historyIcons = new Map();
     this.live = new Set(); // shown toasts, kept alive until closed
     this.guard = new NotifGuard(); // the same text from the same app within seconds goes once (a loop between devices)
     this.echoes = []; // {title, body, until}: shown here from another device, never sent back
@@ -179,12 +181,25 @@ class Notifs {
   _show(m, from) {
     if (!this.cfg.receive) return;
     const r = this.pool.receive(from, m);
-    if (!r.fresh || !this.Notification.isSupported()) return;
-    if (this.guard.repeat('in', m.app, m.title, m.body)) return; // a repeat of what was just shown
+    if (!r.fresh) return;
+    if (this.guard.repeat('in', (r.msg.o || from) + ':' + m.app, m.title, m.body)) return; // a repeat of what was just shown
     const origin = this._nameOf(r.msg.o, m.on, from);
     const appName = str(m.appName, 100);
     const title = str(m.title, 200) || appName || origin;
     const body = str(m.body);
+    const originId = r.msg.o || from;
+    const id = str(m.id, 200) || String(r.msg.seq || Date.now());
+    const item = { id, originId, origin, app: str(m.app, 200), appName, title,
+      subtitle: str(m.subtitle, 200), body: str(m.body, 1000), at: Math.round(Number(m.at)) || Date.now(), reply: m.reply === true };
+    this.history = [item, ...this.history.filter((h) => h.id !== id || h.originId !== originId)].slice(0, 100);
+    if (item.app && typeof m.icon === 'string' && /^data:image\/(png|jpeg|webp);base64,/.test(m.icon) && m.icon.length < 100000) {
+      const key = originId + ':' + item.app;
+      this.historyIcons.delete(key);
+      this.historyIcons.set(key, m.icon);
+      if (this.historyIcons.size > 60) this.historyIcons.delete(this.historyIcons.keys().next().value);
+    }
+    this.onChange();
+    if (!this.Notification || !this.Notification.isSupported()) return; // history works without Windows toasts
     this.echoes.push({ title, body: body.slice(0, 80), until: Date.now() + 30000 });
     // Windows toasts have no subtitle: the first line is "<appName> · <device>".
     const n = new this.Notification({
@@ -203,12 +218,26 @@ class Notifs {
     this.onChange();
   }
 
+  clearHistory() {
+    this.history = [];
+    this.historyIcons.clear();
+    this.onChange();
+  }
+
+  reply(id, text, originId) {
+    const item = this.history.find((h) => h.id === id && h.originId === originId);
+    if (!item || !item.reply || typeof text !== 'string' || !text.trim() || !this.bus.connectedIds().includes(originId)) return false;
+    return this.bus.send(originId, { t: 'notif.reply', id: item.id, text: text.slice(0, 5000) });
+  }
+
   view() {
     return {
       readable: this.readable,
       peerAccepts: this.peerAccepts,
       sent: this.sent,
       shown: this.shown,
+      history: this.history,
+      historyIcons: Object.fromEntries(this.historyIcons),
       apps: [...this.apps.values()].sort((a, b) => b.at - a.at).slice(0, 40),
     };
   }

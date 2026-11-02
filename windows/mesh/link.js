@@ -5,6 +5,7 @@
 // same WSS over a 127.0.0.1 pipe. Once discovery sees the host on the network, a second socket
 // takes the session over (hello {resume}); the Bluetooth one stays as the fallback (alt).
 const WebSocket = require('ws');
+const { lastLive } = require('../../shared/link-liveness');
 const P = require('../../shared/protocol.js');
 
 const T = P.T;
@@ -535,7 +536,7 @@ class Link {
       if (!ws || !ws.transport) continue;
       const ble = ws.transport === 'ble';
       const rx = Math.max(ws.lastRx || 0, (ble && this.ble && this.ble.lastDown) || 0);
-      if (now - rx > (ble ? P.BLE_TIMEOUT_MS : busy ? P.TIMEOUT_MS : P.IDLE_TIMEOUT_MS)) {
+      if (now - lastLive(ws, busy, rx, now) > (ble ? P.BLE_TIMEOUT_MS : busy ? P.TIMEOUT_MS : P.IDLE_TIMEOUT_MS)) {
         if (ws === this.ws) this.lastError = '{Name} stopped answering';
         ws.terminate();
       } else if (ws.readyState === WebSocket.OPEN && (busy ? now - (ws.lastPing || 0) >= P.PING_MS : now - (ws.lastTx || 0) >= P.IDLE_PING_MS)) {

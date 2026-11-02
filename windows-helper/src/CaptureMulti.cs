@@ -53,6 +53,7 @@ namespace MacShare
             capturing = true; capMouse = mouse; capKeys = keys;
             heldVks.Clear(); heldButtons.Clear();
             hkPending = 0; hkRemote.Clear();
+            shifts.Begin(vk => (Native.GetAsyncKeyState((int)vk) & 0x8000) != 0);
             Touch();
             if (mouse)
             {
@@ -79,7 +80,8 @@ namespace MacShare
             if (!capturing) return;
             capturing = false;
             // Rule 5: whatever is still held was pressed remotely; its release stays swallowed here.
-            foreach (uint vk in heldVks) swallowVks.Add(vk);
+            foreach (uint vk in heldVks) if (!shifts.ReleaseLocally(vk)) swallowVks.Add(vk);
+            shifts.End();
             foreach (int b in heldButtons) swallowButtons.Add(b);
             heldVks.Clear(); heldButtons.Clear();
             hkPending = 0; hkRemote.Clear(); // a sent hotkey's release is in swallowVks (heldVks) now

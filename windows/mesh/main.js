@@ -1,3 +1,4 @@
+const { chrome, keepInTray } = require('../window-shell');
 // TwinDesk — Copyright (C) 2026 inukaasith, Erdoğan Yeşil. GPL-3.0, see LICENSE.
 // Main process with Multi-device on (docs/multi-device.md): ../main.js starts this file instead of its
 // own code when multi.json says so. Lifecycle, windows, tray, IPC and the state pushed to the main
@@ -347,7 +348,10 @@ function start() {
     },
   });
   updates.start();
-  const ipc = setupIpc({ devctl: () => devctl, chats: () => chats, hub, link, discovery, screen, clip, kvm, layoutSync, terminal, sshd, fileDrop, smb, apps, sound, pcScreen, pcApps, peerApps, vdd, notifs, fileClip, wake, updates, settings, save: saveSettings, push: pushState, buildState,
+  const ipc = setupIpc({ getResourceUsage, phoneAction: (r) => require('../phone-actions').phoneAction((id) => {
+      const u = phone && phone.unit(id);
+      return u && { id: u.id, connected: !!u.link.current, ctl: u.controls, views: u.views, bridge: u.bridge };
+    }, r), devctl: () => devctl, chats: () => chats, hub, link, discovery, screen, clip, kvm, layoutSync, terminal, sshd, fileDrop, smb, apps, sound, pcScreen, pcApps, peerApps, vdd, notifs, fileClip, wake, updates, settings, save: saveSettings, push: pushState, buildState,
     get phone() { return phone; }, get phoneViews() { return phone ? phone.views : null; }, get phoneDrive() { return phoneDrive; }, connectPhoneDev, cancelPhoneInvite, phoneHub: loadHub,
     get camShare() { return camShare; }, get vcam() { return vcam; }, setCamera, closePhoneCameras,
     get net() { return net; }, applyNet, joinHotspot, applyMesh: () => autoJoin && autoJoin.schedule(),
@@ -442,7 +446,9 @@ function startPhone(server, pairing) {
         closePhoneCameras(views);
         return openCamera(opts);
       };
-      return { phone: ph, bridge, views };
+      const controls = require('../phone-actions').scopedControls(scoped, bridge);
+      controls.on('change', pushState);
+      return { phone: ph, bridge, views, controls };
     },
     onUnit: (u) => {
       u.phone.on('change', pushState);
@@ -814,10 +820,20 @@ function openMacApp(id) {
 let pushQueued = false;
 // Queued: one state push per tick. It never throws (an exception here became an Electron error
 // dialog, or a window that stopped updating): a failure is logged and the next push tries again.
+let resourceSampler = null;
+function getResourceUsage() {
+  if (!resourceSampler) resourceSampler = require('../resource-usage').create({ app, helper: () => helper, nativePids: () => [
+    helper && helper.proc && helper.proc.pid, vcam && vcam.proc && vcam.proc.pid,
+    phoneHub && phoneHub.audio && phoneHub.audio.proc && phoneHub.audio.proc.pid,
+    ...(phone ? phone.all.flatMap((u) => [...u.views.views.values()].map((v) => v.session && v.session.proc && v.session.proc.pid)) : [])
+  ] });
+  return resourceSampler();
+}
+
 function pushState() {
   if (pushQueued) return;
   pushQueued = true;
-  setImmediate(() => {
+  setTimeout(() => {
     pushQueued = false;
     try {
       const s = buildState();
@@ -834,12 +850,12 @@ function pushState() {
       const phase = s.pairing ? s.pairing.phase : null;
       if (phase === 'code' && lastPairPhase !== 'code') showMain();
       lastPairPhase = phase;
-      if (mainWin && !mainWin.isDestroyed()) mainWin.webContents.send('state', s);
+      if (mainWin && !mainWin.isDestroyed() && mainWin.isVisible()) mainWin.webContents.send('state', s);
       updateTray(s);
     } catch (e) {
       console.error('[state] error', e && e.stack ? e.stack : e);
     }
-  });
+  }, 100);
 }
 
 // Device names everywhere: fill {me} (this PC's name),
@@ -940,7 +956,7 @@ function buildState() {
     apps: link.peerOs !== P.OS.MAC ? peerApps.view() : apps.view(), // A PC's (or Linux computer's) apps come through peerapps.js
     startup: getStartup(),
     setup: { missing: miss, show: setupShows(miss) },
-    phone: phone ? { ...phone.view, settings: settings.phone, ...meshPhoneCtl() } : null,
+    phone: phone ? { ...phone.view, settings: settings.phone, ...meshPhoneCtl(), quick: phone.all.filter((u) => u.link.current).map((u) => ({ id: u.id, name: u.link.current.name, usb: !!u.link.current.ice, ctl: u.controls.view, adb: !!u.bridge.serial })) } : null,
     peerCtl: devctl && !selectedIsPhone() ? devctl.view : null, // a computer's controls on Overview
     mount: { ...(phoneDrive ? phoneDrive.view : {}), on: settings.mount.on },
     // Calls, Messages and Photos: the settings alone until the hub is loaded (setupHub).
@@ -1030,6 +1046,7 @@ function createMainWindow() {
     minHeight: 480,
     title: 'DenaDesk',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
+    ...chrome,
     backgroundColor: '#202024', // DenaDesk's Aurora look is dark only
     show: false,
     webPreferences: {
@@ -1037,17 +1054,13 @@ function createMainWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      backgroundThrottling: false,
     },
   });
   mainWin.loadFile(path.join(__dirname, 'app.html'));
   mainWin.once('ready-to-show', () => { if (!startHidden) mainWin.show(); });
-  mainWin.on('close', (e) => {
-    saveBounds();
-    if (!quitting) {
-      e.preventDefault();
-      mainWin.hide();
-    }
-  });
+  mainWin.on('show', pushState);
+  keepInTray(mainWin, { quitting: () => quitting, saveBounds });
 }
 
 function saveBounds() {
@@ -1175,6 +1188,7 @@ app.on('before-quit', () => {
   if (phone) phone.shutdown();
   if (wired) wired.stop();
   if (devctl) devctl.stop();
+  if (phone) for (const u of phone.all) u.controls.stop();
   if (chats) chats.stop();
   if (phoneDrive) phoneDrive.shutdown();
   if (phone) phone.bridge.adb.killServer();

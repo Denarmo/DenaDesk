@@ -10,8 +10,7 @@
 //   - a top bar: the page's title, the link (peer · ping), the route, "encrypted"
 //   - Home: a greeting and one card per device with its features' switches, in the first page
 //     (Overview when something is linked, else Connection), above that page's own content
-//   - a command bar docked at the bottom: real actions only (open a page, turn a feature on or off,
-//     connect to an address, refresh, pair a phone, send files…)
+//   - a dock of connected-phone shortcuts at the bottom
 // CSP: no inline styles; only CSSOM (el.style.setProperty) and classes.
 'use strict';
 
@@ -159,8 +158,7 @@
   const routeTxt = h('span');
   const routePill = h('span', 'au-pill au-route', [routeIc, routeTxt]);
   const secPill = h('span', 'au-pill au-sec', [icon('lock'), h('span', null, null, { text: 'encrypted' })], { title: 'TLS with a pinned certificate, on every route' });
-  const kbd = h('button', 'au-kbd', null, { text: MOD + ' K', title: 'Ask DenaDesk (' + MOD + '+K)', type: 'button' });
-  const topbar = h('div', 'au-topbar', [crumb, h('span', 'au-sp'), peerPill, routePill, secPill, kbd]);
+  const topbar = h('div', 'au-topbar', [crumb, h('span', 'au-sp'), peerPill, routePill, secPill]);
   content.prepend(topbar);
   content.addEventListener('scroll', () => topbar.classList.toggle('scrolled', content.scrollTop > 4), { passive: true });
   // The shells' own sticky banners (pairing code, updates) stick just under the bar, not behind it.
@@ -327,6 +325,7 @@
   const devsEl = h('div', 'au-devs');
   const subEl = h('div', 'au-sub');
   const home = h('section', 'au-home', [hello, devsEl, subEl], { attrs: { 'aria-label': 'Home' } });
+  if (window.ResourceWidget) window.ResourceWidget.mount(home, api);
   let hostPage = null;
   let cardsKey = '';
   let cardRefs = [];
@@ -445,11 +444,11 @@
       const acts = [];
       if (canQr()) {
         const qr = h('button', 'btn small primary', null, { text: 'Pair a phone', type: 'button' });
-        qr.onclick = () => run('Pair a phone with a QR code');
+        qr.onclick = () => UI.go('connection');
         acts.push(qr);
       }
       const find = h('button', 'btn small' + (acts.length ? '' : ' primary'), null, { text: 'Find nearby', type: 'button' });
-      find.onclick = () => run('Refresh nearby devices');
+      find.onclick = () => { UI.go('connection'); call('refreshFound'); };
       acts.push(find);
       els.push(h('div', 'au-dev au-add', [
         h('div', 'au-h', [h('span', 'au-ic', [icon('plus')]), h('div', 'au-n', [h('b', null, null, { text: 'Add a device' }), h('small', null, null, { text: 'Another computer or a phone' })])]),
@@ -577,515 +576,10 @@
       const c = col.getBoundingClientRect();
       if (a.top < c.top || a.bottom > c.bottom - 24) btn.scrollIntoView({ block: 'center' });
     }
-    dockChips();
   }
 
-  // ======================================================================
-  // Command bar
-  // ======================================================================
-  const inp = h('input', 'au-inp', null, { type: 'text', placeholder: 'Ask DenaDesk anything…', spellcheck: false, autocomplete: 'off', attrs: { 'aria-label': 'Ask DenaDesk', enterkeyhint: 'send' } });
-  const attach = h('button', 'au-cb', [icon('plus')], { type: 'button', title: 'Send files…', attrs: { 'aria-label': 'Send files' } });
-  const agentName = h('span', null, null, { text: 'All devices' });
-  const agent = h('button', 'au-agent', [agentName, icon('chev')], { type: 'button', title: 'Which device', attrs: { 'aria-haspopup': 'menu' } });
-  const send = h('button', 'au-cb send', [icon('up')], { type: 'button', title: 'Send (Enter)', attrs: { 'aria-label': 'Send' } });
-  const idle = h('div', 'au-layer au-idle', [inp, h('div', 'au-row', [attach, h('span', 'au-sp'), agent, send])]);
-  const tx = h('div', 'au-tx', null, { attrs: { 'aria-live': 'polite' } });
-  const res = h('div', 'au-res', null, { attrs: { role: 'list', 'aria-live': 'polite' } });
-  const agent2Name = h('span', null, null, { text: 'All devices' });
-  const agent2 = h('button', 'au-agent', [agent2Name, icon('chev')], { type: 'button', title: 'Which device', attrs: { 'aria-haspopup': 'menu' } });
-  const again = h('button', 'au-cb', [icon('plus')], { type: 'button', title: 'Ask something else (' + MOD + '+K)', attrs: { 'aria-label': 'Ask something else' } });
-  const close = h('button', 'au-cb', [icon('x')], { type: 'button', title: 'Close (Esc)', attrs: { 'aria-label': 'Close' } });
-  const exp = h('div', 'au-layer au-exp off', [tx, res, h('div', 'au-row', [agent2, h('span', 'au-sp'), again, close])]);
-  const cmd = h('div', 'au-cmd', [h('div', 'au-aur', [h('i'), h('i')], { attrs: { 'aria-hidden': 'true' } }), idle, exp]);
-  const sugs = h('div', 'au-sugs');
-  const dock = h('div', 'au-dock', [sugs, h('div', 'au-halo-w', [h('div', 'au-halo')], { attrs: { 'aria-hidden': 'true' } }), cmd], { attrs: { role: 'search', 'aria-label': 'Ask DenaDesk' } });
-  content.append(dock);
-
-  let state = 'idle';
-  let focused = false;
-  let runId = 0;
-  let target = 'all';
   let last = null;
-  let busy = false; // a request's steps are running
-
-  // Aurora amplitude: brighter on focus, a jump with each key, high while working. The loop runs only
-  // while the value is easing to its goal, then stops (the idle breathing and the 'working' pulse are
-  // CSS keyframes on transform/opacity: .au-halo, .au-cmd.busy .au-aur).
-  let amp = 0.3;
-  let raf = 0;
-  const goalAmp = () => (busy ? 0.75 : state === 'exp' ? 0.6 : focused ? 0.55 : 0.3);
-  const kick = () => { if (!raf && !document.hidden) raf = requestAnimationFrame(tick); };
-  function tick() {
-    raf = 0;
-    const goal = goalAmp();
-    amp += (goal - amp) * 0.1;
-    if (Math.abs(goal - amp) <= 0.004) amp = goal;
-    dock.style.setProperty('--au-amp', amp.toFixed(3));
-    if (amp !== goal) kick();
-  }
-  const setBusy = (b) => { busy = b; cmd.classList.toggle('busy', b); kick(); };
-  inp.addEventListener('focus', () => { focused = true; kick(); dockChips(); });
-  inp.addEventListener('blur', () => { focused = false; kick(); setTimeout(dockChips, 150); });
-  inp.addEventListener('input', () => { amp = Math.min(1, amp + 0.15); kick(); });
-  inp.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); submit(); }
-    else if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeMenu(); inp.blur(); }
-  });
-  send.onclick = submit;
-  attach.onclick = () => run('Send files');
-  close.onclick = collapse;
-  again.onclick = () => { collapse(); inp.focus(); };
-
-  function setState(s) {
-    state = s;
-    cmd.classList.toggle('exp', s === 'exp');
-    idle.classList.toggle('off', s !== 'idle');
-    exp.classList.toggle('off', s !== 'exp');
-    idle.inert = s !== 'idle'; // a layer out of sight takes no focus
-    exp.inert = s !== 'exp';
-    if (s === 'idle') cmd.style.removeProperty('--h');
-    dockChips();
-    kick();
-  }
-  function collapse() {
-    runId++;
-    clearTimeout(autoT);
-    closeMenu();
-    setBusy(false);
-    setState('idle');
-  }
-  // Done and left alone: the card folds back by itself after a while (not while it has the focus or the mouse).
-  let autoT = 0;
-  function autoCollapse() {
-    clearTimeout(autoT);
-    autoT = setTimeout(() => {
-      if (state !== 'exp' || busy) return;
-      if (cmd.matches(':hover') || cmd.contains(document.activeElement)) return autoCollapse();
-      collapse();
-    }, 12000);
-  }
-  function submit() {
-    const v = inp.value.trim();
-    if (!v) { inp.focus(); return; }
-    inp.value = '';
-    run(v);
-  }
-  // The open card grows to fit what it shows (CSSOM: the CSP allows no inline style attributes).
-  function sizeCard() {
-    if (state !== 'exp') return;
-    const resTop = tx.offsetTop + tx.offsetHeight + 18;
-    res.style.setProperty('top', resTop + 'px');
-    let need = resTop + res.scrollHeight + 64;
-    const room = content.clientHeight - topbar.offsetHeight - 40;
-    const cap = content.clientHeight < 560 ? 220 : 460; // a small window keeps most of the page in sight
-    need = Math.max(Math.min(190, room), Math.min(need, room, cap));
-    cmd.style.setProperty('--h', need + 'px');
-  }
-
-  // Suggestion chips above the bar: from what this window can really do right now.
-  function suggestions(s) {
-    const out = [];
-    if (!s) return out;
-    const linked = linkedOf(s);
-    if (!linked) {
-      if (canQr()) out.push('Pair a phone with a QR code');
-      out.push('Refresh nearby devices');
-      const pc = devicesOf(s).find((d) => d.kind === 'pc' && !d.live);
-      if (pc) out.push('Reconnect to ' + pc.name);
-      out.push('Open General settings');
-      return out.slice(0, 4);
-    }
-    for (const def of masterDefs()) {
-      if (!visible(def, s)) continue;
-      const fs = featState(def, s);
-      if (!fs.on && !fs.dis) out.push('Turn on ' + def.title.toLowerCase());
-      if (out.length >= 2) break;
-    }
-    if (s.files ? s.files.dropToMac !== false : true) out.push('Send files');
-    out.push('Open clipboard');
-    return out.slice(0, 4);
-  }
-  let sugKey = '';
-  function dockChips() {
-    const onHome = hostPage && !hostPage.hidden;
-    const show = state === 'idle' && !isSetup() && (focused || (onHome && content.clientHeight >= 680));
-    dock.classList.toggle('chips', !!show);
-    sugs.inert = !show;
-    const list = suggestions(UI.state || last);
-    const key = list.join('|');
-    if (key === sugKey) return;
-    sugKey = key;
-    sugs.replaceChildren(...list.map((t) => {
-      const b = h('button', 'au-sug', null, { text: t, type: 'button' });
-      b.addEventListener('mousedown', (e) => e.preventDefault()); // keep the input's focus (and the chips)
-      b.onclick = () => { inp.value = ''; run(t); };
-      return b;
-    }));
-  }
-
-  // Target menu: all devices, or one of them.
-  let menu = null;
-  let menuOpener = null;
-  function closeMenu(refocus) {
-    if (!menu) return;
-    menu.remove();
-    menu = null;
-    if (refocus && menuOpener && !menuOpener.closest('[inert]')) menuOpener.focus();
-    menuOpener = null;
-  }
-  function openMenu(btn) {
-    if (menu) { closeMenu(); return; }
-    menuOpener = btn;
-    const s = UI.state || last;
-    const devs = s ? devicesOf(s) : [];
-    const items = [{ key: 'all', name: 'All devices', kind: '' }].concat(devs.map((d) => ({ key: d.key, name: d.kind === 'me' ? d.name + ' (this desk)' : d.name, kind: d.kind === 'me' ? '' : d.kind === 'phone' ? 'phone' : d.live ? 'live' : 'offline' })));
-    menu = h('div', 'au-menu', items.map((it) => {
-      const b = h('button', it.key === target ? 'sel' : '', [h('span', null, null, { text: it.name }), it.kind ? h('small', null, null, { text: it.kind }) : null], { type: 'button', attrs: { role: 'menuitem' } });
-      b.onclick = (e) => { e.stopPropagation(); target = it.key; setTargetLabel(); closeMenu(); inp.focus(); };
-      return b;
-    }), { attrs: { role: 'menu' } });
-    dock.append(menu);
-    const d = dock.getBoundingClientRect();
-    const r = btn.getBoundingClientRect();
-    menu.style.setProperty('left', Math.max(8, Math.min(r.left - d.left, d.width - menu.offsetWidth - 8)) + 'px');
-    menu.style.setProperty('bottom', (d.bottom - r.top + 8) + 'px');
-    const first = menu.querySelector('button.sel') || menu.querySelector('button');
-    if (first) first.focus();
-  }
-  function targetDev() {
-    if (target === 'all') return null;
-    const s = UI.state || last;
-    return s ? devicesOf(s).find((d) => d.key === target) || null : null;
-  }
-  function setTargetLabel() {
-    const d = targetDev();
-    if (!d) target = 'all';
-    const t = d ? d.name : 'All devices';
-    agentName.textContent = t;
-    agent2Name.textContent = t;
-  }
-  agent.onclick = (e) => { e.stopPropagation(); openMenu(agent); };
-  agent2.onclick = (e) => { e.stopPropagation(); openMenu(agent2); };
-  document.addEventListener('click', (e) => { if (menu && !menu.contains(e.target)) closeMenu(); });
-
-  window.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key && e.key.toLowerCase() === 'k') {
-      if (document.querySelector('.keyrec.on, .btn.keyrec.on')) return; // a shortcut is being recorded
-      if (isSetup()) return;
-      e.preventDefault();
-      if (state === 'exp') collapse();
-      inp.focus();
-      inp.select();
-    } else if (e.key === 'Escape') {
-      if (menu) { closeMenu(true); e.preventDefault(); return; }
-      if (state !== 'exp' || e.defaultPrevented) return;
-      // Escape meant for something else: a dialog or popup, or a field on the page.
-      if (document.querySelector('.updater-overlay:not([hidden]), .pair-pop:not([hidden]), .pairpop:not([hidden]), dialog[open]')) return;
-      const a = document.activeElement;
-      if (a && a !== document.body && !dock.contains(a)) return;
-      collapse();
-      e.preventDefault();
-    }
-  });
-  // Moving on through the sidebar folds the card away.
-  sidebar.addEventListener('click', (e) => { if (state === 'exp' && !busy && e.target.closest('.nav-item, .phone-tile')) collapse(); });
-  kbd.onclick = () => { if (state === 'exp') collapse(); inp.focus(); };
-
-  // ---------- understanding a request: real actions only ----------
-  const SYN = {
-    overview: ['overview', 'home', 'dashboard', 'device page', 'battery'],
-    connection: ['connection', 'connections', 'pairing', 'devices', 'nearby', 'paired'],
-    'pc-mac': ['share screen', 'share my screen', 'extend my screen', 'extend', 'second screen', 'second monitor', 'my screen', 'screen sharing'],
-    share: ['share screen', 'share my screen', 'extend my screen', 'extend', 'second screen', 'second monitor', 'my screen', 'screen sharing'],
-    'mac-pc': ['receive screen', 'their screen', 'see screen', 'watch screen', 'remote screen', 'other screen', 'receive'],
-    receive: ['receive screen', 'their screen', 'see screen', 'watch screen', 'remote screen', 'other screen', 'receive'],
-    cursor: ['mouse', 'cursor', 'pointer', 'trackpad', 'kvm'],
-    keyboard: ['keyboard', 'keys', 'typing', 'hotkey'],
-    clipboard: ['clipboard', 'copy', 'paste', 'copied'],
-    notifications: ['notifications', 'notification', 'alerts', 'notifs'],
-    files: ['files', 'file sharing', 'file', 'shared folder', 'received files'],
-    audio: ['audio', 'sound', 'speakers', 'music', 'volume'],
-    camera: ['camera', 'webcam', 'cam', 'video'],
-    rezume: ['rezume', 'resume', 'handoff', 'hand off', 'continue'],
-    terminal: ['terminal', 'shell', 'ssh', 'console', 'command line'],
-    apps: ['apps', 'applications', 'programs', 'app windows'],
-    general: ['general', 'settings', 'preferences', 'startup', 'options', 'firewall'],
-    about: ['about', 'version', 'updates', 'update', 'licence', 'license'],
-    tip: ['tip', 'tips', 'donate', 'donation', 'support duodesk', 'sponsor'],
-    feedback: ['feedback', 'report a bug', 'bug report', 'contact', 'suggestion'],
-    multi: ['multi device', 'multidevice', 'mesh', 'multiple devices'],
-    messages: ['messages', 'sms', 'texts', 'chats'],
-    calls: ['calls', 'call', 'dial', 'phone call'],
-    media: ['photos', 'gallery', 'pictures', 'images'],
-    papps: ['phone apps'],
-    mirror: ['mirror phone', 'phone screen', 'mirroring', 'mirror my phone', 'mirror'],
-    pfiles: ['phone files', 'phone storage'],
-    mount: ['mount', 'mount phone', 'phone drive'],
-    remote: ['remote', 'gamepad', 'remote control'],
-    phone: ['phone'],
-  };
-  // Words that name a page only when nothing more specific is said ("mouse settings" is Mouse).
-  const WEAK = new Set(['settings', 'options', 'preferences', 'update', 'continue', 'file', 'call', 'receive', 'extend', 'mirror', 'video', 'copy', 'text', 'keys', 'devices', 'my screen']);
-  const norm = (t) => ' ' + String(t).toLowerCase().replace(/[’']/g, '').replace(/[^a-z0-9.:\-]+/g, ' ').trim() + ' ';
-  const words = (t) => norm(t).trim().split(' ').filter(Boolean);
-  function near(a, b) { // one edit apart (typos), for words of 4+ letters
-    if (a === b) return true;
-    if (Math.min(a.length, b.length) < 4 || Math.abs(a.length - b.length) > 1) return a.length >= 4 && b.startsWith(a);
-    let i = 0;
-    let j = 0;
-    let edits = 0;
-    while (i < a.length && j < b.length) {
-      if (a[i] === b[j]) { i++; j++; continue; }
-      if (++edits > 1) return false;
-      if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
-    }
-    return edits + (a.length - i) + (b.length - j) <= 1;
-  }
-  function bestPage(text, s, prefer) {
-    const t = norm(text);
-    const tw = words(text);
-    let best = null;
-    for (const def of UI.tabs) {
-      if (!def || !def.id) continue;
-      const cands = [def.title, def.heading && !/[{]/.test(def.heading) ? def.heading : null, def.id].concat(SYN[def.id] || []).filter(Boolean);
-      let score = 0;
-      for (const c of cands) {
-        const cn = norm(c);
-        if (t.includes(cn)) { score = Math.max(score, WEAK.has(cn.trim()) ? 5 : 10 + cn.length); continue; }
-        const cw = words(c);
-        const hit = cw.filter((w) => tw.some((x) => near(x, w))).length;
-        if (hit) score = Math.max(score, (hit / cw.length) * 6 + hit);
-      }
-      if (!score) continue;
-      if (s && !visible(def, s)) score -= 3; // a page that isn't there with this device: only if nothing else fits
-      if (prefer && prefer.includes(def.id)) score += 2;
-      if (def.navHidden) score -= 1;
-      if (!best || score > best.score) best = { def, score };
-    }
-    return best;
-  }
-
-  const ADDR = /\b(\d{1,3}(?:\.\d{1,3}){3}(?::\d{1,5})?|[a-z0-9-]+\.(?:local|lan|home)(?::\d{1,5})?)\b/i;
-  const ADDR_ONLY = /^\s*(\d{1,3}(?:\.\d{1,3}){3}(?::\d{1,5})?|[a-z0-9-]+\.(?:local|lan|home)(?::\d{1,5})?)\s*$/i;
-  // "don't share the clipboard", "no more mouse", "never sync…": a negation means off, whatever the verb.
-  const NEG = /\b(dont|do not|never|no|not|without)\b/;
-  const VERB_OFF = /\b(turn|switch|set)\s+(it\s+|them\s+|that\s+)?off\b|\b(turn|switch)\s+\w+(\s+\w+)?\s+off\b|\bdisable\b|\bstop\b|\bdeactivate\b|\bpause\b|\boff\b|\bno more\b/;
-  const VERB_ON = /\b(turn|switch|set)\s+(it\s+|them\s+|that\s+)?on\b|\b(turn|switch)\s+\w+(\s+\w+)?\s+on\b|\benable\b|\bstart\b|\bactivate\b|\bsync\b|\bshare\b|\bextend\b|\buse\b|\bon\b/;
-  const VERB_OPEN = /\b(open|show|go to|goto|go|view|navigate|take me|settings for|where)\b/;
-
-  function plan(text, s) {
-    const steps = [];
-    const dev = targetDev();
-    const prefer = dev ? (assign(s, devicesOf(s)).find((c) => c.dev.key === dev.key) || { feats: [] }).feats.map((d) => d.id) : null;
-    const clauses = text.split(/\s*(?:,|;|\.\s+|\band then\b|\bthen\b|\balso\b|\band\b|&|\+)\s*/i).map((c) => c.trim()).filter(Boolean);
-    let verb = null; // carried to the next clause: "turn on mouse and keyboard"
-    for (const raw of clauses) {
-      const t = norm(raw);
-      // An address only with a verb that means it ("update to 2.5.0.1" is no address), or on its own.
-      const addr = raw.match(ADDR_ONLY) || (/\b(connect|pair|link|join|add|reach)\b/.test(t) ? raw.match(ADDR) : null);
-      if (addr) { steps.push(stepConnect(addr[1])); continue; }
-      if (/\b(refresh|rescan|re scan|scan|search|look for|find)\b/.test(t) && !/\b(file|photo|message)/.test(t)) { steps.push(stepRefresh()); continue; }
-      if (/\bqr\b/.test(t) || (/\b(pair|add|link|set up)\b/.test(t) && /\b(phone|android|mobile)\b/.test(t))) { steps.push(stepPairPhone()); continue; }
-      if (/\bdisconnect\b|\bunlink\b/.test(t)) { steps.push(stepDisconnect(s)); continue; }
-      if (/\bsend\b/.test(t) && (/\b(files?|photos?|documents?|pictures?|pdf|it|something)\b/.test(t) || /\.\w{2,4}\b/.test(raw) || t.trim() === 'send')) { steps.push(stepSendFiles(s)); continue; }
-      if (/\b(reconnect|take over|connect again)\b/.test(t) || (/\b(connect|switch to|use)\b/.test(t) && matchDevice(t, s))) {
-        const d = matchDevice(t, s) || (dev && dev.kind !== 'me' ? dev : null);
-        steps.push(stepConnectDevice(d, s));
-        continue;
-      }
-      const off = NEG.test(t) || VERB_OFF.test(t);
-      const on = !off && VERB_ON.test(t);
-      const open = VERB_OPEN.test(t);
-      let v = off ? false : on ? true : open ? null : verb;
-      const best = bestPage(raw, s, prefer);
-      if (!best || best.score < 3) {
-        if (/\b(connect|pair)\b/.test(t)) { steps.push(stepOpen(s, UI.tabs.find((d) => d.id === 'connection'), 'Opening Connection to pick a device')); continue; }
-        steps.push(stepHint());
-        continue;
-      }
-      const def = best.def;
-      if (open && !off && !/\b(turn|switch)\b/.test(t)) v = null;
-      verb = v;
-      if (v !== null && def.master) steps.push(stepToggle(def, v, s));
-      else if (v !== null) steps.push(stepOpen(s, def, def.title + ' has no switch: opening it'));
-      else steps.push(stepOpen(s, def));
-    }
-    if (!steps.length) steps.push(stepHint());
-    return steps;
-  }
-
-  function matchDevice(t, s) {
-    if (!s) return null;
-    for (const d of devicesOf(s)) {
-      if (d.kind === 'me') continue;
-      const n = norm(d.name).trim();
-      if (n && (t.includes(' ' + n + ' ') || words(d.name).some((w) => w.length >= 4 && words(t).includes(w)))) return d;
-    }
-    return null;
-  }
-
-  function stepHint() {
-    return { hint: true, label: 'Try “turn on clipboard”, “open mouse”, “connect 192.168.1.20”, “refresh” or “pair a phone”.' };
-  }
-  function stepOpen(s, def, label) {
-    return {
-      label: label || 'Opening ' + def.title,
-      run: () => {
-        if (s && !visible(def, s)) return { no: def.title + ' isn’t available with this device' };
-        UI.go(def.id);
-        return { ok: label || def.title + ' is open' };
-      },
-    };
-  }
-  function stepToggle(def, v, s) {
-    return {
-      label: (v ? 'Turning on ' : 'Turning off ') + def.title,
-      run: async () => {
-        const cur = UI.state || s;
-        if (!visible(def, cur)) return { no: def.title + ' isn’t available with this device' };
-        const fs = featState(def, cur);
-        if (fs.on === v) return { info: def.title + ' was already ' + (v ? 'on' : 'off') };
-        if (fs.dis) { UI.go(def.id); return { no: def.title + ' ' + fs.why + ': opened it' }; }
-        await Promise.race([Promise.resolve(def.master.set(v)), wait(3000)]);
-        const card = devsEl.querySelector('.au-ft[aria-label="' + def.title.replace(/"/g, '') + '"]');
-        if (card) flash(card.closest('.au-dev'));
-        return { ok: def.title + (v ? ' is on' : ' is off') };
-      },
-    };
-  }
-  function stepConnect(addr) {
-    return {
-      label: 'Connecting to ' + addr,
-      run: async () => {
-        UI.go('connection');
-        let err = '';
-        const attempt = (p) => Promise.race([Promise.resolve(p).then((r) => { if (r && typeof r.error === 'string') err = r.error; }, (e) => { err = (e && e.message) || 'That didn’t work'; }), wait(4000)]);
-        if (typeof api.connectAddress === 'function') await attempt(api.connectAddress(addr));
-        else if (typeof api.pairWith === 'function') await attempt(api.pairWith(addr));
-        else if (typeof api.pair === 'function') await attempt(api.pair(addr));
-        else return { no: 'Connecting by address isn’t available here' };
-        await wait(250);
-        const p = (UI.state || {}).pairing;
-        if (p && p.phase === 'failed') return { no: p.error || 'Couldn’t reach ' + addr };
-        if (err) return { no: err };
-        return { ok: 'Asked ' + addr + ' to connect: follow it on Connection' };
-      },
-    };
-  }
-  function stepRefresh() {
-    return {
-      label: 'Looking for devices nearby',
-      run: async () => {
-        UI.go('connection');
-        const f = api.refreshFound || api.refreshDiscovery;
-        if (typeof f !== 'function') return { no: 'Refresh isn’t available here' };
-        await Promise.race([Promise.resolve(f()).catch(() => {}), wait(2500)]);
-        return { ok: 'Refreshed the nearby list' };
-      },
-    };
-  }
-  function stepPairPhone() {
-    return {
-      label: 'Showing the pairing QR code',
-      run: async () => {
-        if (!canQr()) { UI.go('connection'); return { info: 'Pair phones from Connection › Nearby' }; }
-        UI.go('connection');
-        await wait(120);
-        const page = $('page-connection');
-        const btn = page && [...page.querySelectorAll('button')].find((b) => /qr code/i.test(b.textContent) && !b.disabled && b.offsetParent);
-        if (!btn) return { info: 'Pair a phone from Connection (the QR card shows while no phone is connected)' };
-        btn.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        if (!/hide/i.test(btn.textContent)) btn.click();
-        return { ok: 'Scan the code with the phone’s camera' };
-      },
-    };
-  }
-  function stepDisconnect(s) {
-    return {
-      label: 'Disconnecting',
-      run: () => {
-        if (!linkedOf(UI.state || s)) return { info: 'Nothing is connected' };
-        if (isPhoneSession(s) || (s.phone && s.phone.connected && !(s.link && s.link.state === 'connected'))) call(s.phone && s.phone.connected ? 'disconnectPhone' : 'disconnect');
-        else call('disconnect');
-        return { ok: 'Disconnected' };
-      },
-    };
-  }
-  function stepSendFiles(s) {
-    return {
-      label: 'Choosing files to send',
-      run: () => {
-        if (!linkedOf(UI.state || s)) return { no: 'Connect a device first to send files' };
-        if (typeof api.chooseSendFiles !== 'function') { UI.go('files'); return { info: 'Drop files on the Overview to send them' }; }
-        api.chooseSendFiles();
-        return { ok: 'Pick the files in the window that opened' };
-      },
-    };
-  }
-  function stepConnectDevice(d, s) {
-    if (!d) return { label: 'Reconnecting', run: () => { if (typeof api.connectAgain === 'function') { api.connectAgain(); return { ok: 'Reconnecting to the paired computer' }; } UI.go('connection'); return { info: 'Pick a device on Connection' }; } };
-    return {
-      label: 'Connecting to ' + d.name,
-      run: () => {
-        if (d.live && d.mesh && !d.selected) { openDevice(d); return { ok: 'Switched to ' + d.name }; }
-        if (d.live) { UI.go('overview'); return { info: d.name + ' is already connected' }; }
-        if (d.kind === 'phone' && d.id && typeof api.connectPhone === 'function') { api.connectPhone(d.id); return { ok: 'Connecting to ' + d.name }; }
-        if (d.mesh && d.kind === 'pc') { UI.go('connection'); return { info: d.name + ' isn’t connected: it joins by itself once it’s on, or from Connection' }; }
-        if (d.kind === 'pc' && typeof api.connectAgain === 'function') { api.connectAgain(); return { ok: 'Connecting to ' + d.name }; }
-        UI.go('connection');
-        return { info: 'Connect ' + d.name + ' from Connection' };
-      },
-    };
-  }
-
-  async function run(text) {
-    const id = ++runId;
-    closeMenu();
-    inp.blur();
-    setState('exp');
-    tx.replaceChildren();
-    res.replaceChildren();
-    sizeCard();
-    const ws = text.split(/\s+/).filter(Boolean);
-    const step = Math.max(45, Math.min(140, 1500 / ws.length));
-    for (const w of ws) {
-      if (id !== runId) return;
-      const sp = h('span', 'ghost', null, { text: w });
-      tx.append(sp);
-      sizeCard();
-      await wait(step);
-      sp.className = '';
-    }
-    await wait(300);
-    const s = UI.state || last;
-    if (!s || id !== runId) return;
-    setBusy(true);
-    try { await runSteps(id, text, s); } finally { if (id === runId) { setBusy(false); autoCollapse(); } }
-  }
-  async function runSteps(id, text, s) {
-    for (const st of plan(text, s)) {
-      if (id !== runId) return;
-      if (st.hint) {
-        res.append(h('div', 'hint', [h('span', 'au-info', null, { text: 'i' }), h('span', null, null, { text: st.label })], { attrs: { role: 'listitem' } }));
-        sizeCard();
-        continue;
-      }
-      const mark = h('span', 'au-spin');
-      const label = h('span', null, null, { text: st.label });
-      res.append(h('div', null, [mark, label], { attrs: { role: 'listitem' } }));
-      sizeCard();
-      let r;
-      try { r = await st.run(); } catch (e) { r = { no: (e && e.message) || 'That didn’t work' }; }
-      await wait(420);
-      if (id !== runId) return;
-      r = r || { ok: st.label };
-      const kind = r.no ? 'no' : r.info ? 'info' : 'ok';
-      mark.className = 'au-' + kind;
-      mark.textContent = kind === 'ok' ? '✓' : kind === 'no' ? '!' : 'i';
-      label.textContent = r[kind] || st.label;
-      sizeCard();
-    }
-  }
+  const phoneDock = window.PhoneDock.mount({ document, parent: content, api });
 
   // ======================================================================
   // Wiring: every state push, every page change
@@ -1097,9 +591,8 @@
       const devs = devicesOf(s);
       renderBar(s, devs);
       renderHome(s);
-      setTargetLabel();
       renderTitle();
-      sizeCard();
+      phoneDock.update(s);
     } catch (e) {
       console.error('aurora-shell:', e);
     }
@@ -1111,12 +604,11 @@
   }).observe(nav, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'hidden'] });
   // Setup comes and goes with body.setup (every shell; Mac's UI.setup has no page).
   new MutationObserver(() => { renderTitle(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  window.addEventListener('resize', () => { dockChips(); sizeCard(); }, { passive: true });
 
   if (typeof api.onState === 'function') api.onState((s) => onState(s));
   if (UI.state) onState(UI.state);
   else if (typeof api.getState === 'function') Promise.resolve(api.getState()).then((s) => onState(UI.state || s), () => {});
 
   // For the console and tests: what the shell knows.
-  window.AuroraShell = { run, render: onState, devices: () => devicesOf(UI.state || last), plan: (t) => plan(t, UI.state || last).map((x) => x.label) };
+  window.AuroraShell = { render: onState, devices: () => devicesOf(UI.state || last) };
 })();

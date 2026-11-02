@@ -5,6 +5,8 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const call = (name) => (...args) => ipcRenderer.invoke(name, ...args);
 
 contextBridge.exposeInMainWorld('macshare', {
+  photoMenu: call('photoMenu'),
+  getResourceUsage: call('getResourceUsage'),
   getState: call('getState'),
   onState: (fn) => ipcRenderer.on('state', (_e, s) => fn(s)),
   onShowUpdate: (fn) => ipcRenderer.on('show-update', () => fn()),
@@ -16,6 +18,9 @@ contextBridge.exposeInMainWorld('macshare', {
   connectAddress: call('connectAddress'),
   refreshFound: call('refreshFound'),
   copyText: call('copyText'),
+  phoneAction: call('phoneAction'),
+  clearNotifHistory: call('clearNotifHistory'),
+  openNotifiedApp: call('openNotifiedApp'),
   deviceDo: call('deviceDo'), // Overview: the selected device's controls
   setOverview: call('setOverview'), // General › Overview: what it shows
   setChats: call('setChats'), // Messages: chat apps in one inbox

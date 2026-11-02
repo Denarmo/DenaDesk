@@ -27,7 +27,7 @@ UI.tab({
     const recvRow = pair.a.main, sendRow = pair.b.main;
     const histList = el('div');
     const clearBtn = UI.button('Clear', () => api.clearNotifHistory(), 'small');
-    const histCard = UI.card('Recent Notifications', [histList], clearBtn);
+    const histCard = UI.card('Recent Notifications', [histList], { actions: [clearBtn] });
     const apps = el('div');
 
     body.append(note, pair.el, histCard, UI.card('Apps', [apps]));
@@ -48,27 +48,28 @@ UI.tab({
       // Recent notifications
       const history = n.history || [];
       const icons = n.historyIcons || {};
-      const hk = JSON.stringify([history.map((h) => [h.id, h.at]), Object.keys(icons)]);
+      const hk = JSON.stringify([history.map((h) => [h.originId, h.id, h.at, h.title, h.body]), Object.keys(icons)]);
       if (hk !== histKey) {
         histKey = hk;
         if (history.length) {
           histList.replaceChildren(...history.map((item) => {
             const appName = item.appName || item.app;
-            const isPhone = UI.isPhone(s);
-            const openBtn = isPhone && item.app ? UI.button('Open', () => api.openNotifiedApp({ app: item.app, appName }), 'small') : null;
+            const isPhone = item.originId ? !!(s.phone && (s.phone.nearby || []).some((p) => p.id === item.originId && p.connected)) : UI.isPhone(s);
+            const openBtn = isPhone && item.app ? UI.button('Open', () => api.openNotifiedApp({ app: item.app, appName, originId: item.originId }), 'small') : null;
             const time = UI.ago(item.at);
             const topText = [appName, item.title].filter(Boolean).join(' · ');
             const subText = [item.subtitle, item.body].filter(Boolean).join(' — ') || 'Notification';
-            const r = UI.row(topText, `${subText} · ${time}`, [openBtn]);
-            if (icons[item.app]) {
-              const img = el('img', { src: icons[item.app], style: 'width: 20px; height: 20px; border-radius: 4px; margin-right: 8px; vertical-align: middle; flex-shrink: 0;' });
+            const r = UI.row(topText, `${subText} · ${item.origin ? item.origin + ' · ' : ''}${time}`, [openBtn]);
+            const icon = icons[item.originId + ':' + item.app] || icons[item.app];
+            if (icon) {
+              const img = el('img', { src: icon, style: 'width: 20px; height: 20px; border-radius: 4px; margin-right: 8px; vertical-align: middle; flex-shrink: 0;' });
               r.querySelector('.text').prepend(img);
               r.classList.add('with-ico');
             }
             return r;
           }));
         } else {
-          histList.replaceChildren(UI.row('No notifications yet', 'Incoming notifications from WhatsApp, Instagram, and other apps will appear here in real-time.'));
+          histList.replaceChildren(UI.row('No notifications yet', 'Received notifications appear here while DenaDesk is running, including in Mesh. Enable Notification access and outgoing notifications in the full Android app. Android does not expose old dismissed notifications.'));
         }
       }
 

@@ -57,8 +57,14 @@ class Notifs(core: Core) : Feature(core) {
             return flat.split(':').any { it == me }
         }
 
+    fun sendActive() {
+        if (!hasAccess || !peerAccepts || !core.sync.get("notifs", "out") || !core.link.connected) return
+        runCatching { NotifListener.running?.activeNotifications }.getOrNull()?.forEach { runCatching { posted(it) } }
+    }
+
     fun sendPolicy() {
         core.send(msg(Proto.T.NOTIF_POLICY, "accept" to core.sync.get("notifs", "in")))
+        sendActive()
     }
 
     override fun onWelcome(host: Host) {
@@ -250,7 +256,14 @@ class Notifs(core: Core) : Feature(core) {
 
     override fun onMessage(t: String, m: JSONObject): Boolean {
         when (t) {
-            Proto.T.NOTIF_POLICY -> peerAccepts = m.optBoolean("accept")
+            Proto.T.NOTIF_POLICY -> {
+                val was = peerAccepts
+                peerAccepts = m.optBoolean("accept")
+                if (peerAccepts && !was && hasAccess && core.sync.get("notifs", "out")) {
+                    synchronized(iconsSent) { iconsSent.clear() }
+                    sendActive()
+                }
+            }
             "chat.want" -> {
                 chatsWanted = m.optBoolean("on") && hasAccess
                 if (chatsWanted) chatSnapshot()

@@ -133,7 +133,8 @@ UI.tab({
     const which = UI.select([], (id) => id && api.hub({ do: 'opt', btDevice: id }));
     which.el.setAttribute('aria-label', 'Which phone');
     const statusRow = UI.row('Bluetooth', '', [which.el, retryBtn]);
-    const soundCard = UI.card('Sound', [audioRow, statusRow]);
+    const networkAudio = UI.row('USB / Wi-Fi call audio', 'PC microphone and speakers for cellular calls are unavailable over USB or Wi-Fi on standard Android. Android reserves call audio for system apps. Call controls can use the network; phone media playback does not carry cellular calls.', []);
+    const soundCard = UI.card('Sound', [networkAudio, audioRow, statusRow]);
 
     // Setting it up: the person pairs the two in the systems' own Bluetooth settings, over classic
     // Bluetooth (what a call goes through); DenaDesk doesn't pair them itself, only says how, and

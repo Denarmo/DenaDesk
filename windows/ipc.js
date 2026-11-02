@@ -20,6 +20,8 @@ function setupIpc(ctx) {
     ctx.push();
   };
 
+  require('./photo-menu').register(ipcMain);
+  handle('getResourceUsage', () => ctx.getResourceUsage());
   handle('getState', () => ctx.buildState());
   require('../shared/support.js').ipc(ipcMain); // Tip and Feedback pages: support:info / profile / tip / feedback / preview
   // Calls, Messages and Photos (shared/phonehub.js, loaded the first time it's used).
@@ -56,6 +58,7 @@ function setupIpc(ctx) {
   handle('qrPair', () => ctx.qrPair());
   handle('adbQr', (on) => ctx.adbQr(on === true)); // wireless debugging: pair with a QR code // Connection: the phone pairing QR code's link
   handle('importCancel', () => ctx.explorer() && ctx.explorer().cancel()); // Phone Files: stop importing into Explorer's folder
+  handle('phoneAction', (r) => ctx.phoneAction(r));
   handle('deviceDo', (c) => c && typeof c === 'object' && ctx.devctl() && ctx.devctl().do(c)); // Overview: ring, lock, quick settings… (shared/devctl.js)
   handle('copyText', (text) => typeof text === 'string' && text.length < 1000 && clipboard.writeText(text));
   handle('confirmCode', () => link.confirmCode());

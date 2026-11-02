@@ -408,6 +408,10 @@ namespace MacShare
                         List<string> selNames = Strings(c, "names");
                         Async(c, delegate (Dictionary<string, object> r) { Shell.SelectIn(selDir, selNames); }, true);
                         return;
+                    case "resources":
+                        var resourcePids = Strings(c, "pids");
+                        Async(c, delegate (Dictionary<string, object> r) { r["processes"] = ResourceUsage.Read(resourcePids); });
+                        return;
                     case "keyLayout": // what each key types alone and with Shift in the layout in front (shared/keylayout.js); type: it takes "type"
                         c["layout"] = Keys.Layout();
                         c["shift"] = Keys.Layout(true);
