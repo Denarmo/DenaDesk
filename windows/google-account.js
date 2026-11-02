@@ -91,6 +91,31 @@ class GoogleAccount extends EventEmitter {
     this.cancel(); this.account = null; this.tokens = null; this.error = '';
     await this.save(); this.changed(); return this.view();
   }
+  // Main process only. Never expose an ID/access/refresh token through renderer IPC.
+  async getIdToken() {
+    if (this.refreshing) return this.refreshing;
+    const config = this.config, account = this.account, original = this.tokens;
+    if (!config || !account || !original) throw new Error('Sign in with Google first.');
+    this.refreshing = (async () => {
+      const client = this.clientFactory(config);
+      let tokens = original, exp = 0;
+      try { exp = JSON.parse(Buffer.from(original.id_token.split('.')[1], 'base64url')).exp * 1000; } catch { /* Refresh or fail closed below. */ }
+      if (!Number.isFinite(exp) || exp < Date.now() + 90000) {
+        if (!original.refresh_token) throw new Error('Sign in with Google again.');
+        client.setCredentials(original);
+        const result = await client.refreshAccessToken();
+        if (!result.credentials.id_token) throw new Error('Sign in with Google again.');
+        tokens = { ...original, ...result.credentials, refresh_token: result.credentials.refresh_token || original.refresh_token };
+      }
+      const p = (await client.verifyIdToken({ idToken: tokens.id_token, audience: config.clientId })).getPayload();
+      if (!p || p.sub !== account.sub || p.email_verified !== true || p.exp * 1000 <= Date.now()
+          || this.config !== config || this.account !== account || this.tokens !== original) throw new Error('Sign in with Google again.');
+      if (tokens !== original) { this.tokens = tokens; await this.save(); }
+      return tokens.id_token;
+    })();
+    try { return await this.refreshing; } catch { throw new Error('Google session expired. Sign in again.'); }
+    finally { this.refreshing = null; }
+  }
   async signIn() {
     if (!this.config) throw new Error('Import your Google Desktop app JSON first.');
     if (this.attempt) throw new Error('A Google sign-in is already open.');

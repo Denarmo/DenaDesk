@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; media-src blob:; connect-src 'none'">
+<title>DenaDesk direct session</title><link rel="stylesheet" href="direct-remote.css"></head>
+<body><header><strong id="peer">DenaDesk</strong><span id="status" role="status">Connecting directly…</span><button id="disconnect">Disconnect</button></header>
+<main><video id="screen" autoplay muted playsinline tabindex="0" aria-label="Remote screen"></video></main>
+<footer id="hint">Direct encrypted connection · no relay · close this window to disconnect</footer>
+<script src="../shared/protocol.js"></script><script src="../shared/direct-policy.js"></script><script src="direct-renderer.js"></script></body></html>

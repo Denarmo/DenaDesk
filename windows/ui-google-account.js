@@ -10,6 +10,33 @@ window.GoogleAccountUI = {
     const cancel = UI.button('Cancel sign-in', () => act('googleAccountCancel'), 'small');
     const signout = UI.button('Sign out on this PC', () => act('googleAccountSignOut'), 'small');
     const status = UI.row('Google account', 'Loading account settings…', [signin, cancel, signout]);
+    const deviceList = UI.el('div');
+    const linkError = UI.el('p', { class: 'hint', attrs: { role: 'status' } });
+    let linked = {};
+    const enable = UI.button('Link this PC', () => remoteAct('remoteLinkEnable', !linked.enabled), 'small');
+    const disconnect = UI.button('Disconnect', () => remoteAct('remoteLinkDisconnect'), 'small');
+    const connection = UI.row('Linked devices', 'Direct connections only. The host approves each session.', [enable, disconnect]);
+    const own = UI.row('This device fingerprint', 'Loading…');
+    const current = UI.row('Remote session', 'No active session');
+    function renderRemote(s) {
+      linked = s;
+      enable.textContent = s.enabled ? 'Unlink this PC' : 'Link this PC';
+      connection.setHint('Connection service: ' + s.status + '. Session traffic goes directly between devices.');
+      own.setHint(s.fingerprint || 'Device keys are unavailable.');
+      disconnect.hidden = !s.session;
+      current.setHint(s.session ? s.session.name + ' · ' + s.session.role + ' · ' + s.session.mode + ' · ' + s.session.status : 'No active session');
+      linkError.textContent = s.error || '';
+      deviceList.replaceChildren(...(s.devices || []).map((d) => {
+        const view = UI.button('View', () => remoteAct('remoteLinkConnect', d.id, 'view'), 'small');
+        const control = UI.button('Control', () => remoteAct('remoteLinkConnect', d.id, 'control'), 'small');
+        view.disabled = control.disabled = !d.online || !!s.session || s.status !== 'online';
+        const forget = UI.button('Forget trust', () => remoteAct('remoteLinkForget', d.id), 'small'); forget.hidden = !d.trusted;
+        return UI.row(d.name, (d.online ? 'Online' : 'Offline') + (d.trusted ? ' · trusted device' : ' · fingerprint verification required'), [view, control, forget]);
+      }));
+    }
+    async function remoteAct(name, ...args) {
+      try { renderRemote(await api[name](...args)); } catch { linkError.textContent = 'The linked-device action could not finish.'; }
+    }
     function render(s) {
       const busy = s.phase === 'signing-in';
       status.setHint(busy ? 'Finish signing in using your browser.' : s.account ? 'Signed in as ' + s.account.email
@@ -23,7 +50,11 @@ window.GoogleAccountUI = {
     }
     api.onGoogleAccount(render);
     act('googleAccountGet');
+    api.onRemoteLink(renderRemote);
+    remoteAct('remoteLinkGet');
     return UI.card('Google account and remote access', [status,
-      UI.row('Desktop sign-in configuration', 'Sign-in identifies your account. Linked devices and direct remote connections are still in development.', [imported]), error]);
+      UI.row('Desktop sign-in configuration', 'Google identifies your account for the linked-device list. Remote access needs your approval.', [imported]), error,
+      connection, own, current, deviceList, linkError,
+      UI.row('Direct remote access', 'Windows screen viewing and optional keyboard/mouse control. No relay fallback; some networks cannot connect. Clipboard, files, sound and Android remote sessions are not included yet.')]);
   },
 };

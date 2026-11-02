@@ -5,6 +5,12 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const call = (name) => (...args) => ipcRenderer.invoke(name, ...args);
 
 contextBridge.exposeInMainWorld('macshare', {
+  remoteLinkGet: call('remoteLinkGet'),
+  remoteLinkEnable: call('remoteLinkEnable'),
+  remoteLinkConnect: call('remoteLinkConnect'),
+  remoteLinkDisconnect: call('remoteLinkDisconnect'),
+  remoteLinkForget: call('remoteLinkForget'),
+  onRemoteLink: (fn) => ipcRenderer.on('remote-link', (_e, s) => fn(s)),
   googleAccountGet: call('googleAccountGet'),
   googleAccountImport: call('googleAccountImport'),
   googleAccountSignIn: call('googleAccountSignIn'),

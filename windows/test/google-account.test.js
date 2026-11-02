@@ -104,3 +104,28 @@ test('encrypted storage fails closed and serializes sign-out writes', async () =
   assert(!(await fs.readFile(file, 'utf8')).includes('test-secret'));
   await fs.unlink(file); await fs.rmdir(dir);
 });
+
+test('remote identity refresh verifies the same owner and preserves the offline refresh token', async () => {
+  const config = { clientId: 'test-client.apps.googleusercontent.com', clientSecret: 'private' };
+  const oldToken = 'aaa.' + Buffer.from(JSON.stringify({ exp: 1 })).toString('base64url') + '.bbb';
+  let refreshes = 0, saves = 0;
+  const a = new GoogleAccount({ store: { write: async () => saves++ }, openExternal: async () => {}, clientFactory: () => ({
+    setCredentials: () => {}, refreshAccessToken: async () => { refreshes++; return { credentials: { id_token: 'fresh-id' } }; },
+    verifyIdToken: async () => ({ getPayload: () => ({ sub: '123456789', email_verified: true, exp: Date.now()/1000+3600 }) }),
+  }) });
+  a.config = config; a.account = { sub: '123456789' }; a.tokens = { id_token: oldToken, refresh_token: 'private-refresh' };
+  assert.deepEqual(await Promise.all([a.getIdToken(), a.getIdToken()]), ['fresh-id', 'fresh-id']);
+  assert.equal(refreshes, 1); assert.equal(saves, 1); assert.equal(a.tokens.refresh_token, 'private-refresh');
+  assert(!JSON.stringify(a.view()).includes('private-refresh'));
+});
+test('signing out while refreshing cannot restore tokens or return a usable identity', async () => {
+  let unblock, started;
+  const wait = new Promise((r) => { started = r; });
+  const a = new GoogleAccount({ store: { write: async () => {} }, openExternal: async () => {}, clientFactory: () => ({
+    setCredentials: () => {}, refreshAccessToken: async () => { started(); await new Promise((r) => { unblock = r; }); return { credentials: { id_token: 'fresh' } }; },
+    verifyIdToken: async () => ({ getPayload: () => ({ sub: '123456789', email_verified: true, exp: Date.now()/1000+3600 }) }),
+  }) });
+  a.config = { clientId: 'test-client.apps.googleusercontent.com' }; a.account = { sub: '123456789' }; a.tokens = { id_token: 'expired', refresh_token: 'secret' };
+  const refresh = a.getIdToken(); await wait; await a.signOut(); unblock();
+  await assert.rejects(refresh, /Google session expired/); assert.equal(a.tokens, null);
+});

@@ -1,6 +1,6 @@
-# DenaDesk connection service — first milestone
+# DenaDesk device registry and direct connection setup
 
-This version verifies Google identity for explicitly allowed Google subjects. It does not register devices or carry remote sessions yet. The Windows Google-account code and this service form the first integration checkpoint, not a complete remote desktop.
+This service verifies Google identity for explicitly allowed Google subjects, lists their linked devices and exchanges signed connection-setup metadata. Remote screen and input traffic travels directly between peers; the service is never a media/data relay.
 
 Render configuration:
 
@@ -12,10 +12,14 @@ Render configuration:
 - Environment: `GOOGLE_CLIENT_ID` (Desktop client ID), `ALLOWED_GOOGLE_SUBS` (comma-separated stable Google subject IDs, not emails). No OAuth client secret or refresh token belongs on this service.
 - Repository: this fork, reviewed commit. Start with automatic deploys disabled.
 - Health endpoint: `/healthz`.
+- WSS endpoint: `/v1/link`. Browser Origin headers and URL credentials are rejected.
+- Optional `REGISTRY_FILE`: metadata file on persistent storage. Default `/tmp/denadesk-devices.json` is ephemeral on Render Free; offline records can disappear at restart. Online clients register again. Peer trust and private keys remain on each PC. No paid storage is configured automatically.
 
-`POST /v1/identity` accepts a Google ID token only as `Authorization: Bearer …`. The service verifies Google signature/issuer/audience/expiry, verified email and owner subject. It returns identity to that authenticated caller. It accepts no request body, enables no CORS, sets no cookies, stores no user database, and logs no tokens or account data. Verification concurrency and request volume are bounded for this personal development milestone.
+`POST /v1/identity` accepts a Google ID token only as `Authorization: Bearer …`. The service verifies Google signature/issuer/audience/expiry, verified email and owner subject. It returns identity to that authenticated caller. That endpoint accepts no request body, enables no CORS and sets no cookies. Neither endpoint logs tokens or account data. Verification concurrency, device counts, connections, message sizes and request volume are bounded.
 
-The full flow still needs signed device enrollment, a persistent trusted-device registry, expiring session signaling, explicit host approval, peer-key verification and direct WebRTC channels. Google identifies the account; this service will supply its linked-device list and connection-setup messages. Screen, audio, input, clipboard and files must travel directly between approved peers. No TURN relay or Cloudflare setup is planned. STUN can discover public addresses without relaying session traffic; connections must fail clearly if a direct path cannot be established. No remote session should be enabled until those checks are implemented and tested.
+WSS enrollment uses a fresh server nonce, a Google ID token and proof of possession of an Ed25519 device key. Device IDs are public-key hashes. Every session message is signed with sender/recipient IDs, session ID, sequence and expiry. The host must approve the requested capability before SDP is exchanged. Device lists are isolated by account. No OAuth token or device private key is saved in the registry.
+
+Windows 2.8.0 supports primary-screen viewing and optional keyboard/mouse control with explicit trust and session approval. It verifies peer signatures locally and rejects relay candidates in the broker, main process and renderer. WebRTC uses STUN discovery with no TURN configuration and verifies the selected direct candidate pair. There is no Cloudflare setup. Incompatible networks fail clearly. Closing, locking, suspending, signing out or forgetting peer trust ends the session. Sound, clipboard/files, Android account linking and unattended control remain outside this milestone.
 
 ## Local checks
 

@@ -47,3 +47,5 @@ android/.signing/
 # Per-owner OAuth credentials stay outside source and packages
 client_secret*.json
 **/google-account.bin*
+**/remote-device.bin*
+**/denadesk-devices.json*

@@ -64,13 +64,17 @@ unsupported on stock Android: capture requires system privileges. Google linking
 and Internet access are **design only** in [the remote access design](docs/remote-access-design.md).
 No cloud service is deployed and no Google account is connected by this release.
 
-The newer development source adds Google account setup under Windows General,
-using a browser, PKCE and encrypted local storage. `cloud-broker/` supplies the
-first owner-restricted identity-verification milestone, now verified on Render.
-The planned device registry and connection setup use that service; remote-session
-traffic must travel directly between host and guest, without a TURN relay.
-These changes are not included in the installed 2.7.0 packages and do not yet
-provide linked-device lists or Internet sessions.
+Windows 2.8.0 adds Google account setup and linked devices under General, using
+a system browser, PKCE and encrypted local storage. `cloud-broker/` supplies an
+account-isolated device registry and signed connection setup. Both PCs approve
+first-time device trust, and the host approves each viewing/control session.
+Screen and optional keyboard/mouse traffic travels directly between peers,
+without a TURN relay. Close either session window or lock the PC to disconnect.
+Some networks cannot establish a direct path; those attempts fail without a relay.
+Android Google linking, sound, clipboard/files and unattended Internet control are
+not included. The existing installed 2.7.0 packages do not contain this milestone.
+Render Free can lose offline registry records at restart; device keys and trust
+remain protected locally. See [setup and limits](docs/remote-access-design.md).
 
 ## License
 
