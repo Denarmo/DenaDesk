@@ -21,6 +21,7 @@ function setupIpc(ctx) {
   };
 
   require('./photo-menu').register(ipcMain);
+  require('./google-account-ipc').register();
   handle('getResourceUsage', () => ctx.getResourceUsage());
   handle('getState', () => ctx.buildState());
   require('../shared/support.js').ipc(ipcMain); // Tip and Feedback pages: support:info / profile / tip / feedback / preview

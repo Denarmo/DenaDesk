@@ -23,6 +23,7 @@
     "dist": "node installer/build.js"
   },
   "dependencies": {
+    "google-auth-library": "11.3.2",
     "ws": "8.22.0"
   },
   "devDependencies": {

@@ -64,6 +64,11 @@ unsupported on stock Android: capture requires system privileges. Google linking
 and Internet access are **design only** in [the remote access design](docs/remote-access-design.md).
 No cloud service is deployed and no Google account is connected by this release.
 
+The newer development source adds Google account setup under Windows General,
+using a browser, PKCE and encrypted local storage. `cloud-broker/` supplies the
+first owner-restricted identity-verification milestone. These changes are not
+included in the installed 2.7.0 packages and do not yet provide Internet sessions.
+
 ## License
 
 [GPL-3.0](LICENSE). See [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) and `licenses/`

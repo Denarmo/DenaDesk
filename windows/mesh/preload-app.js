@@ -5,6 +5,12 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 const call = (name) => (...args) => ipcRenderer.invoke(name, ...args);
 
 contextBridge.exposeInMainWorld('macshare', {
+  googleAccountGet: call('googleAccountGet'),
+  googleAccountImport: call('googleAccountImport'),
+  googleAccountSignIn: call('googleAccountSignIn'),
+  googleAccountCancel: call('googleAccountCancel'),
+  googleAccountSignOut: call('googleAccountSignOut'),
+  onGoogleAccount: (fn) => ipcRenderer.on('google-account', (_e, s) => fn(s)),
   photoMenu: call('photoMenu'),
   getResourceUsage: call('getResourceUsage'),
   getState: call('getState'),

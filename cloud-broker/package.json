@@ -1,0 +1,9 @@
+{
+  "name": "denadesk-cloud-broker",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0",
+  "engines": { "node": ">=24 <25" },
+  "scripts": { "start": "node server.js", "test": "node --test test/*.test.js" },
+  "dependencies": { "google-auth-library": "11.3.2" }
+}

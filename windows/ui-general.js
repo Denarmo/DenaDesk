@@ -64,6 +64,8 @@ UI.tab({
       return UI.row(label, hint, [partSw[k]]);
     });
 
+    const account = window.GoogleAccountUI && window.GoogleAccountUI.card();
+    if (account) body.append(account);
     body.append(
       UI.card('Startup', [
         UI.row('Start with Windows', 'DenaDesk waits in the tray', [startup]),

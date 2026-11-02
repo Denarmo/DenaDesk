@@ -43,3 +43,7 @@ android/signing.properties
 android/.signing/
 *.jks
 *.keystore
+
+# Per-owner OAuth credentials stay outside source and packages
+client_secret*.json
+**/google-account.bin*

@@ -1,6 +1,6 @@
 # DenaDesk remote access: setup design
 
-Status: proposed setup, 2 November 2026. No Google account is connected and no cloud service is deployed by this release. Local pairing and USB continue to work without an account.
+Status, 2 November 2026: the Windows development source now implements Google desktop identity setup, and a local browser sign-in has been verified. `cloud-broker/` contains the first owner-restricted identity endpoint. Device enrollment, Internet signaling, TURN and remote sessions remain to be implemented. Installed 2.7.0 packages do not include these new development changes. Local pairing and USB continue to work without an account.
 
 ## Connection architecture
 
