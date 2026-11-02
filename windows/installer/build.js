@@ -49,6 +49,11 @@ function copyDeps(names, seen = new Set()) {
 }
 
 async function main() {
+  // Installed-app client settings are distributed with the app, not supplied by each user.
+  // This Desktop public-client identifier/secret is not an account credential or security boundary.
+  const googleInput = process.env.DENADESK_GOOGLE_DESKTOP_JSON || path.join(WIN, 'oauth-desktop.json');
+  const googleConfig = require('../google-client').validate(JSON.parse(fs.readFileSync(googleInput, 'utf8')));
+  const googleBytes = Buffer.from(JSON.stringify(googleConfig));
   const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
   if (execFileSync('git', ['status', '--porcelain'], { cwd: ROOT, encoding: 'utf8' }).trim()) {
     throw new Error('Commit reviewed changes before packaging, so the installer has an exact source revision');
@@ -72,6 +77,7 @@ async function main() {
   if (path.resolve(STAGE) !== path.join(path.resolve(WIN), 'dist', 'stage')) throw new Error('Unexpected staging path');
   fs.rmSync(STAGE, { recursive: true, force: true });
   copy(WIN, path.join(STAGE, 'windows'), (name) => !SKIP.has(name));
+  fs.writeFileSync(path.join(STAGE, 'windows', 'oauth-desktop.json'), googleBytes);
   // Every shared module (a list missed new ones: the app then failed on its first require), and the
   // pages' styles and the call window (phonehub.css, callpop.html).
   copy(path.join(ROOT, 'shared'), path.join(STAGE, 'shared'), (name) => /\.(js|css|html)$/.test(name));
@@ -119,6 +125,7 @@ async function main() {
     sourceRepository: 'https://github.com/Denarmo/DuoDesk', sourceCommit,
     version: pkg.version, electronVersion,
     packageLockSha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(WIN, 'package-lock.json'))).digest('hex'),
+    googleDesktopConfigurationSha256: crypto.createHash('sha256').update(googleBytes).digest('hex'),
   }, null, 2));
   fs.writeFileSync(path.join(STAGE, 'package.json'), JSON.stringify({
     name: pkg.name, productName: pkg.productName, version: pkg.version, description: pkg.description,

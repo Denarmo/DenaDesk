@@ -44,7 +44,7 @@ class RemoteLink extends EventEmitter {
   async enable() {
     if (!this.identity || !this.account.account) {
       this.error = !this.identity ? 'Secure device keys are unavailable. Restart DenaDesk and try again.'
-        : !this.account.config ? 'Import your Google Desktop app JSON, then sign in before linking this PC.'
+        : !this.account.config ? 'Google sign-in is unavailable in this build. Install an official DenaDesk build.'
         : 'Sign in with Google before linking this PC.';
       this.changed(); return this.view();
     }

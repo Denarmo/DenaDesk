@@ -5,7 +5,6 @@ window.GoogleAccountUI = {
     const { api } = UI;
     if (!api.googleAccountGet) return null;
     const error = UI.el('p', { class: 'hint' });
-    const imported = UI.button('Import Google configuration…', () => act('googleAccountImport'), 'small');
     const signin = UI.button('Sign in with Google', () => act('googleAccountSignIn'), 'small primary');
     const cancel = UI.button('Cancel sign-in', () => act('googleAccountCancel'), 'small');
     const signout = UI.button('Sign out on this PC', () => act('googleAccountSignOut'), 'small');
@@ -13,23 +12,19 @@ window.GoogleAccountUI = {
     const deviceList = UI.el('div');
     const linkError = UI.el('p', { class: 'hint', attrs: { role: 'status' } });
     let linked = {}, accountState = null;
-    const enable = UI.button('Link this PC', () => remoteAct('remoteLinkEnable', !linked.enabled), 'small');
     const disconnect = UI.button('Disconnect', () => remoteAct('remoteLinkDisconnect'), 'small');
-    const connection = UI.row('Linked devices', 'Direct connections only. The host approves each session.', [enable, disconnect]);
+    const connection = UI.row('Linked devices', 'Sign in to see your devices. The host approves each remote session.', [disconnect]);
     const own = UI.row('This device fingerprint', 'Loading…');
     const current = UI.row('Remote session', 'No active session');
     function prerequisites() {
-      enable.disabled = !linked.enabled && (!accountState?.account || accountState.phase === 'signing-in' || !linked.fingerprint);
       connection.setHint(!accountState ? 'Loading Google account settings…'
-        : !accountState.configured ? 'First import your Google Desktop app JSON, then sign in and link this PC.'
-        : !accountState.account ? 'Sign in with Google before linking this PC.'
+        : !accountState.account ? 'Sign in with the same Google account on your other PC to see it here.'
         : !linked.fingerprint ? 'Secure device keys are unavailable. Restart DenaDesk and try again.'
         : 'Connection service: ' + (linked.status || 'off') + '. Session traffic goes directly between devices.');
       linkError.textContent = accountState?.account ? linked.error || '' : '';
     }
     function renderRemote(s) {
       linked = s;
-      enable.textContent = s.enabled ? 'Unlink this PC' : 'Link this PC';
       prerequisites();
       own.setHint(s.fingerprint || 'Device keys are unavailable.');
       disconnect.hidden = !s.session;
@@ -49,8 +44,8 @@ window.GoogleAccountUI = {
       accountState = s;
       const busy = s.phase === 'signing-in';
       status.setHint(busy ? 'Finish signing in using your browser.' : s.account ? 'Signed in as ' + s.account.email
-        : s.configured ? 'Google project: ' + s.projectId : 'Import the Desktop app JSON from Google Auth Platform.');
-      imported.disabled = busy; signin.disabled = busy || !s.configured;
+        : s.configured ? 'Sign in to see your linked devices. Remote sessions need the host’s approval.' : 'Google sign-in is unavailable in this build. Install an official DenaDesk build.');
+      signin.hidden = busy || !!s.account; signin.disabled = busy || !s.configured;
       cancel.hidden = !busy; signout.hidden = !s.account; signout.disabled = busy;
       error.textContent = s.error || '';
       prerequisites();
@@ -58,13 +53,12 @@ window.GoogleAccountUI = {
     async function act(name) {
       try { render(await api[name]()); } catch { error.textContent = 'Google account setup could not finish. Try again.'; }
     }
-    signin.disabled = enable.disabled = true;
+    signin.disabled = true; cancel.hidden = signout.hidden = disconnect.hidden = true;
     api.onGoogleAccount(render);
     act('googleAccountGet');
     api.onRemoteLink(renderRemote);
     remoteAct('remoteLinkGet');
-    return UI.card('Google account and remote access', [status,
-      UI.row('Desktop sign-in configuration', 'Google identifies your account for the linked-device list. Remote access needs your approval.', [imported]), error,
+    return UI.card('Google account and remote access', [status, error,
       connection, own, current, deviceList, linkError,
       UI.row('Direct remote access', 'Windows screen viewing and optional keyboard/mouse control. No relay fallback; some networks cannot connect. Clipboard, files, sound and Android remote sessions are not included yet.')]);
   },

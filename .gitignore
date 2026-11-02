@@ -44,7 +44,8 @@ android/.signing/
 *.jks
 *.keystore
 
-# Per-owner OAuth credentials stay outside source and packages
+# Desktop public-client build configuration stays outside Git; account credentials never ship.
+windows/oauth-desktop.json
 client_secret*.json
 **/google-account.bin*
 **/remote-device.bin*

@@ -23,7 +23,7 @@ test('linking before setup gives actionable guidance without registering or conn
   const link = new RemoteLink({ account, name: 'PC', store: { read: async () => ({}), write: async () => { writes++; } } });
   link.connect = () => { connections++; };
   await link.load(); const initialWrites = writes;
-  assert.match((await link.enable()).error, /Import.*JSON/);
+  assert.match((await link.enable()).error, /Google sign-in is unavailable in this build/);
   account.config = { clientId: 'test-client.apps.googleusercontent.com' };
   assert.match((await link.enable()).error, /Sign in with Google/);
   assert.equal(link.enabledFor, null); assert.equal(writes, initialWrites); assert.equal(connections, 0);

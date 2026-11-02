@@ -64,10 +64,16 @@ unsupported on stock Android: capture requires system privileges. Google linking
 and Internet access are **design only** in [the remote access design](docs/remote-access-design.md).
 No cloud service is deployed and no Google account is connected by this release.
 
-Windows 2.8.0 adds Google account setup and linked devices under General, using
+## Windows 2.8 Google remote access
+
+Windows 2.8.1 provides one-click Google sign-in and linked devices under General, using
 a system browser, PKCE and encrypted local storage. `cloud-broker/` supplies an
 account-isolated device registry and signed connection setup. Both PCs approve
 first-time device trust, and the host approves each viewing/control session.
+Official builds include the Google Desktop public-client settings. Click Sign in
+with Google on each PC; no JSON import or separate linking step is needed. After
+sign-in the account row offers only Sign out on this PC, which removes this PC
+from the live directory and disconnects its remote session.
 Screen and optional keyboard/mouse traffic travels directly between peers,
 without a TURN relay. Close either session window or lock the PC to disconnect.
 Some networks cannot establish a direct path; those attempts fail without a relay.

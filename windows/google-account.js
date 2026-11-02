@@ -48,7 +48,7 @@ function encryptedStore(file, safeStorage) {
 }
 
 class GoogleAccount extends EventEmitter {
-  constructor({ store, openExternal, clientFactory, timeoutMs = 300000 }) {
+  constructor({ store, openExternal, clientFactory, timeoutMs = 300000, defaultConfig = null }) {
     super();
     this.store = store;
     this.openExternal = openExternal;
@@ -57,17 +57,18 @@ class GoogleAccount extends EventEmitter {
       return new OAuth2Client({ ...config, transporterOptions: { timeout: 15000, retry: false } });
     });
     this.timeoutMs = timeoutMs;
-    this.config = null; this.account = null; this.tokens = null; this.attempt = null; this.error = '';
+    this.defaultConfig = defaultConfig ? desktopConfig(defaultConfig) : null;
+    this.config = this.defaultConfig; this.account = null; this.tokens = null; this.attempt = null; this.error = '';
   }
   async load() {
     try {
       const saved = await this.store.read();
-      if (saved.config) this.config = desktopConfig({ installed: { client_id: saved.config.clientId,
+      if (!this.defaultConfig && saved.config) this.config = desktopConfig({ installed: { client_id: saved.config.clientId,
         client_secret: saved.config.clientSecret, project_id: saved.config.projectId } });
-      if (this.config && saved.account && typeof saved.account.sub === 'string' && saved.tokens && saved.tokens.id_token) {
+      if (this.config && saved.config?.clientId === this.config.clientId && saved.account && typeof saved.account.sub === 'string' && saved.tokens && saved.tokens.id_token) {
         this.account = saved.account; this.tokens = saved.tokens;
       }
-    } catch { this.error = 'Google account data could not be opened. Import the Desktop app JSON again.'; }
+    } catch { this.error = 'Saved Google sign-in could not be opened. Sign in again.'; }
     return this.view();
   }
   view() {
@@ -117,7 +118,7 @@ class GoogleAccount extends EventEmitter {
     finally { this.refreshing = null; }
   }
   async signIn() {
-    if (!this.config) throw new Error('Import your Google Desktop app JSON first.');
+    if (!this.config) throw new Error('Google sign-in is unavailable in this build. Install an official DenaDesk build.');
     if (this.attempt) throw new Error('A Google sign-in is already open.');
     const state = crypto.randomBytes(32).toString('base64url'), nonce = crypto.randomBytes(32).toString('base64url');
     const server = http.createServer();

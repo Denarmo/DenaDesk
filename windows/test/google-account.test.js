@@ -11,6 +11,7 @@ function setup(options = {}) {
   let saved = {}, auth, exchange = 0;
   const store = { read: async () => saved, write: async (v) => { saved = structuredClone(v); } };
   const account = new GoogleAccount({ store, timeoutMs: 1000,
+    defaultConfig: options.bundled ? config : null,
     clientFactory: (c) => ({
       generateCodeVerifierAsync: async () => ({ codeVerifier: 'private-verifier', codeChallenge: 'public-challenge' }),
       generateAuthUrl: (a) => { auth = { ...a, redirectUri: c.redirectUri }; return 'https://accounts.google.com/o/oauth2/v2/auth'; },
@@ -35,6 +36,24 @@ test('imports only desktop client fields and ignores imported endpoints', () => 
   assert.throws(() => desktopConfig({ installed: { ...config.installed, client_id: 'https://attacker.example' } }));
   assert.deepEqual(desktopConfig({ installed: { ...config.installed, token_uri: 'https://attacker.example' } }),
     { clientId: config.installed.client_id, clientSecret: 'test-only', projectId: 'test-project' });
+});
+test('bundled configuration supports first-run sign-in and sign-out without an import', async () => {
+  const t = setup({ bundled: true, open: (a) => callback(a) });
+  assert.equal((await t.account.load()).configured, true);
+  assert.equal((await t.account.signIn()).phase, 'signed-in');
+  assert.equal((await t.account.signOut()).phase, 'signed-out');
+  assert.equal(t.account.view().configured, true);
+  assert.equal(t.saved().tokens, null);
+  assert(!JSON.stringify(t.account.view()).includes('test-only'));
+});
+test('bundled client replaces old configuration and never reuses another client’s tokens', async () => {
+  const a = new GoogleAccount({ defaultConfig: config, store: { read: async () => ({
+    config: { clientId: 'different.apps.googleusercontent.com', clientSecret: 'other' },
+    account: { sub: 'subject' }, tokens: { id_token: 'other-client-identity' },
+  }) } });
+  assert.equal((await a.load()).configured, true);
+  assert.equal(a.config.clientId, config.installed.client_id);
+  assert.equal(a.account, null); assert.equal(a.tokens, null);
 });
 test('PKCE sign-in uses a loopback callback, validates state and nonce, exposes no tokens', async () => {
   const t = setup({ open: async (auth) => {
