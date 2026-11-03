@@ -103,6 +103,7 @@
   });
 
   api.on('size', (s) => {
+    if (size && (size.width !== s.width || size.height !== s.height)) pointer.release();
     size = s;
     fit();
   });
@@ -122,7 +123,9 @@
 
   // An app's virtual display has at least 2 pixels per point, like the Mac's: at 100% scaling a
   // 1-pixel display looks blurry. Same rule as phoneview.js's openApp.
-  const appScale = () => Math.max(2, devicePixelRatio);
+  // A virtual display keeps the density it was created with, even across Windows DPI changes.
+  const appScale = Math.max(2, Math.min(8, Number(q.get('displayScale')) || 2));
+  let requestedSize = '';
 
   // Letterbox: the canvas keeps the phone's aspect inside the window.
   function fit() {
@@ -142,7 +145,14 @@
     if (kind === 'app') {
       clearTimeout(fit.timer);
       const stage = document.getElementById('stage');
-      fit.timer = setTimeout(() => api.send({ t: 'resize', w: stage.clientWidth * appScale(), h: stage.clientHeight * appScale() }), 250);
+      fit.timer = setTimeout(() => {
+        const w = Math.round(stage.clientWidth * appScale), h = Math.round(stage.clientHeight * appScale);
+        const key = `${w}x${h}`;
+        if (w < 51 || h < 51 || key === requestedSize) return;
+        pointer.release(); // finish touches before changing Android's coordinate system
+        requestedSize = key;
+        api.send({ t: 'resize', w, h });
+      }, 250);
     }
   }).observe(document.getElementById('stage'));
 
@@ -218,17 +228,19 @@
 
   const at = (e) => {
     const r = canvas.getBoundingClientRect();
-    const w = (size && size.width) || canvas.width;
-    const h = (size && size.height) || canvas.height;
+    const w = canvas.width;
+    const h = canvas.height;
     return { x: Math.max(0, Math.min(w - 1, ((e.clientX - r.left) / r.width) * w)), y: Math.max(0, Math.min(h - 1, ((e.clientY - r.top) / r.height) * h)) };
   };
 
   const pointer = new PhonePointer((m) => api.send(m));
+  const inputReady = () => size && canvas.width === size.width && canvas.height === size.height;
   canvas.addEventListener('pointerdown', (e) => {
+    if (!inputReady()) return;
     e.preventDefault(); canvas.focus(); canvas.setPointerCapture(e.pointerId);
     pointer.down(e, at(e));
   });
-  canvas.addEventListener('pointermove', (e) => pointer.move(e, at(e)));
+  canvas.addEventListener('pointermove', (e) => { if (inputReady()) pointer.move(e, at(e)); });
   const lift = (e, cancelled) => {
     pointer.up(e, at(e), cancelled);
     try { if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId); } catch {}
@@ -240,7 +252,8 @@
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
-    pointer.wheel(e, at(e), size || { width: canvas.width, height: canvas.height });
+    if (!inputReady()) return;
+    pointer.wheel(e, at(e), size, canvas.getBoundingClientRect());
   }, { passive: false });
 
   // Keys go to the phone; Alt+F4 closes the window like any other. Enter in a chat app and the

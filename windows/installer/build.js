@@ -122,7 +122,7 @@ async function main() {
   }
   copyDeps(Object.keys(pkg.dependencies || {}));
   fs.writeFileSync(path.join(STAGE, 'build-info.json'), JSON.stringify({
-    sourceRepository: 'https://github.com/Denarmo/DuoDesk', sourceCommit,
+    sourceRepository: 'https://github.com/Denarmo/DenaDesk', sourceCommit,
     version: pkg.version, electronVersion,
     packageLockSha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(WIN, 'package-lock.json'))).digest('hex'),
     googleDesktopConfigurationSha256: crypto.createHash('sha256').update(googleBytes).digest('hex'),

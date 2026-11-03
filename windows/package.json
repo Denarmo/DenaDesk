@@ -1,17 +1,17 @@
 {
   "name": "denadesk-windows",
   "productName": "DenaDesk",
-  "version": "2.8.3",
+  "version": "2.8.5",
   "description": "DenaDesk for Windows: pair with a Mac, view its screen, share mouse, keyboard and clipboard.",
   "license": "GPL-3.0",
   "author": "0xCodez (https://github.com/0xCodez)",
-  "homepage": "https://github.com/Denarmo/DuoDesk",
+  "homepage": "https://github.com/Denarmo/DenaDesk",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Denarmo/DuoDesk.git"
+    "url": "git+https://github.com/Denarmo/DenaDesk.git"
   },
   "bugs": {
-    "url": "https://github.com/Denarmo/DuoDesk/issues"
+    "url": "https://github.com/Denarmo/DenaDesk/issues"
   },
   "private": true,
   "main": "main.js",

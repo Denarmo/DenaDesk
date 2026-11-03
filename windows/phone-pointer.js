@@ -73,27 +73,56 @@
       for (const [id, p] of g.points) this.touch(UP, id, p);
       this.gesture = null;
     }
-    wheel(e, p, size) {
+    stepSwipe(g) {
+      if (this.gesture !== g) return;
+      const old = g.points.get(-2);
+      const point = { x: old.x + (g.target.x - old.x) / g.steps, y: old.y + (g.target.y - old.y) / g.steps };
+      g.points.set(-2, point);
+      this.touch(MOVE, -2, point);
+      // Lift at the last moving sample, so Android can recognize a fling. There is no idle hold.
+      if (--g.steps === 0 || Math.hypot(g.target.x - point.x, g.target.y - point.y) < .5) this.endGesture();
+      else g.timer = this.timers.setTimeout(() => this.stepSwipe(g), 16);
+    }
+    wheel(e, p, size, view = size) {
       if (this.active.size || !size.width || !size.height) return;
+      if (!e.deltaX && !e.deltaY) return;
       const kind = e.ctrlKey ? 'pinch' : this.mouseMode ? 'mouse' : 'swipe';
       if (this.gesture && this.gesture.kind !== kind) this.endGesture();
-      const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? size.height : 1;
+      const k = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? view.height : 1;
       if (kind === 'mouse') return this.send({ t: 'scroll', ...p, hs: -e.deltaX * k / 100, vs: -e.deltaY * k / 100 });
       const clamp = (p) => ({ x: Math.max(0, Math.min(size.width - 1, p.x)), y: Math.max(0, Math.min(size.height - 1, p.y)) });
       let g = this.gesture;
+      if (kind === 'swipe') {
+        // Wheel deltas are CSS pixels; Android coordinates are video pixels (usually 2x).
+        const limit = (v, n) => Math.max(-n * .6, Math.min(n * .6, v));
+        const dx = limit(e.deltaX * k * size.width / view.width, size.width);
+        const dy = limit(e.deltaY * k * size.height / view.height, size.height);
+        // Re-anchor at an edge, on reversal or after a resize instead of dragging a stuck finger.
+        if (g && (g.width !== size.width || g.height !== size.height || g.dx * dx < 0 || g.dy * dy < 0 ||
+          (dx && (g.target.x === 0 || g.target.x === size.width - 1)) ||
+          (dy && (g.target.y === 0 || g.target.y === size.height - 1)))) {
+          this.endGesture(); g = null;
+        }
+        if (!g) {
+          const anchor = (v, d, n) => Math.max(n * .1 + Math.max(0, d), Math.min(n * .9 + Math.min(0, d), v));
+          const start = clamp({ x: anchor(p.x, dx, size.width), y: anchor(p.y, dy, size.height) });
+          g = this.gesture = { kind, width: size.width, height: size.height, points: new Map([[-2, start]]), target: start };
+          this.touch(DOWN, -2, start);
+        }
+        g.dx = dx; g.dy = dy; g.steps = 5;
+        g.target = clamp({ x: g.target.x - dx, y: g.target.y - dy });
+        // Coalesce wheel bursts into one animation, with no idle polling.
+        if (!g.timer) g.timer = this.timers.setTimeout(() => this.stepSwipe(g), 16);
+        return;
+      }
       if (!g) {
         g = this.gesture = { kind, cx: p.x, cy: p.y, d: size.width * .08, points: new Map() };
-        g.points = kind === 'pinch' ? new Map([[0, clamp({ x: g.cx - g.d, y: g.cy })], [1, clamp({ x: g.cx + g.d, y: g.cy })]]) : new Map([[-2, p]]);
+        g.points = new Map([[0, clamp({ x: g.cx - g.d, y: g.cy })], [1, clamp({ x: g.cx + g.d, y: g.cy })]]);
         for (const [id, point] of g.points) this.touch(DOWN, id, point);
       }
-      if (kind === 'pinch') {
-        g.d = Math.max(10, Math.min(size.width * .45, g.d * Math.exp(Math.max(-2, Math.min(2, -e.deltaY * k / 60)))));
-        g.points.set(0, clamp({ x: g.cx - g.d, y: g.cy }));
-        g.points.set(1, clamp({ x: g.cx + g.d, y: g.cy }));
-      } else {
-        const old = g.points.get(-2);
-        g.points.set(-2, clamp({ x: old.x - e.deltaX * k, y: old.y - e.deltaY * k }));
-      }
+      g.d = Math.max(10, Math.min(size.width * .45, g.d * Math.exp(Math.max(-2, Math.min(2, -e.deltaY * k / 60)))));
+      g.points.set(0, clamp({ x: g.cx - g.d, y: g.cy }));
+      g.points.set(1, clamp({ x: g.cx + g.d, y: g.cy }));
       for (const [id, point] of g.points) this.touch(MOVE, id, point);
       this.timers.clearTimeout(g.timer);
       g.timer = this.timers.setTimeout(() => this.endGesture(), 160);

@@ -22,7 +22,7 @@ function element() {
     getContext: () => ({ drawImage() {} }), play: async () => {},
   };
 }
-function page(name) {
+function page(name, search = '?kind=screen') {
   const nodes = new Map(), sent = [], frames = [], timers = new Map(); let id = 0;
   const get = (id) => { if (!nodes.has(id)) nodes.set(id, element()); return nodes.get(id); };
   const document = Object.assign(element(), { body: element(), documentElement: element(), getElementById: get, createElement: element });
@@ -30,15 +30,16 @@ function page(name) {
   const window = Object.assign(element(), { innerWidth: 800, innerHeight: 600 });
   const opts = {};
   window.phoneview = { send: (m) => sent.push(JSON.parse(JSON.stringify(m))), on: (t, fn) => { opts[t] = fn; } };
-  const context = { window, document, console, TwoFinger, PhonePointer, StreamViewport, URLSearchParams, location: { search: '?kind=screen' }, devicePixelRatio: 1,
-    ResizeObserver: class { observe() {} }, performance: { now: () => 1000 },
+  let resized;
+  const context = { window, document, console, TwoFinger, PhonePointer, StreamViewport, URLSearchParams, location: { search }, devicePixelRatio: 1,
+    ResizeObserver: class { constructor(fn) { resized = fn; } observe() {} }, performance: { now: () => 1000 },
     TD: { send: (json) => sent.push(JSON.parse(json)), ready() {}, haptic() {}, tick() {}, playing() {} },
     setTimeout(fn) { timers.set(++id, fn); return id; }, clearTimeout(id) { timers.delete(id); }, requestAnimationFrame(fn) { frames.push(fn); return frames.length; } };
   window.TD = context.TD;
   window.requestAnimationFrame = context.requestAnimationFrame;
   window.cancelAnimationFrame = () => {};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, name), 'utf8'), context);
-  return { get, window, document, sent, timers, frames, opts };
+  return { get, window, document, sent, timers, frames, opts, context, resize: () => resized() };
 }
 const source = (name) => `../../android/app/src/main/assets/web/${name}.js`;
 const finger = (id, x, y) => ({ pointerId: id, pointerType: 'touch', clientX: x, clientY: y });
@@ -133,4 +134,28 @@ test('Windows viewer keeps fullscreen and mouse mode in bottom tools, shows exit
   t.window.emit('keydown', { key: 'F11', code: 'F11', repeat: true });
   assert.equal(t.sent.filter((v) => v.t === 'full').length, 1);
   t.opts.opts({ full: false }); assert.equal(t.get('notice').hidden, true); assert.equal(full['aria-pressed'], 'false');
+});
+
+test('Windows app display keeps its creation density when Windows DPI changes and deduplicates resizes', () => {
+  const t = page('../phoneview-renderer.js', '?kind=app&displayScale=2.5');
+  const flush = () => { for (const [id, fn] of [...t.timers]) { t.timers.delete(id); fn(); } };
+  t.resize(); flush();
+  assert.deepEqual(t.sent.at(-1), { t: 'resize', w: 2000, h: 1500 });
+  t.context.devicePixelRatio = 3; t.resize(); flush();
+  assert.equal(t.sent.length, 1, 'DPI change does not resize the virtual display or alter Android dp scaling');
+  t.get('stage').clientHeight = 800; t.resize(); flush();
+  assert.deepEqual(t.sent.at(-1), { t: 'resize', w: 2000, h: 2000 });
+});
+
+test('Windows viewer blocks new touches against a stale frame during Android display reconfiguration', () => {
+  const t = page('../phoneview-renderer.js'), c = t.get('screen');
+  const event = { pointerId: 1, pointerType: 'mouse', button: 0, buttons: 1, clientX: 100, clientY: 200 };
+  t.opts.size({ width: 800, height: 1600 }); c.emit('pointerdown', event);
+  assert.equal(t.sent.length, 0);
+  c.width = 800; c.height = 1600; c.emit('pointerdown', event);
+  assert.equal(t.sent.at(-1).action, 0); assert.equal(t.sent.at(-1).x, 200); assert.equal(t.sent.at(-1).y, 400);
+  t.opts.size({ width: 1600, height: 800 });
+  assert.equal(t.sent.at(-1).action, 1, 'reconfiguration releases held fingers');
+  const before = t.sent.length; c.emit('wheel', { deltaY: 120, deltaX: 0, ...event });
+  assert.equal(t.sent.length, before);
 });

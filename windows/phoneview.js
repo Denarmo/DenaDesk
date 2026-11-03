@@ -201,13 +201,17 @@ class PhoneViews extends EventEmitter {
     const open = [...this.views.values()].find((v) => v.kind === 'app' && v.app === pkg);
     if (open) return open.win.show(), open.win.focus();
     const c = this._chrome();
-    const w = 412; // the app's own area; the window adds its bars
-    const h = 860 - c.h;
+    const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+    const d = (this.phone.info || {}).display || { w: 1080, h: 2400 };
+    const ratio = d.w > 0 && d.h > 0 ? Math.min(d.w, d.h) / Math.max(d.w, d.h) : 9 / 20;
+    const maxWidth = Math.max(220, display.workAreaSize.width - 80);
+    const h = Math.min(Math.round(412 / ratio), Math.max(180, display.workAreaSize.height - c.h - 80), Math.round(maxWidth / ratio));
+    const w = Math.round(h * ratio);
     // At least 2 pixels per point (sharp at 100% scaling); the dpi keeps 1 dp = 1 point, so the
     // app's text is as big as this computer's. The window's resizes use the same rule.
-    const scale = Math.max(2, screen.getPrimaryDisplay().scaleFactor || 1);
+    const scale = Math.max(2, Math.min(8, display.scaleFactor || 1));
     const newDisplay = `${Math.round(w * scale)}x${Math.round(h * scale)}/${Math.round(160 * scale)}`;
-    this._open({ kind: 'app', app: pkg, title: name || pkg, width: w + c.w, height: h + c.h, opts: this.bridge.sessionOpts('app', { newDisplay }) });
+    this._open({ kind: 'app', app: pkg, title: name || pkg, width: w + c.w, height: h + c.h, displayScale: scale, opts: this.bridge.sessionOpts('app', { newDisplay }) });
   }
 
   // A notification from the phone was clicked: wake it (unlocked: it answers at once), then open
@@ -263,15 +267,15 @@ class PhoneViews extends EventEmitter {
     return [...this.views.values()].some((v) => v.kind === 'screen' && v.session && v.session.opts.audio);
   }
 
-  _open({ kind, app, title, width, height, opts, hidden = false }) {
+  _open({ kind, app, title, width, height, opts, displayScale = 2, hidden = false }) {
     if (!this.bridge.serial && kind !== 'netsound') {
       // Wireless debugging not up yet (just on Wi-Fi after Bluetooth): main.js opens it once it is.
-      if (this.onNoAdb && this.onNoAdb({ kind, app, title, width, height, opts, hidden })) return;
+      if (this.onNoAdb && this.onNoAdb({ kind, app, title, width, height, opts, displayScale, hidden })) return;
       return this.bridge.emit('popup', 'home', 'Set up wireless debugging on the Phone page first');
     }
     const id = nextId++;
     const win = new BrowserWindow({
-      width, height, minWidth: 220, minHeight: 300, title, show: false,
+      width, height, useContentSize: kind === 'app', minWidth: 220, minHeight: 300, title, show: false,
       titleBarStyle: 'hidden', titleBarOverlay: { color: '#202024', symbolColor: '#f1c40f', height: 32 }, backgroundColor: '#000000',
       icon: path.join(__dirname, 'assets', 'icon.png'), autoHideMenuBar: true,
       // autoplayPolicy: the phone's sound plays without a click (its sound window is hidden, so a
@@ -281,7 +285,7 @@ class PhoneViews extends EventEmitter {
     const v = { id, kind, app, title, win, session: null, keys: new KeyState(), size: null, ready: false, queue: [], chrome: this._chrome(this._controls(), kind), screenOff: false, torch: false, eaten: new Set() };
     this.views.set(id, v);
     this._send(v, 'phoneview:opts', this._opts(v));
-    win.loadFile(path.join(__dirname, 'phoneview.html'), { query: { kind, title, controls: this._controls() } });
+    win.loadFile(path.join(__dirname, 'phoneview.html'), { query: { kind, title, controls: this._controls(), displayScale: String(displayScale) } });
     // The phone's screen: the window keeps the picture's shape, its bars added (snapped exact
     // when a resize ends: with the bars in, the right ratio changes a little with the size).
     if (kind === 'screen') win.on('resized', () => this._fit(v, 'height'));
